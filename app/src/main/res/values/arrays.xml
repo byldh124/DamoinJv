@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_for_interest_in_meet">
+        <item>전체</item>
+        <item>공예/만들기</item>
+        <item>아웃도어/여행</item>
+        <item>운동/스포츠</item>
+        <item>인문학/책/글</item>
+        <item>업종/직무</item>
+        <item>외국/언어</item>
+        <item>문화/공연/축제</item>
+        <item>음악/악기</item>
+        <item>댄스/무용</item>
+        <item>봉사활동</item>
+        <item>사교/인맥</item>
+        <item>차/오토바이</item>
+        <item>사진/영상</item>
+        <item>야구관람</item>
+        <item>게임/오락</item>
+        <item>요리/제조</item>
+        <item>반려동물</item>
+        <item>가족/결혼</item>
+        <item>자유주제</item>
+    </string-array>
+</resources>

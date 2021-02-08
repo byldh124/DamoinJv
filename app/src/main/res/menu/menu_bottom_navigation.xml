@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/bnv_tab1"
+        android:title="모임"
+        android:icon="@drawable/ic_bottom_tab1_meet"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/bnv_tab2"
+        android:title="유료클래스"
+        android:icon="@drawable/ic_bottom_tab2_charge"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/bnv_tab3"
+        android:title="내모임"
+        android:icon="@drawable/ic_bottom_tab3_my_page"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/bnv_tab4"
+        android:title="주변검색"
+        android:icon="@drawable/ic_bottom_tab4_location"
+        app:showAsAction="always"/>
+
+</menu>

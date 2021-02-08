@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group
+        android:id="@+id/navigation_menu_tab1">
+        <item
+            android:id="@+id/navigation_menu_interest"
+            android:title="관심사 선택"
+            android:icon="@drawable/ic_navigation_interest_check"
+            app:showAsAction="always"/>
+    </group>
+
+    <group
+        android:id="@+id/navigation_menu_tab2">
+        <item
+            android:id="@+id/navigation_menu_favorite_meet"
+            android:title="내 관심 모임"
+            android:icon="@drawable/ic_navigation_pin"
+            app:showAsAction="always"/>
+
+        <item
+            android:id="@+id/navigation_menu_recent_meet"
+            android:title="최근 본 보임"
+            android:icon="@drawable/ic_navigation_recent"
+            app:showAsAction="always"/>
+        <item
+            android:id="@+id/navigation_menu__premium_meet"
+            android:title="프리미엄 모임"
+            android:icon="@drawable/ic_navigation_premium"
+            app:showAsAction="always"/>
+        <item
+            android:id="@+id/navigation_menu_mk_charge_class"
+            android:title="유료 클래스 만들기"
+            android:icon="@drawable/ic_navigation_mk_charge"
+            app:showAsAction="always"/>
+
+    </group>
+
+    <group
+        android:id="@+id/navigation_menu_tab3">
+
+        <item
+            android:id="@+id/navigation_menu_setting"
+            android:title="설정"
+            android:icon="@drawable/ic_navigation_setting"
+            app:showAsAction="always"/>
+
+    </group>
+
+</menu>
