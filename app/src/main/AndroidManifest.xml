@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project01_MeetingApp">
-        <activity android:name=".account.InterestActivity"></activity>
+        <activity android:name=".account.LocationChoiceActivity"></activity>
+        <activity android:name=".account.InterestActivity" />
         <activity android:name=".createmeet.CreateActivity" />
         <activity android:name=".option02notification.NotificationActivity" />
         <activity android:name=".option01search.SearchActivity" />

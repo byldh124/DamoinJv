@@ -1,12 +1,15 @@
 package com.moondroid.project01_meetingapp.account;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,23 +18,27 @@ import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
 
 public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapter.VH> {
-    Context context;
+    Activity context;
     Resources resources;
     String[] imgUrls;
     String[] itemTitles;
+    String interest;
+    String iconUrl;
 
-    public InterestItemAdapter(Context context) {
+    public InterestItemAdapter(Activity context) {
         this.context = context;
         resources = context.getResources();
         imgUrls = resources.getStringArray(R.array.interest_icon_img_url);
         itemTitles = resources.getStringArray(R.array.interest_list);
+        this.interest = itemTitles[itemTitles.length - 1];
+        this.iconUrl = imgUrls[imgUrls.length - 1];
     }
 
 
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new VH(LayoutInflater.from(context).inflate(R.layout.layout_interest_recycler_item,parent,false));
+        return new VH(LayoutInflater.from(context).inflate(R.layout.layout_interest_recycler_item, parent, false));
     }
 
     @Override
@@ -47,14 +54,28 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
         return imgUrls.length;
     }
 
-    class VH extends RecyclerView.ViewHolder{
+    class VH extends RecyclerView.ViewHolder {
         ImageView ivInterestIcon;
         TextView tvInterestTitle;
+        Intent intent;
 
         public VH(@NonNull View itemView) {
             super(itemView);
             ivInterestIcon = itemView.findViewById(R.id.iv_interest_icon);
             tvInterestTitle = itemView.findViewById(R.id.tv_interest_title);
+            intent = context.getIntent();
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    interest = itemTitles[pos];
+                    iconUrl = imgUrls[pos];
+                    intent.putExtra("interest", interest);
+                    intent.putExtra("iconUrl", iconUrl);
+                    context.setResult(Activity.RESULT_OK, intent);
+                    context.finish();
+                }
+            });
         }
     }
 }
