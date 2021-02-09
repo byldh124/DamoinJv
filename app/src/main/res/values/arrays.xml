@@ -22,4 +22,48 @@
         <item>가족/결혼</item>
         <item>자유주제</item>
     </string-array>
+
+    <string-array name="interest_icon_img_url">
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon01_travel.png?alt=media&amp;token=d3f40498-249b-4871-9a53-144e290faf3b</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon02_exercise.png?alt=media&amp;token=cc2b8b07-1d0b-40fe-886e-1a3b4df181df</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon03_book.png?alt=media&amp;token=d8587882-52d2-4057-aa14-d301338a6ba3</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon04_business.png?alt=media&amp;token=d2ec28f5-6193-4e85-9691-89e7114a998d</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon05_english.png?alt=media&amp;token=c2d2a915-4766-4437-b311-964310e09a20</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon06_culture.png?alt=media&amp;token=9b686b98-4406-48ea-8b10-ec2b485267f3</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon07_music.png?alt=media&amp;token=e3866156-6076-4e04-bea9-44aed673a250</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon08_drawing.png?alt=media&amp;token=0dbae71c-9f23-4777-8da6-c2a4e260a1f5</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon09_dance.png?alt=media&amp;token=96d4171f-e2e9-4a55-b369-b0591562b8f3</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon10_volunteer.png?alt=media&amp;token=3ac7b34e-9956-4c2e-b48e-d570dbffc3a3</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon11_social.png?alt=media&amp;token=2bf2b6d8-b1a1-410e-abff-3ef87a6fd861</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon12_car.png?alt=media&amp;token=91d8ccb3-2fd6-4d99-b377-afc56bdc8ada</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon13_picture.png?alt=media&amp;token=be72d76f-ef0b-436d-9436-ca473d0d173d</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon14_baseball.png?alt=media&amp;token=56f5eb05-0910-4090-8c48-3f1b61909650</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon15_game.png?alt=media&amp;token=dd988976-03b5-47ea-bc9a-91290ccf2a12</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon16_cook.png?alt=media&amp;token=39051f85-597b-4c64-89f8-dc35515767c9</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon17_pet.png?alt=media&amp;token=83e1f323-8ffd-4ca3-897d-64407971aa8a</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon18_marry.png?alt=media&amp;token=af80ae41-84c2-4e04-a396-90bd9d183559</item>
+        <item>https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/interest_icon%2Ficon19_free.png?alt=media&amp;token=2d0756f9-39ad-4d26-8f14-dd32df1cdeda</item>
+    </string-array>
+
+    <string-array name="interest_list">
+        <item>아웃도어/여행</item>
+        <item>운동/스포츠</item>
+        <item>인문학/책/글</item>
+        <item>업종/직무</item>
+        <item>외국/언어</item>
+        <item>문화/공연/축제</item>
+        <item>음악/악기</item>
+        <item>공예/만들기</item>
+        <item>댄스/무용</item>
+        <item>봉사활동</item>
+        <item>사교/인맥</item>
+        <item>차/오토바이</item>
+        <item>사진/영상</item>
+        <item>야구관람</item>
+        <item>게임/오락</item>
+        <item>요리/제조</item>
+        <item>반려동물</item>
+        <item>가족/결혼</item>
+        <item>자유주제</item>
+    </string-array>
 </resources>

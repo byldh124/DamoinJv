@@ -4,4 +4,5 @@
     <string name="bottom_tab2_title">유료클래스</string>
     <string name="bottom_tab3_title">내모임</string>
     <string name="bottom_tab4_title">주변모임</string>
+    <string name="interest_activity_title">관심사 선택</string>
 </resources>
