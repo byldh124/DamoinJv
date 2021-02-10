@@ -1,20 +1,20 @@
 package com.moondroid.project01_meetingapp.variableobject;
 
-public class ItemVO {
+public class ItemBaseVO {
     public String meetName;
     public String meetAddress;
     public String purposeMessage;
-    public String imgUrl;
+    public String titleImgUrl;
     public String interest;
 
-    public ItemVO() {
+    public ItemBaseVO() {
     }
 
-    public ItemVO(String meetName, String meetAddress, String purposeMessage, String imgUrl, String interest) {
+    public ItemBaseVO(String meetName, String meetAddress, String purposeMessage, String titleImgUrl, String interest) {
         this.meetName = meetName;
         this.meetAddress = meetAddress;
         this.purposeMessage = purposeMessage;
-        this.imgUrl = imgUrl;
+        this.titleImgUrl = titleImgUrl;
         this.interest = interest;
     }
 
@@ -30,8 +30,8 @@ public class ItemVO {
         this.purposeMessage = purposeMessage;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setTitleImgUrl(String titleImgUrl) {
+        this.titleImgUrl = titleImgUrl;
     }
 
     public void setInterest(String interest) {

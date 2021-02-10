@@ -84,6 +84,7 @@
         android:layout_marginLeft="16dp"
         android:hint="모임 목표"
         android:inputType="textMultiLine"
+        android:maxLength="40"
         android:layout_marginTop="16dp"
         android:lines="7"
         android:gravity="top"
