@@ -44,9 +44,7 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         Glide.with(context).load(imgUrls[position]).into(holder.ivInterestIcon);
-
         holder.tvInterestTitle.setText(itemTitles[position]);
-
     }
 
     @Override
@@ -68,11 +66,21 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
+                    String sendClass = intent.getStringExtra("sendClass");
                     interest = itemTitles[pos];
                     iconUrl = imgUrls[pos];
-                    intent.putExtra("interest", interest);
-                    intent.putExtra("iconUrl", iconUrl);
-                    context.setResult(Activity.RESULT_OK, intent);
+
+                    switch (sendClass){
+                        case "Main":
+                            //TODO interest 받아서 DB에 넣기 users/userName/interest 교체
+                            Toast.makeText(context, "Hello MainActivity", Toast.LENGTH_SHORT).show();
+                            break;
+                        case "Create":
+                            intent.putExtra("interest", interest);
+                            intent.putExtra("iconUrl", iconUrl);
+                            context.setResult(Activity.RESULT_OK, intent);
+                            break;
+                    }
                     context.finish();
                 }
             });

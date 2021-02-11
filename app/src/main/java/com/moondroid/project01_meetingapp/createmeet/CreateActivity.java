@@ -82,6 +82,7 @@ public class CreateActivity extends AppCompatActivity {
 
     public void moveToInterestActivity() {
         Intent intent = new Intent(this, InterestActivity.class);
+        intent.putExtra("sendClass","Create");
         startActivityForResult(intent, REQUEST_CODE_FOR_INTEREST);
     }
 
@@ -170,7 +171,6 @@ public class CreateActivity extends AppCompatActivity {
                                 finish();
                             }
                         });
-
                     }
                 });
             }

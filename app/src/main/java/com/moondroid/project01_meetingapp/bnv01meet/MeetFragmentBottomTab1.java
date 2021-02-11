@@ -13,10 +13,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.createmeet.CreateActivity;
+import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
 import java.util.ArrayList;
 
@@ -33,8 +36,7 @@ public class MeetFragmentBottomTab1 extends Fragment {
     Resources resources;
 
     FloatingActionButton buttonAdd;
-
-    FirebaseDatabase firebaseDatabase;
+    ArrayList<ItemBaseVO> itemList;
 
     @Nullable
     @Override
@@ -52,11 +54,15 @@ public class MeetFragmentBottomTab1 extends Fragment {
         recyclerItems = view.findViewById(R.id.recycler_items);
         buttonAdd = view.findViewById(R.id.btn_add_meet);
 
+        itemList = new ArrayList<>();
+        loadData();
+
         //swipeRefreshLayout Listener implement
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 //Update Recycler Items
+                loadData();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -76,7 +82,17 @@ public class MeetFragmentBottomTab1 extends Fragment {
         });
     }
 
-    public void loadDate(){
-
+    public void loadData(){
+        final ArrayList<ItemBaseVO> snapshots = new ArrayList<>();
+        G.itemsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    ItemBaseVO itemBaseVO = ds.getValue(ItemBaseVO.class);
+                    snapshots.add(itemBaseVO);
+                    //TODO Data를 처음에 시작할때 받아오는게 좋지 않나?
+                }
+            }
+        });
     }
 }

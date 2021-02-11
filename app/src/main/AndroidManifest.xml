@@ -9,7 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project01_MeetingApp">
-        <activity android:name=".account.LocationChoiceActivity"></activity>
+        <activity android:name=".mypages.MyPageSettingActivity"></activity>
+        <activity android:name=".mypages.MyPageMKChargeActivity" />
+        <activity android:name=".mypages.MyPagePremiumActivity" />
+        <activity android:name=".mypages.MyPageRecentActivity" />
+        <activity android:name=".mypages.MyPageFavoriteActivity" />
+        <activity android:name=".profileset.ProfileSetActivity" />
+        <activity android:name=".account.LocationChoiceActivity" />
         <activity android:name=".account.InterestActivity" />
         <activity android:name=".createmeet.CreateActivity" />
         <activity android:name=".option02notification.NotificationActivity" />

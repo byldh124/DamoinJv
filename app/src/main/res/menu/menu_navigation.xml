@@ -24,7 +24,7 @@
             android:icon="@drawable/ic_navigation_recent"
             app:showAsAction="always"/>
         <item
-            android:id="@+id/navigation_menu__premium_meet"
+            android:id="@+id/navigation_menu_premium_meet"
             android:title="프리미엄 모임"
             android:icon="@drawable/ic_navigation_premium"
             app:showAsAction="always"/>
