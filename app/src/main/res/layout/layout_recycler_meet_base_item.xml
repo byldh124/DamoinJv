@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp"
+    app:cardBackgroundColor="#ffcccccc"
+    android:layout_margin="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circle_image_view_meet_basic_recycler_item"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"/>
+
+        <ImageView
+            android:id="@+id/iv_icon_meet_basic_recycler_item"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_toRightOf="@id/circle_image_view_meet_basic_recycler_item"
+            android:layout_alignTop="@id/circle_image_view_meet_basic_recycler_item"
+            android:layout_marginLeft="16dp"
+            android:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/tv_location_meet_basic_recycler_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_icon_meet_basic_recycler_item"
+            android:layout_alignTop="@id/circle_image_view_meet_basic_recycler_item"
+            android:layout_marginLeft="4dp"
+            android:text="성동구"/>
+
+        <TextView
+            android:id="@+id/tv_meet_name_meet_basic_recycler_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/iv_icon_meet_basic_recycler_item"
+            android:layout_below="@id/iv_icon_meet_basic_recycler_item"
+            android:layout_marginTop="4dp"
+            android:text="성동구 축구모임"/>
+        <TextView
+            android:id="@+id/tv_purpose_of_meet_meet_basic_recycler_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignLeft="@id/iv_icon_meet_basic_recycler_item"
+            android:layout_below="@id/tv_meet_name_meet_basic_recycler_item"
+            android:layout_marginTop="4dp"
+            android:text="안녕하세요 저희는 축구모임 입니다."
+            android:layout_marginBottom="24dp"
+            android:layout_marginRight="16dp"/>
+
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

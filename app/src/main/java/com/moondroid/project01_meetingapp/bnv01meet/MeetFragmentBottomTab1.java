@@ -32,16 +32,17 @@ public class MeetFragmentBottomTab1 extends Fragment {
     CategoryAdapter categoryAdapter;
 
     RecyclerView recyclerItems;
+    ArrayList<ItemBaseVO> itemList;
+    MeetItemAdapter itemAdapter;
 
     Resources resources;
 
     FloatingActionButton buttonAdd;
-    ArrayList<ItemBaseVO> itemList;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_bottom_tab1_meet,container,false);
+        return inflater.inflate(R.layout.fragment_bottom_tab1_meet, container, false);
     }
 
     @Override
@@ -55,6 +56,8 @@ public class MeetFragmentBottomTab1 extends Fragment {
         buttonAdd = view.findViewById(R.id.btn_add_meet);
 
         itemList = new ArrayList<>();
+        itemAdapter = new MeetItemAdapter(getContext(), itemList);
+        recyclerItems.setAdapter(itemAdapter);
         loadData();
 
         //swipeRefreshLayout Listener implement
@@ -82,16 +85,23 @@ public class MeetFragmentBottomTab1 extends Fragment {
         });
     }
 
-    public void loadData(){
+    public void loadData() {
         final ArrayList<ItemBaseVO> snapshots = new ArrayList<>();
+        itemList.clear();
         G.itemsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()){
-                    ItemBaseVO itemBaseVO = ds.getValue(ItemBaseVO.class);
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    ItemBaseVO itemBaseVO = ds.child("base").getValue(ItemBaseVO.class);
                     snapshots.add(itemBaseVO);
-                    //TODO Data를 처음에 시작할때 받아오는게 좋지 않나?
                 }
+
+                for (int i = 0; i < snapshots.size(); i++) {
+                    //TODO 조건에 맞게 아이템 맞추기 (지역, 관심사)
+                    itemList.add(0, snapshots.get(i));
+                }
+
+                itemAdapter.notifyDataSetChanged();
             }
         });
     }
