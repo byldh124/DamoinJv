@@ -9,7 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project01_MeetingApp">
-        <activity android:name=".mypages.MyPageSettingActivity"></activity>
+        <activity android:name=".account.AccountActivity"></activity>
+        <activity android:name=".login.LoginActivity" />
+        <activity android:name=".login.IntroActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".mypages.MyPageSettingActivity" />
         <activity android:name=".mypages.MyPageMKChargeActivity" />
         <activity android:name=".mypages.MyPagePremiumActivity" />
         <activity android:name=".mypages.MyPageRecentActivity" />
@@ -19,7 +28,10 @@
         <activity android:name=".account.InterestActivity" />
         <activity android:name=".createmeet.CreateActivity" />
         <activity android:name=".option02notification.NotificationActivity" />
-        <activity android:name=".option01search.SearchActivity" />
+        <activity android:name=".option01search.SearchActivity" >
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable_search_activity"/>
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -13,17 +13,21 @@
         android:orientation="vertical">
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/main_002">
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar_main"
                 android:layout_width="match_parent"
+                android:theme="@style/ToolbarTheme"
                 android:layout_height="?attr/actionBarSize">
                 <TextView
                     android:id="@+id/tv_title_main"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bottom_tab1_title"
-                    android:textColor="#ff000000"/>
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/jalnanche"
+                    android:textSize="18sp"/>
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>
         <RelativeLayout
@@ -35,6 +39,8 @@
             android:id="@+id/bottom_navigation_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:itemIconTint="@color/selector_bottom_navigation_icon"
+            app:itemTextColor="@color/selector_bottom_navigation_icon"
             app:menu="@menu/menu_bottom_navigation"
             app:labelVisibilityMode="labeled"/>
 
@@ -47,6 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        app:itemTextColor="#ff666666"
         app:headerLayout="@layout/layout_navigation_header"
         app:menu="@menu/menu_navigation"/>
 

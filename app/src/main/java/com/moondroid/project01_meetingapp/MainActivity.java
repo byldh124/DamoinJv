@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //NavigationView
+        navigationView.setItemIconTintList(null);
         View headerView = navigationView.getHeaderView(0);
         headerView.setOnClickListener(new View.OnClickListener() {
             @Override
