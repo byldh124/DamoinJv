@@ -8,12 +8,14 @@ public class UserBaseVO {
     public String userGender;
     public String userAddress;
     public String userInterest;
+    public String userProfileImgUrl;
+    public String userProfileMessage;
 
     public UserBaseVO() {
     }
 
 
-    public UserBaseVO(String userId, String userPassword, String userName, String userBirthDate, String userGender, String userAddress, String userInterest) {
+    public UserBaseVO(String userId, String userPassword, String userName, String userBirthDate, String userGender, String userAddress, String userInterest, String userProfileImgUrl, String userProfileMessage) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userName = userName;
@@ -21,5 +23,7 @@ public class UserBaseVO {
         this.userGender = userGender;
         this.userAddress = userAddress;
         this.userInterest = userInterest;
+        this.userProfileImgUrl = userProfileImgUrl;
+        this.userProfileMessage = userProfileMessage;
     }
 }

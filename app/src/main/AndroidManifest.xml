@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.moondroid.project01_meetingapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".library.KakaoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -28,15 +31,22 @@
         <activity android:name=".account.InterestActivity" />
         <activity android:name=".createmeet.CreateActivity" />
         <activity android:name=".option02notification.NotificationActivity" />
-        <activity android:name=".option01search.SearchActivity" >
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable_search_activity"/>
+        <activity android:name=".option01search.SearchActivity">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable_search_activity" />
         </activity>
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        </activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="oauth"
+                    android:scheme="kakaof33663a89ab7e4f6ace89f2ebeade100" />
             </intent-filter>
         </activity>
     </application>

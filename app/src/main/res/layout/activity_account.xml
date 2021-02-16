@@ -11,8 +11,8 @@
         android:id="@+id/toolbar_account_activity"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:theme="@style/ToolbarTheme"
-        android:background="@color/main_001">
+        android:theme="@style/ToolbarTheme_white"
+        android:background="@color/main_002">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

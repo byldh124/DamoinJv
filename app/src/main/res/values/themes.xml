@@ -14,7 +14,10 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="ToolbarTheme">
+    <style name="ToolbarTheme_white">
         <item name="colorControlNormal">@color/white</item>
     </style>
+    <style name="ToolbarTheme_Red">
+    <item name="colorControlNormal">@color/main_001</item>
+</style>
 </resources>

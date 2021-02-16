@@ -9,11 +9,15 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_create_activity"
         android:layout_width="match_parent"
+        android:theme="@style/ToolbarTheme_Red"
         android:layout_height="?attr/actionBarSize">
         <TextView
             android:id="@+id/tv_create_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/jalnanche"
+            android:textColor="@color/main_001"
+            android:textSize="16sp"
             android:text="모임 개설"/>
     </androidx.appcompat.widget.Toolbar>
 

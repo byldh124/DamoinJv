@@ -65,7 +65,7 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     public void saveData() {
-        G.usersRef.child(userId).child("base").setValue(new UserBaseVO(userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest)).addOnSuccessListener(new OnSuccessListener<Void>() {
+        G.usersRef.child(userId).child("base").setValue(new UserBaseVO(userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest, null, null)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);

@@ -18,7 +18,7 @@
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar_main"
                 android:layout_width="match_parent"
-                android:theme="@style/ToolbarTheme"
+                android:theme="@style/ToolbarTheme_white"
                 android:layout_height="?attr/actionBarSize">
                 <TextView
                     android:id="@+id/tv_title_main"

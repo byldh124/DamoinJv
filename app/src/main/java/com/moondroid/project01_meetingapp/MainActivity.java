@@ -11,21 +11,27 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.moondroid.project01_meetingapp.account.InterestActivity;
 import com.moondroid.project01_meetingapp.bnv01meet.MeetFragmentBottomTab1;
 import com.moondroid.project01_meetingapp.bnv02charge.ChargeFragmentBottomTab2;
 import com.moondroid.project01_meetingapp.bnv03mypage.MyPageFragmentBottomTab3;
 import com.moondroid.project01_meetingapp.bnv04location.LocationFragmentBottomTab4;
+import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.mypages.MyPageFavoriteActivity;
 import com.moondroid.project01_meetingapp.mypages.MyPageMKChargeActivity;
 import com.moondroid.project01_meetingapp.mypages.MyPagePremiumActivity;
@@ -34,6 +40,10 @@ import com.moondroid.project01_meetingapp.mypages.MyPageSettingActivity;
 import com.moondroid.project01_meetingapp.option01search.SearchActivity;
 import com.moondroid.project01_meetingapp.option02notification.NotificationActivity;
 import com.moondroid.project01_meetingapp.profileset.ProfileSetActivity;
+import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
+import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
     TextView tvMainTitle;
     NavigationView navigationView;
 
+    String userId;
+
+    View headerView;
+
+    CircleImageView ivNavigationUserProfileImg;
+    TextView tvNavigationUserName;
+    TextView tvNavigationUserMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation_main);
         tvMainTitle = findViewById(R.id.tv_title_main);
         navigationView = findViewById(R.id.navigation_view_main);
+        headerView = navigationView.getHeaderView(0);
+        ivNavigationUserProfileImg = headerView.findViewById(R.id.navigation_header_profile_image);
+        tvNavigationUserName = headerView.findViewById(R.id.navigation_header_tv_name);
+        tvNavigationUserMessage = headerView.findViewById(R.id.navigation_header_tv_message);
 
         //ActionBar
         setSupportActionBar(toolbar);
@@ -126,8 +148,32 @@ public class MainActivity extends AppCompatActivity {
 
 
         //NavigationView
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
+        userId = sharedPreferences.getString("userId", "android");
+//        G.usersRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//            @Override
+//            public void onSuccess(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//                    if (userId.equals(ds.getKey())) {
+//                        G.userBaseInformation = ds.child("base").getValue(UserBaseVO.class);
+//                        if (G.userBaseInformation.userProfileImgUrl != null) {
+//                            Glide.with(MainActivity.this).load(G.userBaseInformation.userProfileImgUrl).into(ivNavigationUserProfileImg);
+//                        }
+//                        if (G.userBaseInformation.userName != null) {
+//                            tvNavigationUserName.setText(G.userBaseInformation.userName);
+//                        }
+//                        if (G.userBaseInformation.userProfileMessage != null) {
+//                            tvNavigationUserMessage.setText(G.userBaseInformation.userProfileMessage);
+//                        }
+//                    }
+//                }
+//
+//            }
+//        });
+//        loadUserInformation();
         navigationView.setItemIconTintList(null);
-        View headerView = navigationView.getHeaderView(0);
+
+
         headerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) return;
 
-        switch ( requestCode ){
+        switch (requestCode) {
             case REQUEST_CODE_FOR_PROFILE_SET:
                 break;
             case REQUEST_CODE_FOR_INTEREST_SET:
@@ -207,5 +253,18 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
+    }
+
+    public void loadUserInformation() {
+        Log.i("error",G.userBaseInformation.toString());
+        if (G.userBaseInformation.userProfileImgUrl != null) {
+            Glide.with(MainActivity.this).load(G.userBaseInformation.userProfileImgUrl).into(ivNavigationUserProfileImg);
+        }
+        if (G.userBaseInformation.userName != null) {
+            tvNavigationUserName.setText(G.userBaseInformation.userName);
+        }
+        if (G.userBaseInformation.userProfileMessage != null) {
+            tvNavigationUserMessage.setText(G.userBaseInformation.userProfileMessage);
+        }
     }
 }

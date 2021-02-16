@@ -34,7 +34,7 @@
         android:ems="10"
         android:padding="8dp"
         android:layout_centerInParent="true"
-        android:hint="id"/>
+        android:hint="password"/>
 
     <TextView
         android:id="@+id/log_in_text_log"
@@ -90,6 +90,7 @@
         android:src="@drawable/kakao_icon"
         android:layout_below="@id/log_in_text_add_account"
         android:layout_centerHorizontal="true"
+        android:onClick="clickKakaoLogin"
         android:layout_marginTop="32dp"/>
 
     <ImageView
