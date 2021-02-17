@@ -26,6 +26,8 @@ import com.google.firebase.storage.UploadTask;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.InterestActivity;
 import com.moondroid.project01_meetingapp.account.LocationChoiceActivity;
+import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.page.PageActivity;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
 import java.text.SimpleDateFormat;
@@ -46,12 +48,10 @@ public class CreateActivity extends AppCompatActivity {
 
     String iconUrl;
     Toolbar toolbarCreateActivity;
-    EditText etMeetName,etPurposeMessage;
+    EditText etMeetName, etPurposeMessage;
     TextView locationInCreate;
     ImageView ivInterestChoose, ivTitleImage;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference itemsRef;
     FirebaseStorage firebaseStorage;
     StorageReference titleImgRef;
 
@@ -82,7 +82,7 @@ public class CreateActivity extends AppCompatActivity {
 
     public void moveToInterestActivity() {
         Intent intent = new Intent(this, InterestActivity.class);
-        intent.putExtra("sendClass","Create");
+        intent.putExtra("sendClass", "Create");
         startActivityForResult(intent, REQUEST_CODE_FOR_INTEREST);
     }
 
@@ -132,27 +132,25 @@ public class CreateActivity extends AppCompatActivity {
 
     public void clickCreateMeet(View view) {
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        itemsRef = firebaseDatabase.getReference("items");
         firebaseStorage = FirebaseStorage.getInstance();
         String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()).concat(".png");
         titleImgRef = firebaseStorage.getReference("meetTitleImg/" + fileName);
         meetName = etMeetName.getText().toString();
         purposeMessage = etPurposeMessage.getText().toString();
 
-        if (meetName == null || meetName.equals("")){
+        if (meetName == null || meetName.equals("")) {
             Toast.makeText(this, "모임 이름을 설정해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (meetAddress == null || meetAddress.equals("")){
+        if (meetAddress == null || meetAddress.equals("")) {
             Toast.makeText(this, "모임 지역을 설정해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (purposeMessage == null || purposeMessage.equals("")){
-            Toast.makeText(this,"모임 목표를 작성해주세요", Toast.LENGTH_SHORT).show();
+        if (purposeMessage == null || purposeMessage.equals("")) {
+            Toast.makeText(this, "모임 목표를 작성해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (interest == null || interest.equals("")){
+        if (interest == null || interest.equals("")) {
             Toast.makeText(this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -164,11 +162,19 @@ public class CreateActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         titleImgUrl = uri.toString();
-                        itemsRef.child(meetName).child("base").setValue(new ItemBaseVO(meetName, meetAddress,purposeMessage,titleImgUrl,interest)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        G.currentItemBase = new ItemBaseVO(meetName, meetAddress, purposeMessage, titleImgUrl, interest);
+                        G.currentItem.setItemBaseVO(G.currentItemBase);
+                        G.itemsRef.child(meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(CreateActivity.this, "다올라갔습니다.", Toast.LENGTH_SHORT).show();
-                                finish();
+                                G.itemsRef.child(meetName).child("members").child("master").setValue(G.myProfile.userId).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Intent intent = new Intent(CreateActivity.this, PageActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
                             }
                         });
                     }
@@ -176,7 +182,7 @@ public class CreateActivity extends AppCompatActivity {
             }
         });
 
-        
+
     }
 
     public void clickImageInput(View view) {

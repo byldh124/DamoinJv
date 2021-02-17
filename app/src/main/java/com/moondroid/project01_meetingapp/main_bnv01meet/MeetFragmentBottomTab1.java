@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.bnv01meet;
+package com.moondroid.project01_meetingapp.main_bnv01meet;
 
 import android.content.Intent;
 import android.content.res.Resources;

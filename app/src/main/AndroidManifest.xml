@@ -12,38 +12,39 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project01_MeetingApp">
-        <activity android:name=".account.AccountActivity"></activity>
-        <activity android:name=".login.LoginActivity" />
-        <activity android:name=".login.IntroActivity">
+        <activity android:name=".page.PageActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".account.AccountActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".login.LoginActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".login.IntroActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".mypages.MyPageSettingActivity" />
-        <activity android:name=".mypages.MyPageMKChargeActivity" />
-        <activity android:name=".mypages.MyPagePremiumActivity" />
-        <activity android:name=".mypages.MyPageRecentActivity" />
-        <activity android:name=".mypages.MyPageFavoriteActivity" />
-        <activity android:name=".profileset.ProfileSetActivity" />
-        <activity android:name=".account.LocationChoiceActivity" />
-        <activity android:name=".account.InterestActivity" />
-        <activity android:name=".createmeet.CreateActivity" />
-        <activity android:name=".option02notification.NotificationActivity" />
-        <activity android:name=".option01search.SearchActivity">
+        <activity android:name=".mypages.MyPageSettingActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".mypages.MyPageMKChargeActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".mypages.MyPagePremiumActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".mypages.MyPageRecentActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".mypages.MyPageFavoriteActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".profileset.ProfileSetActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".account.LocationChoiceActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".account.InterestActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".createmeet.CreateActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".option02notification.NotificationActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".option01search.SearchActivity" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable_search_activity" />
         </activity>
-        <activity android:name=".MainActivity">
-        </activity>
-
+        <activity android:name=".main.MainActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="oauth"
                     android:scheme="kakaof33663a89ab7e4f6ace89f2ebeade100" />

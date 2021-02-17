@@ -40,15 +40,34 @@
         android:layout_below="@id/toolbar_account_activity"
         android:padding="16dp">
 
-       <EditText
-           android:id="@+id/et_id_add_account"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:background="@drawable/bg_edit_text_basic"
-           android:padding="8dp"
-           android:hint="아이디"
-           android:inputType="text"
-           android:layout_marginBottom="16dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btn_account_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_alignBottom="@id/et_id_add_account"
+                android:layout_marginLeft="8dp"
+                android:text="중복확인"
+                android:onClick="clickAccountCheck"
+                android:layout_alignParentRight="true"/>
+            <EditText
+                android:id="@+id/et_id_add_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edit_text_basic"
+                android:privateImeOptions="defaultInputmode=english"
+                android:layout_toLeftOf="@id/btn_account_check"
+                android:padding="8dp"
+                android:hint="아이디"
+                android:inputType="text"
+                android:layout_marginBottom="16dp"/>
+
+        </RelativeLayout>
+
+
 
         <EditText
             android:id="@+id/et_password_add_account"
@@ -56,6 +75,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_edit_text_basic"
             android:textColor="@color/selector_text_color_bottom_tab1_category"
+            android:privateImeOptions="defaultInputmode=english"
             android:padding="8dp"
             android:hint="비밀번호"
             android:inputType="textPassword"
@@ -66,6 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_edit_text_basic"
+            android:privateImeOptions="defaultInputmode=english"
             android:padding="8dp"
             android:hint="비밀번호 확인"
             android:inputType="textPassword"

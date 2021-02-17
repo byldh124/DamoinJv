@@ -1,6 +1,7 @@
-package com.moondroid.project01_meetingapp.bnv01meet;
+package com.moondroid.project01_meetingapp.main_bnv01meet;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
+import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.page.PageActivity;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,17 +52,13 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
     public void onBindViewHolder(@NonNull VH holder, int position) {
         ItemBaseVO item = itemList.get(position);
         Glide.with(context).load(item.titleImgUrl).into(holder.ivProfile);
-        int interestNum = 0;
-        for (int i = 0; i < interestList.length; i++){
-            if (item.interest.equals(interestList[i])){
-                interestNum = i;
-                break;
-            }
-        }
+
+        int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.interest);
         Glide.with(context).load(interestIconList[interestNum]).into(holder.iconImg);
+
         holder.meetName.setText(item.meetName);
         String[] addresses = item.meetAddress.split(" ");
-        String lastAddress = addresses[addresses.length-1];
+        String lastAddress = addresses[addresses.length - 1];
         holder.meetAddress.setText(lastAddress);
         holder.purposeMessage.setText(item.purposeMessage);
 
@@ -74,7 +76,7 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
         TextView meetName;
         TextView meetAddress;
         TextView purposeMessage;
-
+        String itemTitle;
 
         public VH(@NonNull View itemView) {
             super(itemView);
@@ -88,7 +90,17 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "상세페이지로 이동", Toast.LENGTH_SHORT).show();
+                    int pos = getAdapterPosition();
+                    itemTitle = itemList.get(pos).meetName;
+                    G.itemsRef.child(itemTitle).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            G.currentItemBase = dataSnapshot.child("base").getValue(ItemBaseVO.class);
+                            G.currentItem.setItemBaseVO(G.currentItemBase);
+                            Intent intent = new Intent(context, PageActivity.class);
+                            context.startActivity(intent);
+                        }
+                    });
                 }
             });
         }

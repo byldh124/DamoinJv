@@ -1,7 +1,6 @@
 package com.moondroid.project01_meetingapp.account;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
@@ -9,13 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.moondroid.project01_meetingapp.R;
+import com.moondroid.project01_meetingapp.global.G;
 
 public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapter.VH> {
     Activity context;
@@ -73,20 +73,27 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                     switch (sendClass){
                         case "Main":
                             //TODO interest 받아서 DB에 넣기 users/userName/interest 교체
-                            Toast.makeText(context, "Hello MainActivity", Toast.LENGTH_SHORT).show();
+                            G.myProfile.userInterest = interest;
+                            G.usersRef.child(G.myProfile.userId).child("base").setValue(G.myProfile).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    context.finish();
+                                }
+                            });
                             break;
                         case "Create":
                             intent.putExtra("interest", interest);
                             intent.putExtra("iconUrl", iconUrl);
                             context.setResult(Activity.RESULT_OK, intent);
+                            context.finish();
                             break;
                         case "Account":
                             intent.putExtra("interest", interest);
                             context.setResult(Activity.RESULT_OK, intent);
+                            context.finish();
                             break;
 
                     }
-                    context.finish();
                 }
             });
         }

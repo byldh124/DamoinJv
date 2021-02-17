@@ -11,12 +11,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.bnv01meet.MeetItemAdapter;
+import com.moondroid.project01_meetingapp.main_bnv01meet.MeetItemAdapter;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 

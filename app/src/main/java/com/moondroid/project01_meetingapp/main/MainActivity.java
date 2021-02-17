@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp;
+package com.moondroid.project01_meetingapp.main;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,16 +20,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
+import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.InterestActivity;
-import com.moondroid.project01_meetingapp.bnv01meet.MeetFragmentBottomTab1;
-import com.moondroid.project01_meetingapp.bnv02charge.ChargeFragmentBottomTab2;
-import com.moondroid.project01_meetingapp.bnv03mypage.MyPageFragmentBottomTab3;
-import com.moondroid.project01_meetingapp.bnv04location.LocationFragmentBottomTab4;
+import com.moondroid.project01_meetingapp.main_bnv01meet.MeetFragmentBottomTab1;
+import com.moondroid.project01_meetingapp.main_bnv02charge.ChargeFragmentBottomTab2;
+import com.moondroid.project01_meetingapp.main_bnv03mypage.MyPageFragmentBottomTab3;
+import com.moondroid.project01_meetingapp.main_bnv04location.LocationFragmentBottomTab4;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.mypages.MyPageFavoriteActivity;
 import com.moondroid.project01_meetingapp.mypages.MyPageMKChargeActivity;
@@ -40,8 +37,6 @@ import com.moondroid.project01_meetingapp.mypages.MyPageSettingActivity;
 import com.moondroid.project01_meetingapp.option01search.SearchActivity;
 import com.moondroid.project01_meetingapp.option02notification.NotificationActivity;
 import com.moondroid.project01_meetingapp.profileset.ProfileSetActivity;
-import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
-import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -150,30 +145,7 @@ public class MainActivity extends AppCompatActivity {
         //NavigationView
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
         userId = sharedPreferences.getString("userId", "android");
-//        G.usersRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//            @Override
-//            public void onSuccess(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                    if (userId.equals(ds.getKey())) {
-//                        G.userBaseInformation = ds.child("base").getValue(UserBaseVO.class);
-//                        if (G.userBaseInformation.userProfileImgUrl != null) {
-//                            Glide.with(MainActivity.this).load(G.userBaseInformation.userProfileImgUrl).into(ivNavigationUserProfileImg);
-//                        }
-//                        if (G.userBaseInformation.userName != null) {
-//                            tvNavigationUserName.setText(G.userBaseInformation.userName);
-//                        }
-//                        if (G.userBaseInformation.userProfileMessage != null) {
-//                            tvNavigationUserMessage.setText(G.userBaseInformation.userProfileMessage);
-//                        }
-//                    }
-//                }
-//
-//            }
-//        });
-//        loadUserInformation();
         navigationView.setItemIconTintList(null);
-
-
         headerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -218,6 +190,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (G.myProfile != null) loadUserInformation();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_option_main, menu);
@@ -256,15 +234,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadUserInformation() {
-        Log.i("error",G.userBaseInformation.toString());
-        if (G.userBaseInformation.userProfileImgUrl != null) {
-            Glide.with(MainActivity.this).load(G.userBaseInformation.userProfileImgUrl).into(ivNavigationUserProfileImg);
+        if (G.myProfile.userProfileImgUrl != null) {
+            Glide.with(MainActivity.this).load(G.myProfile.userProfileImgUrl).into(ivNavigationUserProfileImg);
         }
-        if (G.userBaseInformation.userName != null) {
-            tvNavigationUserName.setText(G.userBaseInformation.userName);
+        if (G.myProfile.userName != null) {
+            tvNavigationUserName.setText(G.myProfile.userName);
         }
-        if (G.userBaseInformation.userProfileMessage != null) {
-            tvNavigationUserMessage.setText(G.userBaseInformation.userProfileMessage);
+        if (G.myProfile.userProfileMessage != null) {
+            tvNavigationUserMessage.setText(G.myProfile.userProfileMessage);
         }
     }
 }

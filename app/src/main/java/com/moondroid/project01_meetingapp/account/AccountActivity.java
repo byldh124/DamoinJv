@@ -8,7 +8,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,14 +18,15 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.moondroid.project01_meetingapp.MainActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.moondroid.project01_meetingapp.main.MainActivity;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 
 public class AccountActivity extends AppCompatActivity {
 
@@ -61,11 +61,21 @@ public class AccountActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        userGender = "남자";
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton radioButton = group.findViewById(checkedId);
+                userGender = radioButton.getText().toString();
+            }
+        });
+
 
     }
 
     public void saveData() {
-        G.usersRef.child(userId).child("base").setValue(new UserBaseVO(userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest, null, null)).addOnSuccessListener(new OnSuccessListener<Void>() {
+        G.myProfile = new UserBaseVO(userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest, null, null);
+        G.usersRef.child(userId).child("base").setValue(G.myProfile).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
@@ -116,42 +126,35 @@ public class AccountActivity extends AppCompatActivity {
         userPassword = etPassword.getText().toString();
         userName = etName.getText().toString();
         userBirthDate = tvBirthDate.getText().toString();
-        userGender = "남자";
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton radioButton = findViewById(checkedId);
-                userGender = radioButton.getText().toString();
-            }
-        });
+
         userAddress = tvLocation.getText().toString();
 
-        if (userId == null || userId.equals("")){
+        if (userId == null || userId.equals("")) {
             Toast.makeText(this, "아이디를 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (userPassword == null || userPassword.equals("") || !(userPassword.equals(etPasswordCheck.getText().toString()))){
+        if (userPassword == null || userPassword.equals("") || !(userPassword.equals(etPasswordCheck.getText().toString()))) {
             Toast.makeText(this, "비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (userName == null || userName.equals("")){
+        if (userName == null || userName.equals("")) {
             Toast.makeText(this, "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (userBirthDate == null || userBirthDate.equals("")){
+        if (userBirthDate == null || userBirthDate.equals("")) {
             Toast.makeText(this, "생년월일을 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (userAddress == null || userAddress.equals("")){
+        if (userAddress == null || userAddress.equals("")) {
             Toast.makeText(this, "주소를 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (userInterest == null || userInterest.equals("")){
+        if (userInterest == null || userInterest.equals("")) {
             Toast.makeText(this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -161,7 +164,7 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     public void clickBirth(View view) {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth ,new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 y = year;
@@ -182,5 +185,35 @@ public class AccountActivity extends AppCompatActivity {
         Intent intent = new Intent(this, InterestActivity.class);
         intent.putExtra("sendClass", "Account");
         startActivityForResult(intent, REQUEST_CODE_FOR_INTEREST_SELECT);
+    }
+
+    public void clickAccountCheck(View view) {
+//        ArrayList<String> names = new ArrayList<>();
+//        G.usersRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//            @Override
+//            public void onSuccess(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot ds : dataSnapshot.getChildren()){
+//                    Toast.makeText(AccountActivity.this, ""+ds.getKey(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(AccountActivity.this, ""+etName.getText().toString(), Toast.LENGTH_SHORT).show();
+//                    if (ds.getKey().equals(etName.getText().toString())) names.add(ds.getKey());
+//                }
+//                Toast.makeText(AccountActivity.this, "" + names.size(), Toast.LENGTH_SHORT).show();
+//                if (names.isEmpty())
+//                    Toast.makeText(AccountActivity.this, "아이디가 존재하지 않습니다,", Toast.LENGTH_SHORT).show();
+//                else Toast.makeText(AccountActivity.this, "아이디가 존재 합니다.", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+        G.usersRef.child(etId.getText().toString()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()==null){
+                    Toast.makeText(AccountActivity.this, "아이디 존재 안함", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(AccountActivity.this, "아이디 존재 함", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 }

@@ -9,12 +9,13 @@ import android.view.View;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.kakao.sdk.auth.LoginClient;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.Gender;
 import com.kakao.sdk.user.model.User;
-import com.moondroid.project01_meetingapp.MainActivity;
+import com.moondroid.project01_meetingapp.main.MainActivity;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.AccountActivity;
 import com.moondroid.project01_meetingapp.global.G;
@@ -60,29 +61,19 @@ public class LoginActivity extends AppCompatActivity {
                                 name = user.getKakaoAccount().getProfile().getNickname();
                                 profileImageUrl = user.getKakaoAccount().getProfile().getProfileImageUrl();
 
-                                G.usersRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                G.usersRef.child(inputId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                     @Override
                                     public void onSuccess(DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                            String id = ds.getKey();
-                                            if (id.equals(inputId)) {
-                                                saveSharedPreference(id);
-                                                moveToMainActivity();
-                                            }
-                                        }
+                                        saveSharedPreference(inputId);
+                                        moveToMainActivity();
                                     }
                                 });
 
-                                G.usersRef.child(inputId).child("base").setValue(new UserBaseVO(inputId, null, name, null, null, null, null, null, null)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                G.usersRef.child(inputId).child("base").setValue(new UserBaseVO(inputId, null, name, null, null, null, null, profileImageUrl, null)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        G.usersRef.child(inputId).child("profile").child("image").setValue(profileImageUrl).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                saveSharedPreference(inputId);
-                                                moveToMainActivity();
-                                            }
-                                        });
+                                        saveSharedPreference(inputId);
+                                        moveToMainActivity();
                                     }
                                 });
                             }

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+            <ImageView
+                android:id="@+id/iv_page_information_intro_image"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:background="@color/pastel_1"/>
+
+            <ImageView
+                android:id="@+id/iv_page_information_interest_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@id/iv_page_information_intro_image"
+                android:layout_margin="8dp"/>
+            <TextView
+                android:id="@+id/tv_page_information_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/iv_page_information_interest_icon"
+                android:layout_alignTop="@id/iv_page_information_interest_icon"
+                android:layout_alignBottom="@id/iv_page_information_interest_icon"
+                android:text="캘로그 갤리그라피 모임"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textColor="#ff333333"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_page_information_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#ff333333"
+                android:layout_below="@id/iv_page_information_interest_icon"
+                android:layout_margin="8dp"
+                android:text="'캘리로 그리다'(좋은것만 그려요)"/>
+
+            <TextView
+                android:id="@+id/tv_moimjungmo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="모임정모"
+                android:layout_below="@id/tv_page_information_message"
+                android:layout_margin="8dp"
+                android:textSize="18sp"
+                android:textColor="#ff333333"
+                android:textStyle="bold"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_page_moim_information"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_moimjungmo"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+                android:layout_margin="8dp"/>
+
+            <Button
+                android:id="@+id/btn_join"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="가입하기"
+                android:layout_below="@id/recycler_page_moim_information"
+                android:layout_margin="16dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/jalnanche"
+                android:background="@drawable/selector_information_fragment_join_button"
+                app:backgroundTint="@null"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_page_information_member"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="모임 멤버"
+                android:layout_below="@id/btn_join"
+                android:layout_margin="8dp"
+                android:textSize="18sp"
+                android:textColor="#ff333333"
+                android:textStyle="bold"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_page_members"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_page_information_member"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+                android:layout_margin="8dp"/>
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</RelativeLayout>
