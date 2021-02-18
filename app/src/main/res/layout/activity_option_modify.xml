@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".page_tab1_info.OptionModifyActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_modify_activity"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ToolbarTheme_Red"
+        android:background="@color/white">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/jalnanche"
+            android:textColor="@color/main_002"
+            android:text="모임 상세 설정"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/jalnanche"
+            android:textColor="@color/main_002"
+            android:text="저장"
+            android:clickable="true"
+            android:onClick="clickSave"
+            android:layout_gravity="right"
+            android:layout_marginRight="16dp"/>
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <ImageView
+        android:id="@+id/iv_page_modify_intro_image"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_below="@id/toolbar_modify_activity"
+        android:clickable="true"
+        android:onClick="clickIntro"
+        android:background="@color/pastel_1"/>
+
+    <ImageView
+        android:id="@+id/iv_page_modify_interest_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_below="@id/iv_page_modify_intro_image"
+        android:onClick="clickInterestIcon"
+        android:layout_margin="8dp"/>
+    <TextView
+        android:id="@+id/tv_page_modify_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/iv_page_modify_interest_icon"
+        android:layout_alignTop="@id/iv_page_modify_interest_icon"
+        android:layout_alignBottom="@id/iv_page_modify_interest_icon"
+        android:text="캘로그 갤리그라피 모임"
+        android:gravity="center_vertical"
+        android:textSize="16sp"
+        android:textColor="#ff333333"
+        android:clickable="true"
+        android:onClick="clickTitle"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_page_modify_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ff333333"
+        android:layout_below="@id/iv_page_modify_interest_icon"
+        android:layout_margin="8dp"
+        android:clickable="true"
+        android:onClick="clickMessage"
+        android:text="'캘리로 그리다'(좋은것만 그려요)"/>
+
+
+
+
+
+</RelativeLayout>

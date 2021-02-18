@@ -82,6 +82,7 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                             });
                             break;
                         case "Create":
+                        case "Modify":
                             intent.putExtra("interest", interest);
                             intent.putExtra("iconUrl", iconUrl);
                             context.setResult(Activity.RESULT_OK, intent);

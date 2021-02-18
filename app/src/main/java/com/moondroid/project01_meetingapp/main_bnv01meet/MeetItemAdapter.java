@@ -20,6 +20,8 @@ import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.page.PageActivity;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
+import com.moondroid.project01_meetingapp.variableobject.ItemDetailVO;
+import com.moondroid.project01_meetingapp.variableobject.ItemMemberVO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,6 +56,7 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
         Glide.with(context).load(item.titleImgUrl).into(holder.ivProfile);
 
         int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.interest);
+        if (interestNum < 0) interestNum = 1;
         Glide.with(context).load(interestIconList[interestNum]).into(holder.iconImg);
 
         holder.meetName.setText(item.meetName);
@@ -97,8 +100,27 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
                         public void onSuccess(DataSnapshot dataSnapshot) {
                             G.currentItemBase = dataSnapshot.child("base").getValue(ItemBaseVO.class);
                             G.currentItem.setItemBaseVO(G.currentItemBase);
+                            if (dataSnapshot.child("detail").getValue(ItemDetailVO.class) != null)
+                                G.currentItemDetail = dataSnapshot.child("detail").getValue(ItemDetailVO.class);
+                            else G.currentItemDetail = new ItemDetailVO();
+                            G.ItemMasterId = dataSnapshot.child("members").child("master").getValue(String.class);
+                            G.currentItemMember.master = G.ItemMasterId;
+                            if (dataSnapshot.child("members").child("member").getValue() != null)
+                                G.currentItemMember.member = (ArrayList<String>) dataSnapshot.child("members").child("member").getValue();
                             Intent intent = new Intent(context, PageActivity.class);
                             context.startActivity(intent);
+//                            G.itemsRef.child(itemTitle).child("members").child("member").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                                @Override
+//                                public void onSuccess(DataSnapshot dataSnapshot) {
+//                                    G.currentItemMember.member.clear();
+//                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//                                        G.currentItemMember.member.add(ds.getValue(String.class));
+//                                    }
+//                                    Intent intent = new Intent(context, PageActivity.class);
+//                                    context.startActivity(intent);
+//                                }
+//                            });
+
                         }
                     });
                 }

@@ -1,11 +1,16 @@
 package com.moondroid.project01_meetingapp.login;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,25 +31,73 @@ import kotlin.jvm.functions.Function2;
 
 public class LoginActivity extends AppCompatActivity {
 
+    final int REQUEST_EXIT = 0;
+
     String inputId;
+    String inputPassword;
     String name;
     String profileImageUrl;
+
+    EditText etInputId;
+    EditText etInputPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        etInputId = findViewById(R.id.log_in_edit_id);
+        etInputPassword = findViewById(R.id.log_in_edit_pass);
+
+        etInputPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                clickLogIn(etInputPassword);
+                return true;
+            }
+        });
     }
 
     public void clickLogIn(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        inputId = etInputId.getText().toString();
+        inputPassword = etInputPassword.getText().toString();
+        if (inputId == null || inputId.equals("") || inputPassword == null || inputPassword.equals("")) return;
+        G.usersRef.child(inputId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    Toast.makeText(LoginActivity.this, "아이디가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    UserBaseVO userBaseVO = dataSnapshot.child("base").getValue(UserBaseVO.class);
+                    if (!userBaseVO.userPassword.equals(inputPassword)) {
+                        Toast.makeText(LoginActivity.this, "비밀번호가 틀립니다,", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    G.myProfile = dataSnapshot.child("base").getValue(UserBaseVO.class);
+                    saveSharedPreference(inputId);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
     }
 
     public void clickAddAccount(View view) {
         Intent intent = new Intent(this, AccountActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_EXIT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) return;
+        switch (requestCode) {
+            case REQUEST_EXIT:
+                finish();
+                break;
+        }
     }
 
     public void clickKakaoLogin(View view) {
@@ -95,5 +148,6 @@ public class LoginActivity extends AppCompatActivity {
     public void moveToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 }

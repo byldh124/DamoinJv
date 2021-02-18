@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,6 +41,8 @@ public class AccountActivity extends AppCompatActivity {
     String userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest;
 
     int y = 0, m = 0, d = 0;
+
+    boolean idChecked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,7 @@ public class AccountActivity extends AppCompatActivity {
                 Toast.makeText(AccountActivity.this, "아이디 올라갔다잉", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                 startActivity(intent);
+                setResult(RESULT_OK, null);
                 finish();
             }
         });
@@ -129,32 +133,25 @@ public class AccountActivity extends AppCompatActivity {
 
         userAddress = tvLocation.getText().toString();
 
-        if (userId == null || userId.equals("")) {
+        if (idChecked == false) {
+            Toast.makeText(this, "아이디 중복을 확인해주세요", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (userId == null || userId.equals("")) {
             Toast.makeText(this, "아이디를 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        if (userPassword == null || userPassword.equals("") || !(userPassword.equals(etPasswordCheck.getText().toString()))) {
+        } else if (userPassword == null || userPassword.equals("") || !(userPassword.equals(etPasswordCheck.getText().toString()))) {
             Toast.makeText(this, "비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        if (userName == null || userName.equals("")) {
+        } else if (userName == null || userName.equals("")) {
             Toast.makeText(this, "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        if (userBirthDate == null || userBirthDate.equals("")) {
+        } else if (userBirthDate == null || userBirthDate.equals("")) {
             Toast.makeText(this, "생년월일을 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        if (userAddress == null || userAddress.equals("")) {
+        } else if (userAddress == null || userAddress.equals("")) {
             Toast.makeText(this, "주소를 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        if (userInterest == null || userInterest.equals("")) {
+        } else if (userInterest == null || userInterest.equals("")) {
             Toast.makeText(this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -188,29 +185,15 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     public void clickAccountCheck(View view) {
-//        ArrayList<String> names = new ArrayList<>();
-//        G.usersRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//            @Override
-//            public void onSuccess(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot ds : dataSnapshot.getChildren()){
-//                    Toast.makeText(AccountActivity.this, ""+ds.getKey(), Toast.LENGTH_SHORT).show();
-//                    Toast.makeText(AccountActivity.this, ""+etName.getText().toString(), Toast.LENGTH_SHORT).show();
-//                    if (ds.getKey().equals(etName.getText().toString())) names.add(ds.getKey());
-//                }
-//                Toast.makeText(AccountActivity.this, "" + names.size(), Toast.LENGTH_SHORT).show();
-//                if (names.isEmpty())
-//                    Toast.makeText(AccountActivity.this, "아이디가 존재하지 않습니다,", Toast.LENGTH_SHORT).show();
-//                else Toast.makeText(AccountActivity.this, "아이디가 존재 합니다.", Toast.LENGTH_SHORT).show();
-//            }
-//        });
 
         G.usersRef.child(etId.getText().toString()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue()==null){
-                    Toast.makeText(AccountActivity.this, "아이디 존재 안함", Toast.LENGTH_SHORT).show();
+                if (dataSnapshot.getValue() == null) {
+                    new AlertDialog.Builder(AccountActivity.this).setMessage("사용할 수 있는 아이디 입니다.\n이 아이디를 사용하시겠습니까?").setPositiveButton("확인", null).create().show();
+                    idChecked = true;
                 } else {
-                    Toast.makeText(AccountActivity.this, "아이디 존재 함", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(AccountActivity.this).setMessage("존재하는 아이디 입니다.").setPositiveButton("확인", null).create().show();
                 }
             }
         });

@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     final int REQUEST_CODE_FOR_PROFILE_SET = -1;
     final int REQUEST_CODE_FOR_INTEREST_SET = -2;
+    final int REQUEST_EXIT = 0;
 
     Toolbar toolbar;
     DrawerLayout drawerLayout;
@@ -162,25 +163,29 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_menu_interest:
                         intent = new Intent(MainActivity.this, InterestActivity.class);
                         intent.putExtra("sendClass", "Main");
+                        startActivity(intent);
                         break;
                     case R.id.navigation_menu_favorite_meet:
                         intent = new Intent(MainActivity.this, MyPageFavoriteActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.navigation_menu_recent_meet:
                         intent = new Intent(MainActivity.this, MyPageRecentActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.navigation_menu_premium_meet:
                         intent = new Intent(MainActivity.this, MyPagePremiumActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.navigation_menu_mk_charge_class:
                         intent = new Intent(MainActivity.this, MyPageMKChargeActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.navigation_menu_setting:
                         intent = new Intent(MainActivity.this, MyPageSettingActivity.class);
+                        startActivityForResult(intent, REQUEST_EXIT);
                         break;
                 }
-                if (intent != null) startActivity(intent);
-
                 return true;
 
 
@@ -229,6 +234,8 @@ public class MainActivity extends AppCompatActivity {
                 String interest = data.getStringExtra("interest");
                 //TODO firebase/users/username/interest 교체하면 됨
                 break;
+            case REQUEST_EXIT:
+                finish();
         }
 
     }

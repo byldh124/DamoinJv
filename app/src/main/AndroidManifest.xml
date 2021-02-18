@@ -12,32 +12,66 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project01_MeetingApp">
-        <activity android:name=".page.PageActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".account.AccountActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".login.LoginActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".login.IntroActivity" android:screenOrientation="portrait">
+        <activity android:name=".page_tab1_info.OptionModifyActivity"></activity>
+        <activity
+            android:name=".page.PageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".account.AccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".login.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".login.IntroActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".mypages.MyPageSettingActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".mypages.MyPageMKChargeActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".mypages.MyPagePremiumActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".mypages.MyPageRecentActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".mypages.MyPageFavoriteActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".profileset.ProfileSetActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".account.LocationChoiceActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".account.InterestActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".createmeet.CreateActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".option02notification.NotificationActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".option01search.SearchActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".mypages.MyPageSettingActivity"
+            android:parentActivityName=".main.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mypages.MyPageMKChargeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mypages.MyPagePremiumActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mypages.MyPageRecentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mypages.MyPageFavoriteActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".profileset.ProfileSetActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".account.LocationChoiceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".account.InterestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".createmeet.CreateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".option02notification.NotificationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".option01search.SearchActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable_search_activity" />
         </activity>
-        <activity android:name=".main.MainActivity" android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".main.MainActivity"
+            android:screenOrientation="portrait" />
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

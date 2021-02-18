@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -138,41 +140,48 @@ public class CreateActivity extends AppCompatActivity {
         meetName = etMeetName.getText().toString();
         purposeMessage = etPurposeMessage.getText().toString();
 
-        if (meetName == null || meetName.equals("")) {
-            Toast.makeText(this, "모임 이름을 설정해주세요", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (meetAddress == null || meetAddress.equals("")) {
-            Toast.makeText(this, "모임 지역을 설정해주세요", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (purposeMessage == null || purposeMessage.equals("")) {
-            Toast.makeText(this, "모임 목표를 작성해주세요", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (interest == null || interest.equals("")) {
-            Toast.makeText(this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        titleImgRef.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        G.itemsRef.child(meetName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                titleImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    new AlertDialog.Builder(CreateActivity.this).setMessage("동일한 모임 이름이 존재합니다.\n다른 모임 이름을 작성해주세요.").setPositiveButton("확인", null).create().show();
+                    return;
+                } else if (meetName == null || meetName.equals("")) {
+                    Toast.makeText(CreateActivity.this, "모임 이름을 설정해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (meetAddress == null || meetAddress.equals("")) {
+                    Toast.makeText(CreateActivity.this, "모임 지역을 설정해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (purposeMessage == null || purposeMessage.equals("")) {
+                    Toast.makeText(CreateActivity.this, "모임 목표를 작성해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (interest == null || interest.equals("")) {
+                    Toast.makeText(CreateActivity.this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                titleImgRef.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onSuccess(Uri uri) {
-                        titleImgUrl = uri.toString();
-                        G.currentItemBase = new ItemBaseVO(meetName, meetAddress, purposeMessage, titleImgUrl, interest);
-                        G.currentItem.setItemBaseVO(G.currentItemBase);
-                        G.itemsRef.child(meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        titleImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
-                            public void onSuccess(Void aVoid) {
-                                G.itemsRef.child(meetName).child("members").child("master").setValue(G.myProfile.userId).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            public void onSuccess(Uri uri) {
+                                titleImgUrl = uri.toString();
+                                G.currentItemBase = new ItemBaseVO(meetName, meetAddress, purposeMessage, titleImgUrl, interest);
+                                G.currentItem.setItemBaseVO(G.currentItemBase);
+                                G.itemsRef.child(meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Intent intent = new Intent(CreateActivity.this, PageActivity.class);
-                                        startActivity(intent);
-                                        finish();
+                                        G.itemsRef.child(meetName).child("members").child("master").setValue(G.myProfile.userId).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                G.currentItemMember.master = G.myProfile.userId;
+                                                Intent intent = new Intent(CreateActivity.this, PageActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        });
                                     }
                                 });
                             }

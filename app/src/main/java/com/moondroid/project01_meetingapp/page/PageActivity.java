@@ -7,16 +7,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
-import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
+import com.moondroid.project01_meetingapp.page_tab1_info.OptionModifyActivity;
 
 public class PageActivity extends AppCompatActivity {
 
@@ -26,9 +27,6 @@ public class PageActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     ViewPagerAdapter adapter;
     TextView tvTitle;
-
-    String itemTitle;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +51,33 @@ public class PageActivity extends AppCompatActivity {
 
         //title
         tvTitle.setText(G.currentItemBase.meetName);
-
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) onBackPressed();
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.modify_page_activity:
+                if (!G.ItemMasterId.equals(G.myProfile.userId)){
+                    Toast.makeText(this, "모임장만 할수 있습니다.", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else {
+                    Intent intent = new Intent(this, OptionModifyActivity.class);
+                    startActivity(intent);
+                }
+                break;
+            case R.id.add_moim_info:
+                break;
+
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_option_page, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }

@@ -23,6 +23,7 @@
         android:padding="8dp"
         android:layout_above="@id/log_in_edit_pass"
         android:layout_marginBottom="16dp"
+        android:inputType="text"
         android:layout_centerHorizontal="true"
         android:hint="id"/>
 
@@ -34,6 +35,8 @@
         android:ems="10"
         android:padding="8dp"
         android:layout_centerInParent="true"
+        android:inputType="textPassword"
+        android:imeOptions="actionDone"
         android:hint="password"/>
 
     <TextView

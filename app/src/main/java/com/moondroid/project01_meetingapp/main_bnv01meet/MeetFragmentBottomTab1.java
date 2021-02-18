@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.createmeet.CreateActivity;
 import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.main.ItemVOLoad;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class MeetFragmentBottomTab1 extends Fragment {
     Resources resources;
 
     FloatingActionButton buttonAdd;
+    ArrayList<ItemBaseVO> snapshots;
 
     @Nullable
     @Override
@@ -86,7 +88,7 @@ public class MeetFragmentBottomTab1 extends Fragment {
     }
 
     public void loadData() {
-        final ArrayList<ItemBaseVO> snapshots = new ArrayList<>();
+        snapshots = new ArrayList<>();
         itemList.clear();
         G.itemsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
@@ -95,14 +97,13 @@ public class MeetFragmentBottomTab1 extends Fragment {
                     ItemBaseVO itemBaseVO = ds.child("base").getValue(ItemBaseVO.class);
                     snapshots.add(itemBaseVO);
                 }
-
                 for (int i = 0; i < snapshots.size(); i++) {
                     //TODO 조건에 맞게 아이템 맞추기 (지역, 관심사)
                     itemList.add(0, snapshots.get(i));
                 }
-
                 itemAdapter.notifyDataSetChanged();
             }
         });
+
     }
 }

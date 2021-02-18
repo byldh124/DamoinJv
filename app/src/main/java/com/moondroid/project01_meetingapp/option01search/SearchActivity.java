@@ -26,6 +26,8 @@ public class SearchActivity extends AppCompatActivity implements MenuItem.OnActi
     ArrayList<ItemBaseVO> itemVOData;
     RecyclerView recyclerViewSearchActivity;
     MeetItemAdapter meetItemAdapter;
+    SearchView searchView;
+    String searchTarget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,21 +49,22 @@ public class SearchActivity extends AppCompatActivity implements MenuItem.OnActi
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search_view, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search_activity_search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.menu_search_activity_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconified(false);
         searchView.setQueryHint("모임 검색");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchTarget = query.replace(" ", "");
                 G.itemsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         itemVOData.clear();
-                        for (DataSnapshot ds : dataSnapshot.getChildren()){
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             ItemBaseVO itemBaseVO = ds.child("base").getValue(ItemBaseVO.class);
-                            if (itemBaseVO.meetName.contains(query)|| itemBaseVO.purposeMessage.contains(query)||itemBaseVO.meetName.contains(query)){
-                                itemVOData.add(0,itemBaseVO);
+                            if (itemBaseVO.meetName.contains(searchTarget) || itemBaseVO.purposeMessage.contains(searchTarget)) {
+                                itemVOData.add(0, itemBaseVO);
                             }
                         }
                         meetItemAdapter.notifyDataSetChanged();
@@ -81,7 +84,7 @@ public class SearchActivity extends AppCompatActivity implements MenuItem.OnActi
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);

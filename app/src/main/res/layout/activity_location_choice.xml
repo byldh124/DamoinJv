@@ -17,7 +17,7 @@
             android:fontFamily="@font/jalnanche"
             android:textSize="16sp"
             android:textColor="@color/main_001"
-            android:text="모임 지역"/>
+            android:text="지역 선택"/>
     </androidx.appcompat.widget.Toolbar>
 
     <EditText
