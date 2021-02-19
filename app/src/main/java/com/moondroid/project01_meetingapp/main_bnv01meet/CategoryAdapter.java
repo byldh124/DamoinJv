@@ -1,24 +1,33 @@
 package com.moondroid.project01_meetingapp.main_bnv01meet;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moondroid.project01_meetingapp.R;
+import com.moondroid.project01_meetingapp.main_bnv03mypage.MyPageFragmentBottomTab3;
+import com.moondroid.project01_meetingapp.option01search.SearchActivity;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
 
     Context context;
     String[] categories;
+    Fragment fragment;
 
-    public CategoryAdapter(Context context, String[] categories) {
+    public CategoryAdapter(Context context, String[] categories, Fragment fragment) {
         this.context = context;
         this.categories = categories;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -43,6 +52,18 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
         public VH(@NonNull View itemView) {
             super(itemView);
             tvCategory = itemView.findViewById(R.id.tv_bottom_tab1_category_recycler);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    String interest = categories[pos];
+                    if (pos == 0) {
+                        ((MeetFragmentBottomTab1) fragment).loadData();
+                    } else {
+                        ((MeetFragmentBottomTab1) fragment).loadData(interest);
+                    }
+                }
+            });
         }
     }
 

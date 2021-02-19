@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.createmeet.CreateActivity;
 import com.moondroid.project01_meetingapp.global.G;
@@ -60,22 +63,27 @@ public class MeetFragmentBottomTab1 extends Fragment {
         itemList = new ArrayList<>();
         itemAdapter = new MeetItemAdapter(getContext(), itemList);
         recyclerItems.setAdapter(itemAdapter);
-        loadData();
+
 
         //swipeRefreshLayout Listener implement
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //Update Recycler Items
-                loadData();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        try {
+            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    //Update Recycler Items
+                    loadData();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        } catch (Exception e){
+            Toast.makeText(getContext(), "데이터 갱신에 문제가 발생했습니다.\n 화면을 잡아 당겨주세요", Toast.LENGTH_SHORT).show();
+        }
+        
 
         //categoryRecycler build
         resources = getResources();
         categories = resources.getStringArray(R.array.category_for_interest_in_meet);
-        categoryAdapter = new CategoryAdapter(getActivity(), categories);
+        categoryAdapter = new CategoryAdapter(getActivity(), categories, this);
         recyclerCategory.setAdapter(categoryAdapter);
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
@@ -105,5 +113,37 @@ public class MeetFragmentBottomTab1 extends Fragment {
             }
         });
 
+    }
+
+    public void loadData(String interest) {
+        snapshots = new ArrayList<>();
+        itemList.clear();
+        G.itemsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    ItemBaseVO itemBaseVO = ds.child("base").getValue(ItemBaseVO.class);
+                    snapshots.add(itemBaseVO);
+                }
+                for (int i = 0; i < snapshots.size(); i++) {
+                    if (snapshots.get(i).interest.equals(interest))
+                        itemList.add(0, snapshots.get(i));
+                }
+                itemAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        loadData();
+//    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadData();
     }
 }

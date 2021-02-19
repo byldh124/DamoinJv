@@ -2,7 +2,6 @@
 <resources>
     <string-array name="category_for_interest_in_meet">
         <item>전체</item>
-        <item>공예/만들기</item>
         <item>아웃도어/여행</item>
         <item>운동/스포츠</item>
         <item>인문학/책/글</item>
@@ -10,6 +9,7 @@
         <item>외국/언어</item>
         <item>문화/공연/축제</item>
         <item>음악/악기</item>
+        <item>공예/만들기</item>
         <item>댄스/무용</item>
         <item>봉사활동</item>
         <item>사교/인맥</item>

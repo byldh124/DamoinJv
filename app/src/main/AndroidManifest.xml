@@ -84,6 +84,7 @@
                     android:scheme="kakaof33663a89ab7e4f6ace89f2ebeade100" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

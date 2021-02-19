@@ -33,6 +33,7 @@ import com.moondroid.project01_meetingapp.page.PageActivity;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class CreateActivity extends AppCompatActivity {
@@ -56,6 +57,8 @@ public class CreateActivity extends AppCompatActivity {
 
     FirebaseStorage firebaseStorage;
     StorageReference titleImgRef;
+
+    ArrayList<String> meets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +100,14 @@ public class CreateActivity extends AppCompatActivity {
                     interest = data.getStringExtra("interest");
                     iconUrl = data.getStringExtra("iconUrl");
                     Glide.with(this).load(iconUrl).into(ivInterestChoose);
-
                 }
+                break;
             case REQUEST_CODE_FOR_LOCATION:
                 if (resultCode == RESULT_OK) {
                     meetAddress = data.getStringExtra("location");
                     locationInCreate.setText(meetAddress);
                 }
+                break;
 
             case REQUEST_CODE_FOR_IMAGE:
                 if (resultCode == RESULT_OK) {
@@ -112,6 +116,7 @@ public class CreateActivity extends AppCompatActivity {
                         Glide.with(this).load(imgUri).into(ivTitleImage);
                     }
                 }
+                break;
         }
     }
 
@@ -176,10 +181,26 @@ public class CreateActivity extends AppCompatActivity {
                                         G.itemsRef.child(meetName).child("members").child("master").setValue(G.myProfile.userId).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
+                                                meets = new ArrayList<>();
                                                 G.currentItemMember.master = G.myProfile.userId;
-                                                Intent intent = new Intent(CreateActivity.this, PageActivity.class);
-                                                startActivity(intent);
-                                                finish();
+                                                G.usersRef.child(G.myProfile.userId).child("meets").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                            meets.add(ds.getValue(String.class));
+                                                        }
+                                                        meets.add(G.currentItemBase.meetName);
+                                                        G.usersRef.child(G.myProfile.userId).child("meets").setValue(meets).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Intent intent = new Intent(CreateActivity.this, PageActivity.class);
+                                                                startActivity(intent);
+                                                                finish();
+                                                            }
+                                                        });
+                                                    }
+                                                });
+
                                             }
                                         });
                                     }

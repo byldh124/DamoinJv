@@ -9,7 +9,6 @@
         android:background="@drawable/bg_bottom_tab1_category_recycler"
         android:textColor="@color/selector_text_color_bottom_tab1_category"
         android:text="예시"
-        android:clickable="true"
         android:padding="8dp"
         android:layout_margin="8dp"/>
 

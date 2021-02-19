@@ -60,7 +60,7 @@ public class PageActivity extends AppCompatActivity {
                 onBackPressed();
                 break;
             case R.id.modify_page_activity:
-                if (!G.ItemMasterId.equals(G.myProfile.userId)){
+                if (!G.currentItemMember.master.equals(G.myProfile.userId)){
                     Toast.makeText(this, "모임장만 할수 있습니다.", Toast.LENGTH_SHORT).show();
                     return true;
                 } else {

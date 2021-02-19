@@ -103,23 +103,11 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
                             if (dataSnapshot.child("detail").getValue(ItemDetailVO.class) != null)
                                 G.currentItemDetail = dataSnapshot.child("detail").getValue(ItemDetailVO.class);
                             else G.currentItemDetail = new ItemDetailVO();
-                            G.ItemMasterId = dataSnapshot.child("members").child("master").getValue(String.class);
-                            G.currentItemMember.master = G.ItemMasterId;
+                            G.currentItemMember.master = dataSnapshot.child("members").child("master").getValue(String.class);
                             if (dataSnapshot.child("members").child("member").getValue() != null)
                                 G.currentItemMember.member = (ArrayList<String>) dataSnapshot.child("members").child("member").getValue();
                             Intent intent = new Intent(context, PageActivity.class);
                             context.startActivity(intent);
-//                            G.itemsRef.child(itemTitle).child("members").child("member").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                                @Override
-//                                public void onSuccess(DataSnapshot dataSnapshot) {
-//                                    G.currentItemMember.member.clear();
-//                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                                        G.currentItemMember.member.add(ds.getValue(String.class));
-//                                    }
-//                                    Intent intent = new Intent(context, PageActivity.class);
-//                                    context.startActivity(intent);
-//                                }
-//                            });
 
                         }
                     });

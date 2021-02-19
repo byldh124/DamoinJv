@@ -23,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +37,12 @@ public class InformationFragment extends Fragment {
     RecyclerView recyclerViewJungMo, recyclerViewMembers;
     ArrayList<String> interestList;
     Button btnJoin;
+
+    ArrayList<String> members;
+    ArrayList<String> meets;
+
+    ArrayList<UserBaseVO> memberVOS;
+    InformationMemberAdapter memberAdapter;
 
     @Nullable
     @Override
@@ -56,6 +63,9 @@ public class InformationFragment extends Fragment {
         recyclerViewMembers = view.findViewById(R.id.recycler_page_members);
         btnJoin = view.findViewById(R.id.btn_join);
 
+        memberVOS = new ArrayList<>();
+        memberAdapter = new InformationMemberAdapter(getContext(), memberVOS);
+        recyclerViewMembers.setAdapter(memberAdapter);
 
 
         btnJoin.setOnClickListener(new View.OnClickListener() {
@@ -64,18 +74,59 @@ public class InformationFragment extends Fragment {
                 new AlertDialog.Builder(getActivity()).setMessage("가입하시겠습니까?").setPositiveButton("예", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ArrayList<String> arrayList = new ArrayList<>();
+                        if (G.myProfile.userId.equals(G.currentItemMember.master)) {
+                            Toast.makeText(getContext(), "you're master", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        members = new ArrayList<>();
+                        meets = new ArrayList<>();
                         G.itemsRef.child(G.currentItemBase.meetName).child("members").child("member").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                             @Override
                             public void onSuccess(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot ds : dataSnapshot.getChildren()){
-                                    arrayList.add(ds.getValue(String.class));
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                    members.add(ds.getValue(String.class));
                                 }
-                                arrayList.add(G.myProfile.userId);
-                                G.itemsRef.child(G.currentItemBase.meetName).child("members").child("member").setValue(arrayList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                if (members.contains(G.myProfile.userId)){
+                                    Toast.makeText(getContext(), "이미 가입된 모임입니다.", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                members.add(G.myProfile.userId);
+                                G.itemsRef.child(G.currentItemBase.meetName).child("members").child("member").setValue(members).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Toast.makeText(getContext(), "가입됨", Toast.LENGTH_SHORT).show();
+                                        loadMembers();
+                                        G.usersRef.child(G.myProfile.userId).child("meets").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                    meets.add(ds.getValue(String.class));
+                                                }
+                                                meets.add(G.currentItemBase.meetName);
+                                                G.usersRef.child(G.myProfile.userId).child("meets").setValue(meets).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Toast.makeText(getContext(), "가입됨", Toast.LENGTH_SHORT).show();
+                                                        memberVOS.clear();
+                                                        G.usersRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                            @Override
+                                                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                                    if (ds.getKey().equals(G.currentItemMember.master)){
+                                                                        memberVOS.add(0, ds.child("base").getValue(UserBaseVO.class));
+                                                                    }
+                                                                    for (int i = 0; i < G.currentItemMember.member.size(); i++) {
+                                                                        if (ds.getKey().equals(G.currentItemMember.member.get(i))) {
+                                                                            memberVOS.add(ds.child("base").getValue(UserBaseVO.class));
+                                                                        }
+                                                                    }
+                                                                }
+                                                                memberAdapter.notifyDataSetChanged();
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        });
                                     }
                                 });
                             }
@@ -91,9 +142,8 @@ public class InformationFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-
-        if (G.currentItemDetail != null && G.currentItemDetail.introImgUrl != null){
+        loadMembers();
+        if (G.currentItemDetail != null && G.currentItemDetail.introImgUrl != null) {
             Glide.with(getContext()).load(G.currentItemDetail.introImgUrl).into(ivIntroImg);
         }
 
@@ -106,6 +156,26 @@ public class InformationFragment extends Fragment {
             G.currentItemDetail.message = "모임 설명을 작성해 주십시오";
         }
         tvMessage.setText(G.currentItemDetail.message);
+    }
+
+    public void loadMembers() {
+        memberVOS.clear();
+        G.usersRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (ds.getKey().equals(G.currentItemMember.master)){
+                        memberVOS.add(0, ds.child("base").getValue(UserBaseVO.class));
+                    }
+                    for (int i = 0; i < G.currentItemMember.member.size(); i++) {
+                        if (ds.getKey().equals(G.currentItemMember.member.get(i))) {
+                            memberVOS.add(ds.child("base").getValue(UserBaseVO.class));
+                        }
+                    }
+                }
+                memberAdapter.notifyDataSetChanged();
+            }
+        });
 
     }
 }

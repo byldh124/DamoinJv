@@ -29,8 +29,10 @@ import com.moondroid.project01_meetingapp.account.InterestActivity;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class OptionModifyActivity extends AppCompatActivity {
     final int REQUEST_CODE_FOR_INTRO_IMG_SELECT = 0;
@@ -42,7 +44,7 @@ public class OptionModifyActivity extends AppCompatActivity {
     TextView textViewTitle;
     TextView textViewMessage;
 
-    Uri introImgUri;
+    Uri introImgUri = null;
     String interest;
     String iconUrl;
     String meetName;
@@ -65,6 +67,9 @@ public class OptionModifyActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (G.currentItemDetail.introImgUrl != null)
+            Glide.with(this).load(G.currentItemDetail.introImgUrl).into(imageViewIntro);
 
         interest = G.currentItemBase.interest;
 
@@ -145,57 +150,93 @@ public class OptionModifyActivity extends AppCompatActivity {
     public void clickSave(View view) {
         G.currentItemBase.interest = interest;
         G.currentItemDetail.message = textViewMessage.getText().toString();
-        StorageReference introImgRef = FirebaseStorage.getInstance().getReference("introImgs");
-        introImgRef.putFile(introImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                introImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        G.currentItemDetail.introImgUrl = uri.toString();
+        StorageReference introImgRef = FirebaseStorage.getInstance().getReference("introImgs/" + new SimpleDateFormat("yyyyMMddHHssmm").format(new Date()) + ".png");
+        if (introImgUri != null) {
+            introImgRef.putFile(introImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    introImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            G.currentItemDetail.introImgUrl = uri.toString();
 
-                        if (meetNameIsChanged) {
-                            G.itemsRef.child(meetName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                @Override
-                                public void onSuccess(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.getValue() != null) {
-                                        Toast.makeText(OptionModifyActivity.this, "중복된 모임 이름이 있습니다.", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        G.itemsRef.child(meetName).child("base").setValue(new ItemBaseVO(meetName, G.currentItemBase.meetAddress, G.currentItemBase.purposeMessage, G.currentItemBase.titleImgUrl, G.currentItemBase.interest)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            if (meetNameIsChanged) {
+                                G.itemsRef.child(meetName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.getValue() != null) {
+                                            Toast.makeText(OptionModifyActivity.this, "중복된 모임 이름이 있습니다.", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            G.itemsRef.child(meetName).child("base").setValue(new ItemBaseVO(meetName, G.currentItemBase.meetAddress, G.currentItemBase.purposeMessage, G.currentItemBase.titleImgUrl, G.currentItemBase.interest)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    G.itemsRef.child(meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            G.itemsRef.child(meetName).child("members").setValue(G.currentItemMember).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    G.itemsRef.child(G.currentItemBase.meetName).removeValue();
+                                                                    G.currentItemBase.meetName = meetName;
+                                                                    G.currentItem.setItemBaseVO(G.currentItemBase);
+                                                                    G.currentItem.setItemDetailVO(G.currentItemDetail);
+                                                                    G.currentItem.setItemMemberVO(G.currentItemMember);
+                                                                    Toast.makeText(OptionModifyActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
+                                                                    finish();
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            } else {
+                                G.itemsRef.child(G.currentItemBase.meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        G.itemsRef.child(G.currentItemBase.meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                G.itemsRef.child(meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                G.itemsRef.child(G.currentItemBase.meetName).child("members").setValue(G.currentItemMember).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        G.itemsRef.child(meetName).child("members").setValue(G.currentItemMember).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                G.itemsRef.child(G.currentItemBase.meetName).removeValue();
-                                                                G.currentItemBase.meetName = meetName;
-                                                                G.currentItem.setItemBaseVO(G.currentItemBase);
-                                                                G.currentItem.setItemDetailVO(G.currentItemDetail);
-                                                                G.currentItem.setItemMemberVO(G.currentItemMember);
-                                                                Toast.makeText(OptionModifyActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
-                                                                finish();
-                                                            }
-                                                        });
+                                                        G.currentItem.setItemBaseVO(G.currentItemBase);
+                                                        G.currentItem.setItemDetailVO(G.currentItemDetail);
+                                                        G.currentItem.setItemMemberVO(G.currentItemMember);
+                                                        Toast.makeText(OptionModifyActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
+                                                        finish();
                                                     }
                                                 });
                                             }
                                         });
                                     }
-                                }
-                            });
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            if (meetNameIsChanged) {
+                G.itemsRef.child(meetName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null) {
+                            Toast.makeText(OptionModifyActivity.this, "중복된 모임 이름이 있습니다.", Toast.LENGTH_SHORT).show();
                         } else {
-                            G.itemsRef.child(G.currentItemBase.meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            G.itemsRef.child(meetName).child("base").setValue(new ItemBaseVO(meetName, G.currentItemBase.meetAddress, G.currentItemBase.purposeMessage, G.currentItemBase.titleImgUrl, G.currentItemBase.interest)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    G.itemsRef.child(G.currentItemBase.meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    G.itemsRef.child(meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            G.itemsRef.child(G.currentItemBase.meetName).child("members").setValue(G.currentItemMember).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            G.itemsRef.child(meetName).child("members").setValue(G.currentItemMember).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
+                                                    G.itemsRef.child(G.currentItemBase.meetName).removeValue();
+                                                    G.currentItemBase.meetName = meetName;
                                                     G.currentItem.setItemBaseVO(G.currentItemBase);
                                                     G.currentItem.setItemDetailVO(G.currentItemDetail);
                                                     G.currentItem.setItemMemberVO(G.currentItemMember);
@@ -210,8 +251,32 @@ public class OptionModifyActivity extends AppCompatActivity {
                         }
                     }
                 });
+            } else {
+                G.itemsRef.child(G.currentItemBase.meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        G.itemsRef.child(G.currentItemBase.meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                G.itemsRef.child(G.currentItemBase.meetName).child("members").setValue(G.currentItemMember).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        G.currentItem.setItemBaseVO(G.currentItemBase);
+                                        G.currentItem.setItemDetailVO(G.currentItemDetail);
+                                        G.currentItem.setItemMemberVO(G.currentItemMember);
+                                        Toast.makeText(OptionModifyActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
             }
-        });
+        }
 
     }
 }
+
+
+

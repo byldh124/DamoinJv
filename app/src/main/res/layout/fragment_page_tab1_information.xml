@@ -14,7 +14,8 @@
             <ImageView
                 android:id="@+id/iv_page_modify_intro_image"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
                 android:background="@color/pastel_1"/>
 
             <ImageView
