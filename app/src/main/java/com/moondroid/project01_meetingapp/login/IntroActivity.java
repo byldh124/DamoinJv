@@ -6,16 +6,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.main.MainActivity;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class IntroActivity extends AppCompatActivity {
 
@@ -49,15 +57,34 @@ public class IntroActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    G.usersRef.child(userId).child("base").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+
+                    Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
+                    RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+                    Call<UserBaseVO> call = retrofitService.loadUserBaseDBToIntroActivity(userId);
+                    call.enqueue(new Callback<UserBaseVO>() {
                         @Override
-                        public void onSuccess(DataSnapshot dataSnapshot) {
-                            G.myProfile = dataSnapshot.getValue(UserBaseVO.class);
+                        public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
+                            G.myProfile = response.body();
                             intent = new Intent(IntroActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         }
+
+                        @Override
+                        public void onFailure(Call<UserBaseVO> call, Throwable t) {
+                            Log.i("aaa", t.getMessage());
+                        }
                     });
+
+//                    G.usersRef.child(userId).child("base").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                        @Override
+//                        public void onSuccess(DataSnapshot dataSnapshot) {
+//                            G.myProfile = dataSnapshot.getValue(UserBaseVO.class);
+//                            intent = new Intent(IntroActivity.this, MainActivity.class);
+//                            startActivity(intent);
+//                            finish();
+//                        }
+//                    });
                 }
             }
         }, 1000);

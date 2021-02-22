@@ -3,11 +3,13 @@ package com.moondroid.project01_meetingapp.account;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +18,13 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapter.VH> {
     Activity context;
@@ -74,10 +83,21 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                         case "Main":
                             //TODO interest 받아서 DB에 넣기 users/userName/interest 교체
                             G.myProfile.userInterest = interest;
-                            G.usersRef.child(G.myProfile.userId).child("base").setValue(G.myProfile).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
+                            retrofit.create(RetrofitService.class).updateUserInterest(G.myProfile.userId, interest).enqueue(new Callback<String>() {
                                 @Override
-                                public void onSuccess(Void aVoid) {
-                                    context.finish();
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    if (response.body().equals("changed")){
+                                        Toast.makeText(context, "관심사가 변경되었습니다.", Toast.LENGTH_SHORT).show();
+                                        context.finish();
+                                    } else {
+                                        Toast.makeText(context, "관심사 변경이 실패했습니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                    Log.i("interestError", t.getMessage());
                                 }
                             });
                             break;

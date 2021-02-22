@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,9 +70,9 @@ public class OptionModifyActivity extends AppCompatActivity {
         if (G.currentItemDetail.introImgUrl != null)
             Glide.with(this).load(G.currentItemDetail.introImgUrl).into(imageViewIntro);
 
-        interest = G.currentItemBase.interest;
+        interest = G.currentItemBase.meetInterest;
 
-        String interest = G.currentItemBase.interest;
+        String interest = G.currentItemBase.meetInterest;
         ArrayList<String> interests = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.interest_list)));
         Glide.with(this).load(getResources().getStringArray(R.array.interest_icon_img_url)[interests.indexOf(interest)]).into(imageViewIcon);
 
@@ -148,7 +147,7 @@ public class OptionModifyActivity extends AppCompatActivity {
     }
 
     public void clickSave(View view) {
-        G.currentItemBase.interest = interest;
+        G.currentItemBase.meetInterest = interest;
         G.currentItemDetail.message = textViewMessage.getText().toString();
         StorageReference introImgRef = FirebaseStorage.getInstance().getReference("introImgs/" + new SimpleDateFormat("yyyyMMddHHssmm").format(new Date()) + ".png");
         if (introImgUri != null) {
@@ -167,7 +166,7 @@ public class OptionModifyActivity extends AppCompatActivity {
                                         if (dataSnapshot.getValue() != null) {
                                             Toast.makeText(OptionModifyActivity.this, "중복된 모임 이름이 있습니다.", Toast.LENGTH_SHORT).show();
                                         } else {
-                                            G.itemsRef.child(meetName).child("base").setValue(new ItemBaseVO(meetName, G.currentItemBase.meetAddress, G.currentItemBase.purposeMessage, G.currentItemBase.titleImgUrl, G.currentItemBase.interest)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            G.itemsRef.child(meetName).child("base").setValue(new ItemBaseVO(meetName, G.currentItemBase.meetLocation, G.currentItemBase.purposeMessage, G.currentItemBase.titleImgUrl, G.currentItemBase.meetInterest)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     G.itemsRef.child(meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -226,7 +225,7 @@ public class OptionModifyActivity extends AppCompatActivity {
                         if (dataSnapshot.getValue() != null) {
                             Toast.makeText(OptionModifyActivity.this, "중복된 모임 이름이 있습니다.", Toast.LENGTH_SHORT).show();
                         } else {
-                            G.itemsRef.child(meetName).child("base").setValue(new ItemBaseVO(meetName, G.currentItemBase.meetAddress, G.currentItemBase.purposeMessage, G.currentItemBase.titleImgUrl, G.currentItemBase.interest)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            G.itemsRef.child(meetName).child("base").setValue(new ItemBaseVO(meetName, G.currentItemBase.meetLocation, G.currentItemBase.purposeMessage, G.currentItemBase.titleImgUrl, G.currentItemBase.meetInterest)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     G.itemsRef.child(meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {

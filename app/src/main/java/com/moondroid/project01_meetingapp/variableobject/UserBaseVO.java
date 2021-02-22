@@ -6,7 +6,7 @@ public class UserBaseVO {
     public String userName;
     public String userBirthDate;
     public String userGender;
-    public String userAddress;
+    public String userLocation;
     public String userInterest;
     public String userProfileImgUrl;
     public String userProfileMessage;
@@ -15,13 +15,13 @@ public class UserBaseVO {
     }
 
 
-    public UserBaseVO(String userId, String userPassword, String userName, String userBirthDate, String userGender, String userAddress, String userInterest, String userProfileImgUrl, String userProfileMessage) {
+    public UserBaseVO(String userId, String userPassword, String userName, String userBirthDate, String userGender, String userLocation, String userInterest, String userProfileImgUrl, String userProfileMessage) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userName = userName;
         this.userBirthDate = userBirthDate;
         this.userGender = userGender;
-        this.userAddress = userAddress;
+        this.userLocation = userLocation;
         this.userInterest = userInterest;
         this.userProfileImgUrl = userProfileImgUrl;
         this.userProfileMessage = userProfileMessage;

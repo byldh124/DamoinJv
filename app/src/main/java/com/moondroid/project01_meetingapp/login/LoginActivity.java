@@ -20,6 +20,8 @@ import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.Gender;
 import com.kakao.sdk.user.model.User;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.main.MainActivity;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.AccountActivity;
@@ -28,6 +30,10 @@ import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -62,26 +68,50 @@ public class LoginActivity extends AppCompatActivity {
         inputId = etInputId.getText().toString();
         inputPassword = etInputPassword.getText().toString();
         if (inputId == null || inputId.equals("") || inputPassword == null || inputPassword.equals("")) return;
-        G.usersRef.child(inputId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+
+        Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
+        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+        Call<UserBaseVO> call = retrofitService.loadUserBaseDBToIntroActivity(inputId);
+        call.enqueue(new Callback<UserBaseVO>() {
             @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
-                    Toast.makeText(LoginActivity.this, "아이디가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    UserBaseVO userBaseVO = dataSnapshot.child("base").getValue(UserBaseVO.class);
-                    if (!userBaseVO.userPassword.equals(inputPassword)) {
-                        Toast.makeText(LoginActivity.this, "비밀번호가 틀립니다,", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    G.myProfile = dataSnapshot.child("base").getValue(UserBaseVO.class);
+            public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
+                UserBaseVO userBaseVO = response.body();
+                if (userBaseVO.userPassword.equals(inputPassword)){
+                    G.myProfile = userBaseVO;
                     saveSharedPreference(inputId);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
                 }
             }
+
+            @Override
+            public void onFailure(Call<UserBaseVO> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
+//        G.usersRef.child(inputId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//            @Override
+//            public void onSuccess(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.getValue() == null) {
+//                    Toast.makeText(LoginActivity.this, "아이디가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+//                    return;
+//                } else {
+//                    UserBaseVO userBaseVO = dataSnapshot.child("base").getValue(UserBaseVO.class);
+//                    if (!userBaseVO.userPassword.equals(inputPassword)) {
+//                        Toast.makeText(LoginActivity.this, "비밀번호가 틀립니다,", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+//                    G.myProfile = dataSnapshot.child("base").getValue(UserBaseVO.class);
+//                    saveSharedPreference(inputId);
+//                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            }
+//        });
     }
 
     public void clickAddAccount(View view) {
@@ -101,42 +131,42 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void clickKakaoLogin(View view) {
-        LoginClient.getInstance().loginWithKakaoAccount(this, new Function2<OAuthToken, Throwable, Unit>() {
-            @Override
-            public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
-                if (oAuthToken != null) {
-                    UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
-                        @Override
-                        public Unit invoke(User user, Throwable throwable) {
-                            if (user != null) {
-                                long id = user.getId();
-                                inputId = String.valueOf(id);
-                                name = user.getKakaoAccount().getProfile().getNickname();
-                                profileImageUrl = user.getKakaoAccount().getProfile().getProfileImageUrl();
-
-                                G.usersRef.child(inputId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                        saveSharedPreference(inputId);
-                                        moveToMainActivity();
-                                    }
-                                });
-
-                                G.usersRef.child(inputId).child("base").setValue(new UserBaseVO(inputId, null, name, null, null, null, null, profileImageUrl, null)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        saveSharedPreference(inputId);
-                                        moveToMainActivity();
-                                    }
-                                });
-                            }
-                            return null;
-                        }
-                    });
-                }
-                return null;
-            }
-        });
+//        LoginClient.getInstance().loginWithKakaoAccount(this, new Function2<OAuthToken, Throwable, Unit>() {
+//            @Override
+//            public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
+//                if (oAuthToken != null) {
+//                    UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+//                        @Override
+//                        public Unit invoke(User user, Throwable throwable) {
+//                            if (user != null) {
+//                                long id = user.getId();
+//                                inputId = String.valueOf(id);
+//                                name = user.getKakaoAccount().getProfile().getNickname();
+//                                profileImageUrl = user.getKakaoAccount().getProfile().getProfileImageUrl();
+//
+//                                G.usersRef.child(inputId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                                    @Override
+//                                    public void onSuccess(DataSnapshot dataSnapshot) {
+//                                        saveSharedPreference(inputId);
+//                                        moveToMainActivity();
+//                                    }
+//                                });
+//
+//                                G.usersRef.child(inputId).child("base").setValue(new UserBaseVO(inputId, null, name, null, null, null, null, profileImageUrl, null)).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void aVoid) {
+//                                        saveSharedPreference(inputId);
+//                                        moveToMainActivity();
+//                                    }
+//                                });
+//                            }
+//                            return null;
+//                        }
+//                    });
+//                }
+//                return null;
+//            }
+//        });
     }
 
     public void saveSharedPreference(String inputId) {

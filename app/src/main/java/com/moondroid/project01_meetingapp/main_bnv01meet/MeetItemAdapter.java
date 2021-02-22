@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +20,6 @@ import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.page.PageActivity;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 import com.moondroid.project01_meetingapp.variableobject.ItemDetailVO;
-import com.moondroid.project01_meetingapp.variableobject.ItemMemberVO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,12 +53,12 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
         ItemBaseVO item = itemList.get(position);
         Glide.with(context).load(item.titleImgUrl).into(holder.ivProfile);
 
-        int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.interest);
+        int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.meetInterest);
         if (interestNum < 0) interestNum = 1;
         Glide.with(context).load(interestIconList[interestNum]).into(holder.iconImg);
 
         holder.meetName.setText(item.meetName);
-        String[] addresses = item.meetAddress.split(" ");
+        String[] addresses = item.meetLocation.split(" ");
         String lastAddress = addresses[addresses.length - 1];
         holder.meetAddress.setText(lastAddress);
         holder.purposeMessage.setText(item.purposeMessage);

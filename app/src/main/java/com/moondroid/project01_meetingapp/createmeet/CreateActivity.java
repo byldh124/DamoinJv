@@ -4,12 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.loader.content.CursorLoader;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -20,8 +23,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -29,20 +30,30 @@ import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.InterestActivity;
 import com.moondroid.project01_meetingapp.account.LocationChoiceActivity;
 import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.page.PageActivity;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CreateActivity extends AppCompatActivity {
     final int REQUEST_CODE_FOR_INTEREST = 0;
     final int REQUEST_CODE_FOR_LOCATION = 1;
     final int REQUEST_CODE_FOR_IMAGE = 2;
 
-    String interest;
-    String meetAddress;
+    String meetInterest;
+    String meetLocation;
     String meetName;
     String titleImgUrl;
     String purposeMessage;
@@ -59,6 +70,8 @@ public class CreateActivity extends AppCompatActivity {
     StorageReference titleImgRef;
 
     ArrayList<String> meets;
+
+    String imgPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,15 +110,15 @@ public class CreateActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_CODE_FOR_INTEREST:
                 if (resultCode == RESULT_OK) {
-                    interest = data.getStringExtra("interest");
+                    meetInterest = data.getStringExtra("interest");
                     iconUrl = data.getStringExtra("iconUrl");
                     Glide.with(this).load(iconUrl).into(ivInterestChoose);
                 }
                 break;
             case REQUEST_CODE_FOR_LOCATION:
                 if (resultCode == RESULT_OK) {
-                    meetAddress = data.getStringExtra("location");
-                    locationInCreate.setText(meetAddress);
+                    meetLocation = data.getStringExtra("location");
+                    locationInCreate.setText(meetLocation);
                 }
                 break;
 
@@ -114,6 +127,7 @@ public class CreateActivity extends AppCompatActivity {
                     imgUri = data.getData();
                     if (imgUri != null) {
                         Glide.with(this).load(imgUri).into(ivTitleImage);
+                        imgPath = getRealPathFromUri(imgUri);
                     }
                 }
                 break;
@@ -145,6 +159,26 @@ public class CreateActivity extends AppCompatActivity {
         meetName = etMeetName.getText().toString();
         purposeMessage = etPurposeMessage.getText().toString();
 
+        MultipartBody.Part filePart = null;
+
+        if (imgPath != null){
+            File file = new File(imgPath);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+            filePart = MultipartBody.Part.createFormData("img", file.getName(), requestBody);
+        }
+
+        RetrofitService retrofitService = RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class);
+        retrofitService.saveItemBaseDataToCreateActivity(new ItemBaseVO(meetName, meetLocation, purposeMessage, null, meetInterest), filePart).enqueue(new Callback<ItemBaseVO>() {
+            @Override
+            public void onResponse(Call<ItemBaseVO> call, Response<ItemBaseVO> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ItemBaseVO> call, Throwable t) {
+
+            }
+        });
 
         G.itemsRef.child(meetName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
@@ -155,13 +189,13 @@ public class CreateActivity extends AppCompatActivity {
                 } else if (meetName == null || meetName.equals("")) {
                     Toast.makeText(CreateActivity.this, "모임 이름을 설정해주세요", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (meetAddress == null || meetAddress.equals("")) {
+                } else if (meetLocation == null || meetLocation.equals("")) {
                     Toast.makeText(CreateActivity.this, "모임 지역을 설정해주세요", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (purposeMessage == null || purposeMessage.equals("")) {
                     Toast.makeText(CreateActivity.this, "모임 목표를 작성해주세요", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (interest == null || interest.equals("")) {
+                } else if (meetInterest == null || meetInterest.equals("")) {
                     Toast.makeText(CreateActivity.this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -173,7 +207,7 @@ public class CreateActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Uri uri) {
                                 titleImgUrl = uri.toString();
-                                G.currentItemBase = new ItemBaseVO(meetName, meetAddress, purposeMessage, titleImgUrl, interest);
+                                G.currentItemBase = new ItemBaseVO(meetName, meetLocation, purposeMessage, titleImgUrl, meetInterest);
                                 G.currentItem.setItemBaseVO(G.currentItemBase);
                                 G.itemsRef.child(meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -220,4 +254,14 @@ public class CreateActivity extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_CODE_FOR_IMAGE);
     }
+
+    String getRealPathFromUri(Uri uri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(this, uri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
 }

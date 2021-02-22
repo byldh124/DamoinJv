@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -18,11 +17,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.createmeet.CreateActivity;
 import com.moondroid.project01_meetingapp.global.G;
-import com.moondroid.project01_meetingapp.main.ItemVOLoad;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
 import java.util.ArrayList;
@@ -126,7 +123,7 @@ public class MeetFragmentBottomTab1 extends Fragment {
                     snapshots.add(itemBaseVO);
                 }
                 for (int i = 0; i < snapshots.size(); i++) {
-                    if (snapshots.get(i).interest.equals(interest))
+                    if (snapshots.get(i).meetInterest.equals(interest))
                         itemList.add(0, snapshots.get(i));
                 }
                 itemAdapter.notifyDataSetChanged();

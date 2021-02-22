@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -27,6 +28,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.InterestActivity;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.main_bnv01meet.MeetFragmentBottomTab1;
 import com.moondroid.project01_meetingapp.main_bnv02charge.ChargeFragmentBottomTab2;
 import com.moondroid.project01_meetingapp.main_bnv03mypage.MyPageFragmentBottomTab3;
@@ -70,14 +72,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //Google map 동적 퍼미션
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
-                String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                requestPermissions(permissions, 0);
-
-            }
+       
+        //동적 퍼미션
+        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, permissions, 100);
         }
 
         //xml Reference
@@ -254,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadUserInformation() {
         if (G.myProfile.userProfileImgUrl != null) {
-            Glide.with(MainActivity.this).load(G.myProfile.userProfileImgUrl).into(ivNavigationUserProfileImg);
+            Glide.with(MainActivity.this).load(RetrofitHelper.getUrlForImg() + G.myProfile.userProfileImgUrl).into(ivNavigationUserProfileImg);
         }
         if (G.myProfile.userName != null) {
             tvNavigationUserName.setText(G.myProfile.userName);

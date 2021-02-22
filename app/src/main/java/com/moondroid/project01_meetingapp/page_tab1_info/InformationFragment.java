@@ -18,17 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 
 public class InformationFragment extends Fragment {
 
@@ -148,7 +144,7 @@ public class InformationFragment extends Fragment {
         }
 
         interestList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.interest_list)));
-        int interestNum = interestList.indexOf(G.currentItemBase.interest);
+        int interestNum = interestList.indexOf(G.currentItemBase.meetInterest);
         Glide.with(getContext()).load(getResources().getStringArray(R.array.interest_icon_img_url)[interestNum]).into(ivInterestIcon);
         tvMeetName.setText(G.currentItemBase.meetName);
 

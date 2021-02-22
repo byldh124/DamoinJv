@@ -4,13 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.loader.content.CursorLoader;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -28,12 +32,24 @@ import com.google.firebase.storage.UploadTask;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.LocationChoiceActivity;
 import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ProfileSetActivity extends AppCompatActivity {
 
@@ -53,12 +69,15 @@ public class ProfileSetActivity extends AppCompatActivity {
 
     FirebaseStorage firebaseStorage;
     StorageReference profileImgRef;
+    String imgPath;
 
     boolean imgIsChanged = false;
 
     int y = 0, m = 0, d = 0;
 
     String location, gender;
+
+    Map<String, String> dataPart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,17 +138,63 @@ public class ProfileSetActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void clickSaveToRetrofit(View view) {
+
+        Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
+        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+
+        dataPart = new HashMap<>();
+        dataPart.put("userId", G.myProfile.userId);
+        dataPart.put("userName", etName.getText().toString());
+        dataPart.put("userBirthDate", tvBirthDate.getText().toString());
+        dataPart.put("userGender", gender);
+        dataPart.put("userLocation", G.myProfile.userLocation);
+        dataPart.put("userProfileMessage", etMessage.getText().toString());
+
+        MultipartBody.Part filePart = null;
+
+        if (imgIsChanged && imgPath != null) {
+            File file = new File(imgPath);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+            filePart = MultipartBody.Part.createFormData("img", file.getName(), requestBody);
+        }
+
+        Call<String> call = retrofitService.updateUserProfileImg(dataPart, filePart);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                G.myProfile.userProfileImgUrl = response.body();
+                G.myProfile.userName = dataPart.get("userName");
+                G.myProfile.userGender = dataPart.get("userGender");
+                G.myProfile.userLocation = dataPart.get("userLocation");
+                G.myProfile.userBirthDate = dataPart.get("userBirthDate");
+                G.myProfile.userProfileMessage = dataPart.get("userProfileMessage");
+
+                Log.i("response", response.body());
+
+                Toast.makeText(ProfileSetActivity.this, "저장이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.i("throwableInProfileSet", t.getMessage());
+            }
+        });
+    }
+
     public void clickSave(View view) {
-        if (imgIsChanged){
+        if (imgIsChanged) {
             firebaseStorage = FirebaseStorage.getInstance();
-            profileImgRef = firebaseStorage.getReference("userProfileImages/"+new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".png");
+            profileImgRef = firebaseStorage.getReference("userProfileImages/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".png");
             profileImgRef.putFile(uriFromGallery).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     profileImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            G.myProfile = new UserBaseVO(G.myProfile.userId, G.myProfile.userPassword, etName.getText().toString(), tvBirthDate.getText().toString(), gender, G.myProfile.userAddress, G.myProfile.userInterest, uri.toString(), etMessage.getText().toString());
+                            G.myProfile = new UserBaseVO(G.myProfile.userId, G.myProfile.userPassword, etName.getText().toString(), tvBirthDate.getText().toString(), gender, G.myProfile.userLocation, G.myProfile.userInterest, uri.toString(), etMessage.getText().toString());
                             G.usersRef.child(G.myProfile.userId).child("base").setValue(G.myProfile).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -142,7 +207,7 @@ public class ProfileSetActivity extends AppCompatActivity {
                 }
             });
         } else {
-            G.myProfile = new UserBaseVO(G.myProfile.userId, G.myProfile.userPassword, etName.getText().toString(), tvBirthDate.getText().toString(), gender, G.myProfile.userAddress, G.myProfile.userInterest, G.myProfile.userProfileImgUrl, etMessage.getText().toString());
+            G.myProfile = new UserBaseVO(G.myProfile.userId, G.myProfile.userPassword, etName.getText().toString(), tvBirthDate.getText().toString(), gender, G.myProfile.userLocation, G.myProfile.userInterest, G.myProfile.userProfileImgUrl, etMessage.getText().toString());
             G.usersRef.child(G.myProfile.userId).child("base").setValue(G.myProfile).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -196,7 +261,7 @@ public class ProfileSetActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_CODE_FOR_LOCATION_CHOICE:
                 location = data.getStringExtra("location");
-                G.myProfile.userAddress = location;
+                G.myProfile.userLocation = location;
                 String[] locations = location.split(" ");
                 tvLocation.setText(locations[0]);
                 break;
@@ -204,6 +269,10 @@ public class ProfileSetActivity extends AppCompatActivity {
                 uriFromGallery = data.getData();
                 imgIsChanged = true;
                 Glide.with(this).load(uriFromGallery).into(ivProfileImg);
+                if (uriFromGallery != null) {
+                    imgPath = getRealPathFromUri(uriFromGallery);
+                    Toast.makeText(this, "" + imgPath, Toast.LENGTH_SHORT).show();
+                }
                 break;
 
 
@@ -214,14 +283,14 @@ public class ProfileSetActivity extends AppCompatActivity {
         if (G.myProfile == null) return;
         if (G.myProfile.userName != null) etName.setText(G.myProfile.userName);
         if (G.myProfile.userProfileImgUrl != null)
-            Glide.with(this).load(G.myProfile.userProfileImgUrl).into(ivProfileImg);
+            Glide.with(this).load(RetrofitHelper.getUrlForImg() + G.myProfile.userProfileImgUrl).into(ivProfileImg);
         if (G.myProfile.userGender != null && G.myProfile.userGender.equals("여자")) {
             radioButtonMale.setChecked(false);
             radioButtonFemale.setChecked(true);
         }
         if (G.myProfile.userBirthDate != null) tvBirthDate.setText(G.myProfile.userBirthDate);
-        if (G.myProfile.userAddress != null) {
-            String[] locations = G.myProfile.userAddress.split(" ");
+        if (G.myProfile.userLocation != null) {
+            String[] locations = G.myProfile.userLocation.split(" ");
             tvLocation.setText(locations[0]);
         }
         if (G.myProfile.userProfileMessage != null)
@@ -233,5 +302,16 @@ public class ProfileSetActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_CODE_FOR_PROFILE_IMAGE_SELECT);
+    }
+
+    String getRealPathFromUri(Uri uri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(this, uri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
     }
 }
