@@ -4,12 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.loader.content.CursorLoader;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -18,36 +22,53 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.InterestActivity;
+import com.moondroid.project01_meetingapp.createmeet.CreateActivity;
 import com.moondroid.project01_meetingapp.global.G;
-import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
+import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OptionModifyActivity extends AppCompatActivity {
     final int REQUEST_CODE_FOR_INTRO_IMG_SELECT = 0;
+    final int REQUEST_CODE_FOR_TITLE_IMG_SELECT = 2;
     final int REQUEST_CODE_FOR_INTEREST_ICON = 1;
 
     Toolbar toolbar;
-    ImageView imageViewIntro;
-    ImageView imageViewIcon;
-    TextView textViewTitle;
-    TextView textViewMessage;
+    ImageView ivIntro;
+    ImageView ivIcon;
+    CircleImageView ivTitleImg;
+    TextView tvTitle;
+    TextView tvMessage;
+    TextView tvPurpose;
 
     Uri introImgUri = null;
-    String interest;
+    Uri titleImgUri = null;
+    String introImgPath;
+    String titleImgPath;
+    String meetInterest;
     String iconUrl;
     String meetName;
+    String message;
+    String purposeMessage;
     EditText editText;
+    Map<String, String> dataPart;
+    String[] dstName;
 
     boolean meetNameIsChanged = false;
 
@@ -58,27 +79,45 @@ public class OptionModifyActivity extends AppCompatActivity {
 
         //xml Reference
         toolbar = findViewById(R.id.toolbar_modify_activity);
-        imageViewIntro = findViewById(R.id.iv_page_modify_intro_image);
-        imageViewIcon = findViewById(R.id.iv_page_modify_interest_icon);
-        textViewTitle = findViewById(R.id.tv_page_modify_title);
-        textViewMessage = findViewById(R.id.tv_page_modify_message);
+        ivIntro = findViewById(R.id.iv_page_modify_intro_image);
+        ivIcon = findViewById(R.id.iv_page_modify_interest_icon);
+        tvTitle = findViewById(R.id.tv_page_modify_title);
+        tvMessage = findViewById(R.id.tv_page_modify_message);
+        ivTitleImg = findViewById(R.id.iv_page_modify_title_img);
+        tvPurpose = findViewById(R.id.tv_page_modify_purpose);
+
+        meetName = G.currentItemBase.meetName;
+        meetInterest = G.currentItemBase.meetInterest;
+        purposeMessage = G.currentItemBase.purposeMessage;
+        message = G.currentItemBase.message;
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (G.currentItemDetail.introImgUrl != null)
-            Glide.with(this).load(G.currentItemDetail.introImgUrl).into(imageViewIntro);
+        if (G.currentItemBase.introImgUrl != null)
+            Picasso.get().load(RetrofitHelper.getUrlForImg() + G.currentItemBase.introImgUrl).into(ivIntro);
 
-        interest = G.currentItemBase.meetInterest;
-
-        String interest = G.currentItemBase.meetInterest;
         ArrayList<String> interests = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.interest_list)));
-        Glide.with(this).load(getResources().getStringArray(R.array.interest_icon_img_url)[interests.indexOf(interest)]).into(imageViewIcon);
+        Glide.with(this).load(getResources().getStringArray(R.array.interest_icon_img_url)[interests.indexOf(meetInterest)]).into(ivIcon);
 
-        textViewTitle.setText(G.currentItemBase.meetName);
+        tvTitle.setText(meetName);
 
-        textViewMessage.setText(G.currentItemDetail.message);
+        if (G.currentItemBase.titleImgUrl != null)
+            Picasso.get().load(RetrofitHelper.getUrlForImg() + G.currentItemBase.titleImgUrl).into(ivTitleImg);
+        if (purposeMessage != null) tvPurpose.setText(purposeMessage);
+        if (message == null || message.equals("")) {
+            tvMessage.setText("모임 설명을 작성해주세요");
+        } else {
+            tvMessage.setText(message);
+        }
+    }
+
+
+    public void clickTitleImg(View view) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_CODE_FOR_TITLE_IMG_SELECT);
     }
 
     public void clickIntro(View view) {
@@ -97,14 +136,34 @@ public class OptionModifyActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view1 = getLayoutInflater().inflate(R.layout.view_for_modify_title_edit, null);
         editText = view1.findViewById(R.id.edit_modify_title);
-        editText.setText(G.currentItemBase.meetName);
+        editText.setText(meetName);
         builder.setTitle("모임명 설정").setView(view1).setNegativeButton("저장 안함", null).setPositiveButton("저장", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 meetName = editText.getText().toString();
-                textViewTitle.setText(meetName);
-                if (!editText.getText().toString().equals(G.currentItemBase.meetName))
+                tvTitle.setText(meetName);
+                if (!meetName.equals(G.currentItemBase.meetName)) {
                     meetNameIsChanged = true;
+                } else {
+                    meetNameIsChanged = false;
+                }
+            }
+        }).create().show();
+    }
+
+    public void clickPurposeMessage(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view1 = getLayoutInflater().inflate(R.layout.view_for_modify_title_edit, null);
+        editText = view1.findViewById(R.id.edit_modify_title);
+        editText.setText(purposeMessage);
+        editText.setMaxLines(2);
+        editText.setLines(2);
+        editText.setMaxEms(40);
+        builder.setTitle("모임목표 설정").setView(view1).setNegativeButton("저장 안함", null).setPositiveButton("저장", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                purposeMessage = editText.getText().toString();
+                tvPurpose.setText(purposeMessage);
             }
         }).create().show();
     }
@@ -113,11 +172,12 @@ public class OptionModifyActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view1 = getLayoutInflater().inflate(R.layout.view_for_modify_message_edit, null);
         editText = view1.findViewById(R.id.edit_modify_title);
-        if (G.currentItemDetail != null) editText.setText(G.currentItemDetail.message);
+        if (message != null) editText.setText(message);
         builder.setTitle("모임명 설정").setView(view1).setNegativeButton("저장 안함", null).setPositiveButton("저장", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                textViewMessage.setText(editText.getText().toString());
+                message = editText.getText().toString();
+                tvMessage.setText(message);
             }
         }).create().show();
     }
@@ -135,146 +195,117 @@ public class OptionModifyActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_CODE_FOR_INTRO_IMG_SELECT:
                 introImgUri = data.getData();
-                Glide.with(this).load(introImgUri).into(imageViewIntro);
+                Glide.with(this).load(introImgUri).into(ivIntro);
+                introImgPath = getRealPathFromUri(introImgUri);
                 break;
             case REQUEST_CODE_FOR_INTEREST_ICON:
-                interest = data.getStringExtra("interest");
+                meetInterest = data.getStringExtra("interest");
                 iconUrl = data.getStringExtra("iconUrl");
-                Glide.with(this).load(iconUrl).into(imageViewIcon);
+                Glide.with(this).load(iconUrl).into(ivIcon);
                 break;
-
+            case REQUEST_CODE_FOR_TITLE_IMG_SELECT:
+                titleImgUri = data.getData();
+                Glide.with(this).load(titleImgUri).into(ivTitleImg);
+                titleImgPath = getRealPathFromUri(titleImgUri);
+                break;
         }
     }
 
     public void clickSave(View view) {
-        G.currentItemBase.meetInterest = interest;
-        G.currentItemDetail.message = textViewMessage.getText().toString();
-        StorageReference introImgRef = FirebaseStorage.getInstance().getReference("introImgs/" + new SimpleDateFormat("yyyyMMddHHssmm").format(new Date()) + ".png");
-        if (introImgUri != null) {
-            introImgRef.putFile(introImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    introImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            G.currentItemDetail.introImgUrl = uri.toString();
 
-                            if (meetNameIsChanged) {
-                                G.itemsRef.child(meetName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.getValue() != null) {
-                                            Toast.makeText(OptionModifyActivity.this, "중복된 모임 이름이 있습니다.", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            G.itemsRef.child(meetName).child("base").setValue(new ItemBaseVO(meetName, G.currentItemBase.meetLocation, G.currentItemBase.purposeMessage, G.currentItemBase.titleImgUrl, G.currentItemBase.meetInterest)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    G.itemsRef.child(meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            G.itemsRef.child(meetName).child("members").setValue(G.currentItemMember).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void aVoid) {
-                                                                    G.itemsRef.child(G.currentItemBase.meetName).removeValue();
-                                                                    G.currentItemBase.meetName = meetName;
-                                                                    G.currentItem.setItemBaseVO(G.currentItemBase);
-                                                                    G.currentItem.setItemDetailVO(G.currentItemDetail);
-                                                                    G.currentItem.setItemMemberVO(G.currentItemMember);
-                                                                    Toast.makeText(OptionModifyActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
-                                                                    finish();
-                                                                }
-                                                            });
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                        }
-                                    }
-                                });
-                            } else {
-                                G.itemsRef.child(G.currentItemBase.meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        G.itemsRef.child(G.currentItemBase.meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                G.itemsRef.child(G.currentItemBase.meetName).child("members").setValue(G.currentItemMember).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        G.currentItem.setItemBaseVO(G.currentItemBase);
-                                                        G.currentItem.setItemDetailVO(G.currentItemDetail);
-                                                        G.currentItem.setItemMemberVO(G.currentItemMember);
-                                                        Toast.makeText(OptionModifyActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
-                                                        finish();
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
+        if (meetNameIsChanged) {
+            RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkMeetName(meetName).enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    try {
+                        int checkNum = Integer.parseInt(response.body());
+                        if (checkNum > 0) {
+                            Toast.makeText(OptionModifyActivity.this, "동일한 모임명이 존재합니다.\n다른 이름을 생성해주세요", Toast.LENGTH_SHORT).show();
+                        } else {
+                            saveData();
                         }
-                    });
+                    } catch (Exception e) {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+
                 }
             });
         } else {
-            if (meetNameIsChanged) {
-                G.itemsRef.child(meetName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null) {
-                            Toast.makeText(OptionModifyActivity.this, "중복된 모임 이름이 있습니다.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            G.itemsRef.child(meetName).child("base").setValue(new ItemBaseVO(meetName, G.currentItemBase.meetLocation, G.currentItemBase.purposeMessage, G.currentItemBase.titleImgUrl, G.currentItemBase.meetInterest)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    G.itemsRef.child(meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            G.itemsRef.child(meetName).child("members").setValue(G.currentItemMember).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    G.itemsRef.child(G.currentItemBase.meetName).removeValue();
-                                                    G.currentItemBase.meetName = meetName;
-                                                    G.currentItem.setItemBaseVO(G.currentItemBase);
-                                                    G.currentItem.setItemDetailVO(G.currentItemDetail);
-                                                    G.currentItem.setItemMemberVO(G.currentItemMember);
-                                                    Toast.makeText(OptionModifyActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
-                                                    finish();
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    }
-                });
-            } else {
-                G.itemsRef.child(G.currentItemBase.meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        G.itemsRef.child(G.currentItemBase.meetName).child("detail").setValue(G.currentItemDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                G.itemsRef.child(G.currentItemBase.meetName).child("members").setValue(G.currentItemMember).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        G.currentItem.setItemBaseVO(G.currentItemBase);
-                                        G.currentItem.setItemDetailVO(G.currentItemDetail);
-                                        G.currentItem.setItemMemberVO(G.currentItemMember);
-                                        Toast.makeText(OptionModifyActivity.this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
+            saveData();
+        }
+    }
+
+    public void saveData() {
+        dataPart = new HashMap<>();
+        dataPart.put("originMeetName", G.currentItemBase.meetName);
+        dataPart.put("meetName", meetName);
+        dataPart.put("meetInterest", meetInterest);
+        dataPart.put("purposeMessage", purposeMessage);
+        dataPart.put("message", message);
+
+        MultipartBody.Part titlePart = null;
+        MultipartBody.Part introPart = null;
+
+        if (titleImgPath != null) {
+            File file = new File(titleImgPath);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+            titlePart = MultipartBody.Part.createFormData("titleImg", file.getName(), requestBody);
         }
 
+        if (introImgPath != null) {
+            File file = new File(introImgPath);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+            introPart = MultipartBody.Part.createFormData("introImg", file.getName(), requestBody);
+        }
+
+
+        RetrofitService retrofitService = RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class);
+        retrofitService.updateItemBaseDataToModifyActivity(dataPart, titlePart, introPart).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.body() != null) {
+                    dstName = response.body().split("&&");
+                    G.currentItemBase.meetName = meetName;
+                    G.currentItemBase.meetInterest = meetInterest;
+                    G.currentItemBase.purposeMessage = purposeMessage;
+                    G.currentItemBase.message = message;
+                    if (dstName[0] != null) {
+                        G.currentItemBase.titleImgUrl = dstName[0];
+                    }
+                    try {
+                        G.currentItemBase.introImgUrl = dstName[1];
+                        onBackPressed();
+                    } catch (Exception e) {
+                        G.currentItemBase.introImgUrl = null;
+                        onBackPressed();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                saveData();
+
+            }
+        });
     }
+
+    String getRealPathFromUri(Uri uri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(this, uri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
+    }
+
 }
 
 

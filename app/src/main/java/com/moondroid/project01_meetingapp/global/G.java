@@ -13,8 +13,9 @@ public class G {
     {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
+
     public static FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-//    public static DatabaseReference itemsRef = firebaseDatabase.getReference("items");
+    public static DatabaseReference itemsRef = firebaseDatabase.getReference("items");
     public static DatabaseReference usersRef = firebaseDatabase.getReference("users");
 
     public static UserBaseVO myProfile = new UserBaseVO();

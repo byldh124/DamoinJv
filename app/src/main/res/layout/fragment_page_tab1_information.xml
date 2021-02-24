@@ -90,6 +90,7 @@
                 android:textColor="#ff333333"
                 android:textStyle="bold"/>
 
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_page_members"
                 android:layout_width="match_parent"

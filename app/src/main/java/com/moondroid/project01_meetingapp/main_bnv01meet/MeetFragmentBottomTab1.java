@@ -3,6 +3,7 @@ package com.moondroid.project01_meetingapp.main_bnv01meet;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.createmeet.CreateActivity;
 import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
 import java.util.ArrayList;
+import java.util.function.LongBinaryOperator;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MeetFragmentBottomTab1 extends Fragment {
 
@@ -57,6 +65,7 @@ public class MeetFragmentBottomTab1 extends Fragment {
         recyclerItems = view.findViewById(R.id.recycler_items);
         buttonAdd = view.findViewById(R.id.btn_add_meet);
 
+        snapshots = new ArrayList<>();
         itemList = new ArrayList<>();
         itemAdapter = new MeetItemAdapter(getContext(), itemList);
         recyclerItems.setAdapter(itemAdapter);
@@ -72,10 +81,9 @@ public class MeetFragmentBottomTab1 extends Fragment {
                     swipeRefreshLayout.setRefreshing(false);
                 }
             });
-        } catch (Exception e){
-            Toast.makeText(getContext(), "데이터 갱신에 문제가 발생했습니다.\n 화면을 잡아 당겨주세요", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
         }
-        
+
 
         //categoryRecycler build
         resources = getResources();
@@ -93,50 +101,49 @@ public class MeetFragmentBottomTab1 extends Fragment {
     }
 
     public void loadData() {
-        snapshots = new ArrayList<>();
+        snapshots.clear();
         itemList.clear();
-        G.itemsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        RetrofitHelper.getRetrofitInstanceGsonSetLenient().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    ItemBaseVO itemBaseVO = ds.child("base").getValue(ItemBaseVO.class);
-                    snapshots.add(itemBaseVO);
+            public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
+                for (int j = 0; j < response.body().size(); j++) {
+                    snapshots.add(response.body().get(j));
                 }
                 for (int i = 0; i < snapshots.size(); i++) {
-                    //TODO 조건에 맞게 아이템 맞추기 (지역, 관심사)
-                    itemList.add(0, snapshots.get(i));
+                    itemList.add(snapshots.get(i));
+                    itemAdapter.notifyItemInserted(itemList.size() - 1);
                 }
-                itemAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<ItemBaseVO>> call, Throwable t) {
             }
         });
-
     }
 
     public void loadData(String interest) {
-        snapshots = new ArrayList<>();
+        snapshots.clear();
         itemList.clear();
-        G.itemsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    ItemBaseVO itemBaseVO = ds.child("base").getValue(ItemBaseVO.class);
-                    snapshots.add(itemBaseVO);
+            public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
+                for (int j = 0; j < response.body().size(); j++) {
+                    snapshots.add(response.body().get(j));
                 }
+
                 for (int i = 0; i < snapshots.size(); i++) {
-                    if (snapshots.get(i).meetInterest.equals(interest))
-                        itemList.add(0, snapshots.get(i));
+                    if (snapshots.get(i).meetInterest.equals(interest)){
+                        itemList.add(snapshots.get(i));
+                        itemAdapter.notifyItemInserted(itemList.size() - 1);
+                    }
                 }
-                itemAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<ItemBaseVO>> call, Throwable t) {
             }
         });
     }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        loadData();
-//    }
-
 
     @Override
     public void onStart() {

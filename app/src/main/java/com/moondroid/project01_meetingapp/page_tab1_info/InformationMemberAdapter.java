@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 
 import org.w3c.dom.Text;
@@ -37,9 +38,11 @@ public class InformationMemberAdapter extends RecyclerView.Adapter<InformationMe
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
+        if (memberVOS.get(position) == null) return;
         if (position ==0) holder.tvMaster.setVisibility(View.VISIBLE);
+
         if (memberVOS.get(position).userProfileImgUrl != null) {
-            Glide.with(context).load(memberVOS.get(position).userProfileImgUrl).into(holder.ivProfile);
+            Glide.with(context).load(RetrofitHelper.getUrlForImg() + memberVOS.get(position).userProfileImgUrl).into(holder.ivProfile);
         }
 
         holder.tvName.setText(memberVOS.get(position).userName);
@@ -47,7 +50,6 @@ public class InformationMemberAdapter extends RecyclerView.Adapter<InformationMe
         if (memberVOS.get(position).userProfileMessage != null) {
             holder.tvMsg.setText(memberVOS.get(position).userProfileMessage);
         }
-
     }
 
     @Override

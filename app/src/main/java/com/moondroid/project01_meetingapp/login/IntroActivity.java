@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -58,23 +59,24 @@ public class IntroActivity extends AppCompatActivity {
                     finish();
                 } else {
 
-                    Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
-                    RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-                    Call<UserBaseVO> call = retrofitService.loadUserBaseDBToIntroActivity(userId);
-                    call.enqueue(new Callback<UserBaseVO>() {
-                        @Override
-                        public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
-                            G.myProfile = response.body();
-                            intent = new Intent(IntroActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-
-                        @Override
-                        public void onFailure(Call<UserBaseVO> call, Throwable t) {
-                            Log.i("aaa", t.getMessage());
-                        }
-                    });
+                    startApp();
+//                    Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
+//                    RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+//                    Call<UserBaseVO> call = retrofitService.loadUserBaseDBToIntroActivity(userId);
+//                    call.enqueue(new Callback<UserBaseVO>() {
+//                        @Override
+//                        public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
+//                            G.myProfile = response.body();
+//                            intent = new Intent(IntroActivity.this, MainActivity.class);
+//                            startActivity(intent);
+//                            finish();
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<UserBaseVO> call, Throwable t) {
+//                            Toast.makeText(IntroActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
 
 //                    G.usersRef.child(userId).child("base").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
 //                        @Override
@@ -88,5 +90,26 @@ public class IntroActivity extends AppCompatActivity {
                 }
             }
         }, 1000);
+    }
+
+    public void startApp(){
+        Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
+        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+        Call<UserBaseVO> call = retrofitService.loadUserBaseDBToIntroActivity(userId);
+        call.enqueue(new Callback<UserBaseVO>() {
+            @Override
+            public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
+                G.myProfile = response.body();
+                intent = new Intent(IntroActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<UserBaseVO> call, Throwable t) {
+                Toast.makeText(IntroActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                startApp();
+            }
+        });
     }
 }

@@ -43,10 +43,21 @@
         android:onClick="clickIntro"
         android:background="@color/pastel_1"/>
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_page_modify_title_img"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_margin="8dp"
+        android:clickable="true"
+        android:onClick="clickTitleImg"
+        android:layout_below="@id/iv_page_modify_intro_image"/>
+
     <ImageView
         android:id="@+id/iv_page_modify_interest_icon"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:layout_toRightOf="@id/iv_page_modify_title_img"
         android:layout_below="@id/iv_page_modify_intro_image"
         android:onClick="clickInterestIcon"
         android:layout_margin="8dp"/>
@@ -66,11 +77,25 @@
         android:textStyle="bold"/>
 
     <TextView
+        android:id="@+id/tv_page_modify_purpose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_page_modify_interest_icon"
+        android:layout_toRightOf="@id/iv_page_modify_title_img"
+        android:layout_alignLeft="@id/iv_page_modify_interest_icon"
+        android:layout_marginRight="8dp"
+        android:lines="2"
+        android:maxLines="2"
+        android:clickable="true"
+        android:onClick="clickPurposeMessage"
+        android:gravity="top"/>
+
+    <TextView
         android:id="@+id/tv_page_modify_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#ff333333"
-        android:layout_below="@id/iv_page_modify_interest_icon"
+        android:layout_below="@id/iv_page_modify_title_img"
         android:layout_margin="8dp"
         android:clickable="true"
         android:onClick="clickMessage"

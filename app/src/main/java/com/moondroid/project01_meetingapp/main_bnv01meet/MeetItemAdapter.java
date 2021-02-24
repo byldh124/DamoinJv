@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,9 +18,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.page.PageActivity;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 import com.moondroid.project01_meetingapp.variableobject.ItemDetailVO;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,16 +54,21 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         ItemBaseVO item = itemList.get(position);
-        Glide.with(context).load(item.titleImgUrl).into(holder.ivProfile);
+        if (!(item.titleImgUrl.endsWith(".jpg") && !item.titleImgUrl.endsWith(".png"))){
+            item.titleImgUrl = item.titleImgUrl.concat(".png");
+        }
+        Picasso.get().load(RetrofitHelper.getUrlForImg() + item.titleImgUrl).into(holder.ivProfile);
 
         int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.meetInterest);
         if (interestNum < 0) interestNum = 1;
         Glide.with(context).load(interestIconList[interestNum]).into(holder.iconImg);
 
         holder.meetName.setText(item.meetName);
-        String[] addresses = item.meetLocation.split(" ");
-        String lastAddress = addresses[addresses.length - 1];
-        holder.meetAddress.setText(lastAddress);
+        if (item.meetLocation != null) {
+            String[] addresses = item.meetLocation.split(" ");
+            String lastAddress = addresses[addresses.length - 1];
+            holder.meetAddress.setText(lastAddress);
+        }
         holder.purposeMessage.setText(item.purposeMessage);
 
 
@@ -93,22 +101,10 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     itemTitle = itemList.get(pos).meetName;
-                    G.itemsRef.child(itemTitle).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                        @Override
-                        public void onSuccess(DataSnapshot dataSnapshot) {
-                            G.currentItemBase = dataSnapshot.child("base").getValue(ItemBaseVO.class);
-                            G.currentItem.setItemBaseVO(G.currentItemBase);
-                            if (dataSnapshot.child("detail").getValue(ItemDetailVO.class) != null)
-                                G.currentItemDetail = dataSnapshot.child("detail").getValue(ItemDetailVO.class);
-                            else G.currentItemDetail = new ItemDetailVO();
-                            G.currentItemMember.master = dataSnapshot.child("members").child("master").getValue(String.class);
-                            if (dataSnapshot.child("members").child("member").getValue() != null)
-                                G.currentItemMember.member = (ArrayList<String>) dataSnapshot.child("members").child("member").getValue();
-                            Intent intent = new Intent(context, PageActivity.class);
-                            context.startActivity(intent);
 
-                        }
-                    });
+                    G.currentItemBase = itemList.get(pos);
+                    Intent intent = new Intent(context, PageActivity.class);
+                    context.startActivity(intent);
                 }
             });
         }

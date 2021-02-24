@@ -6,6 +6,9 @@ public class ItemBaseVO {
     public String purposeMessage;
     public String titleImgUrl;
     public String meetInterest;
+    public String introImgUrl;
+    public String message;
+    public String masterId;
 
     public ItemBaseVO() {
     }
@@ -18,23 +21,14 @@ public class ItemBaseVO {
         this.meetInterest = meetInterest;
     }
 
-    public void setMeetName(String meetName) {
+    public ItemBaseVO(String meetName, String meetLocation, String purposeMessage, String titleImgUrl, String meetInterest, String introImgUrl, String message, String masterId) {
         this.meetName = meetName;
-    }
-
-    public void setMeetLocation(String meetLocation) {
         this.meetLocation = meetLocation;
-    }
-
-    public void setPurposeMessage(String purposeMessage) {
         this.purposeMessage = purposeMessage;
-    }
-
-    public void setTitleImgUrl(String titleImgUrl) {
         this.titleImgUrl = titleImgUrl;
-    }
-
-    public void setMeetInterest(String meetInterest) {
         this.meetInterest = meetInterest;
+        this.introImgUrl = introImgUrl;
+        this.message = message;
+        this.masterId = masterId;
     }
 }

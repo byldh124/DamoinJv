@@ -28,6 +28,9 @@ public interface RetrofitService {
     @GET("/damoim/checkUserId.php")
     Call<String> checkUserId(@Query("userId") String userId);
 
+    @GET("/damoim/checkMeetName.php")
+    Call<String> checkMeetName(@Query("meetName") String meetName);
+
     @GET("/damoim/updateUserInterest.php")
     Call<String> updateUserInterest(@Query("userId") String userId, @Query("userInterest") String userInterest);
 
@@ -39,6 +42,21 @@ public interface RetrofitService {
 
     @Multipart
     @POST("/damoim/saveItemBaseDB.php")
-    Call<ItemBaseVO> saveItemBaseDataToCreateActivity(@Body ItemBaseVO itemBaseData, @Part MultipartBody.Part filePart);
+    Call<String> saveItemBaseDataToCreateActivity(@PartMap Map<String, String> dataPart, @Part MultipartBody.Part filePart);
 
+    @GET("/damoim/getItemBaseData.php")
+    Call<ArrayList<ItemBaseVO>> getItemBaseDataOnMain();
+
+    @Multipart
+    @POST("/damoim/updateItemBaseDB.php")
+    Call<String> updateItemBaseDataToModifyActivity(@PartMap Map<String, String> dataPart, @Part MultipartBody.Part titlePart, @Part MultipartBody.Part introPart);
+
+    @GET("/damoim/saveUserMeetData.php")
+    Call<String> saveUserMeetData(@Query("userId") String userId, @Query("meetName") String meetName);
+
+    @GET("/damoim/checkUserMeetData.php")
+    Call<String> checkUserMeetData(@Query("userId") String userId, @Query("meetName") String meetName);
+
+    @GET("damoim/loadMembers.php")
+    Call<ArrayList<UserBaseVO>> loadMembers(@Query("meetName") String meetName);
 }

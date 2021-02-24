@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -26,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.InterestActivity;
 import com.moondroid.project01_meetingapp.account.LocationChoiceActivity;
@@ -39,6 +41,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -159,95 +162,143 @@ public class CreateActivity extends AppCompatActivity {
         meetName = etMeetName.getText().toString();
         purposeMessage = etPurposeMessage.getText().toString();
 
-        MultipartBody.Part filePart = null;
-
-        if (imgPath != null){
-            File file = new File(imgPath);
-            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-            filePart = MultipartBody.Part.createFormData("img", file.getName(), requestBody);
-        }
-
-        RetrofitService retrofitService = RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class);
-        retrofitService.saveItemBaseDataToCreateActivity(new ItemBaseVO(meetName, meetLocation, purposeMessage, null, meetInterest), filePart).enqueue(new Callback<ItemBaseVO>() {
+        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkMeetName(meetName).enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<ItemBaseVO> call, Response<ItemBaseVO> response) {
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.i("qqqq", response.body());
+                try {
+                    int isExist = Integer.parseInt(response.body());
+                    if (isExist > 0) {
+                        Toast.makeText(CreateActivity.this, "동일한 모임명이 존재합니다.\n다른 이름을 생성해주세요", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
 
-            }
+                        if (meetName == null || meetName.equals("")) {
+                            Toast.makeText(CreateActivity.this, "모임 이름을 설정해주세요", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else if (meetLocation == null || meetLocation.equals("")) {
+                            Toast.makeText(CreateActivity.this, "모임 지역을 설정해주세요", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else if (purposeMessage == null || purposeMessage.equals("")) {
+                            Toast.makeText(CreateActivity.this, "모임 목표를 작성해주세요", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else if (meetInterest == null || meetInterest.equals("")) {
+                            Toast.makeText(CreateActivity.this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
-            @Override
-            public void onFailure(Call<ItemBaseVO> call, Throwable t) {
+                        MultipartBody.Part filePart = null;
 
-            }
-        });
-
-        G.itemsRef.child(meetName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    new AlertDialog.Builder(CreateActivity.this).setMessage("동일한 모임 이름이 존재합니다.\n다른 모임 이름을 작성해주세요.").setPositiveButton("확인", null).create().show();
-                    return;
-                } else if (meetName == null || meetName.equals("")) {
-                    Toast.makeText(CreateActivity.this, "모임 이름을 설정해주세요", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (meetLocation == null || meetLocation.equals("")) {
-                    Toast.makeText(CreateActivity.this, "모임 지역을 설정해주세요", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (purposeMessage == null || purposeMessage.equals("")) {
-                    Toast.makeText(CreateActivity.this, "모임 목표를 작성해주세요", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (meetInterest == null || meetInterest.equals("")) {
-                    Toast.makeText(CreateActivity.this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                titleImgRef.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        titleImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        if (imgPath != null) {
+                            File file = new File(imgPath);
+                            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+                            filePart = MultipartBody.Part.createFormData("img", file.getName(), requestBody);
+                        }
+                        HashMap<String, String> dataPart = new HashMap<>();
+                        dataPart.put("meetName", meetName);
+                        dataPart.put("meetLocation", meetLocation);
+                        dataPart.put("meetInterest", meetInterest);
+                        dataPart.put("purposeMessage", purposeMessage);
+                        dataPart.put("masterId", G.myProfile.userId);
+                        RetrofitService retrofitService = RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class);
+                        retrofitService.saveItemBaseDataToCreateActivity(dataPart, filePart).enqueue(new Callback<String>() {
                             @Override
-                            public void onSuccess(Uri uri) {
-                                titleImgUrl = uri.toString();
-                                G.currentItemBase = new ItemBaseVO(meetName, meetLocation, purposeMessage, titleImgUrl, meetInterest);
-                                G.currentItem.setItemBaseVO(G.currentItemBase);
-                                G.itemsRef.child(meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        G.itemsRef.child(meetName).child("members").child("master").setValue(G.myProfile.userId).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                meets = new ArrayList<>();
-                                                G.currentItemMember.master = G.myProfile.userId;
-                                                G.usersRef.child(G.myProfile.userId).child("meets").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                                    @Override
-                                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                                            meets.add(ds.getValue(String.class));
-                                                        }
-                                                        meets.add(G.currentItemBase.meetName);
-                                                        G.usersRef.child(G.myProfile.userId).child("meets").setValue(meets).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                Intent intent = new Intent(CreateActivity.this, PageActivity.class);
-                                                                startActivity(intent);
-                                                                finish();
-                                                            }
-                                                        });
-                                                    }
-                                                });
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                G.currentItemBase.meetName = meetName;
+                                G.currentItemBase.meetLocation = meetLocation;
+                                G.currentItemBase.purposeMessage = purposeMessage;
+                                G.currentItemBase.meetInterest = meetInterest;
+                                G.currentItemBase.titleImgUrl = response.body();
+                                G.currentItemBase.masterId = G.myProfile.userId;
+                                onBackPressed();
+                            }
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
 
-                                            }
-                                        });
-                                    }
-                                });
                             }
                         });
                     }
-                });
-            }
-        });
+                } catch (Exception e){
+                    Toast.makeText(CreateActivity.this, "동일한 모임명이 존재합니다.\n다른 이름을 생성해주세요", Toast.LENGTH_SHORT).show();
+                }
+
+        }
+
+        @Override
+        public void onFailure (Call < String > call, Throwable t){
+
+        }
+    });
 
 
-    }
+//        G.itemsRef.child(meetName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//            @Override
+//            public void onSuccess(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.getValue() != null) {
+//                    new AlertDialog.Builder(CreateActivity.this).setMessage("동일한 모임 이름이 존재합니다.\n다른 모임 이름을 작성해주세요.").setPositiveButton("확인", null).create().show();
+//                    return;
+//                } else if (meetName == null || meetName.equals("")) {
+//                    Toast.makeText(CreateActivity.this, "모임 이름을 설정해주세요", Toast.LENGTH_SHORT).show();
+//                    return;
+//                } else if (meetLocation == null || meetLocation.equals("")) {
+//                    Toast.makeText(CreateActivity.this, "모임 지역을 설정해주세요", Toast.LENGTH_SHORT).show();
+//                    return;
+//                } else if (purposeMessage == null || purposeMessage.equals("")) {
+//                    Toast.makeText(CreateActivity.this, "모임 목표를 작성해주세요", Toast.LENGTH_SHORT).show();
+//                    return;
+//                } else if (meetInterest == null || meetInterest.equals("")) {
+//                    Toast.makeText(CreateActivity.this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                titleImgRef.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                        titleImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                            @Override
+//                            public void onSuccess(Uri uri) {
+//                                titleImgUrl = uri.toString();
+//                                G.currentItemBase = new ItemBaseVO(meetName, meetLocation, purposeMessage, titleImgUrl, meetInterest);
+//                                G.currentItem.setItemBaseVO(G.currentItemBase);
+//                                G.itemsRef.child(meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void aVoid) {
+//                                        G.itemsRef.child(meetName).child("members").child("master").setValue(G.myProfile.userId).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                            @Override
+//                                            public void onSuccess(Void aVoid) {
+//                                                meets = new ArrayList<>();
+//                                                G.currentItemMember.master = G.myProfile.userId;
+//                                                G.usersRef.child(G.myProfile.userId).child("meets").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                                                    @Override
+//                                                    public void onSuccess(DataSnapshot dataSnapshot) {
+//                                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//                                                            meets.add(ds.getValue(String.class));
+//                                                        }
+//                                                        meets.add(G.currentItemBase.meetName);
+//                                                        G.usersRef.child(G.myProfile.userId).child("meets").setValue(meets).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                            @Override
+//                                                            public void onSuccess(Void aVoid) {
+//                                                                Intent intent = new Intent(CreateActivity.this, PageActivity.class);
+//                                                                startActivity(intent);
+//                                                                finish();
+//                                                            }
+//                                                        });
+//                                                    }
+//                                                });
+//
+//                                            }
+//                                        });
+//                                    }
+//                                });
+//                            }
+//                        });
+//                    }
+//                });
+//            }
+//        });
+
+
+}
 
     public void clickImageInput(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -264,4 +315,5 @@ public class CreateActivity extends AppCompatActivity {
         String result = cursor.getString(column_index);
         cursor.close();
         return result;
+    }
 }
