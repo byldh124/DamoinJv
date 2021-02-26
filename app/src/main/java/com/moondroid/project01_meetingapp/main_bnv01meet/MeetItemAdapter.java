@@ -54,9 +54,7 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         ItemBaseVO item = itemList.get(position);
-        if (!(item.titleImgUrl.endsWith(".jpg") && !item.titleImgUrl.endsWith(".png"))){
-            item.titleImgUrl = item.titleImgUrl.concat(".png");
-        }
+
         Picasso.get().load(RetrofitHelper.getUrlForImg() + item.titleImgUrl).into(holder.ivProfile);
 
         int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.meetInterest);

@@ -9,18 +9,19 @@ import com.moondroid.project01_meetingapp.variableobject.ItemMemberVO;
 import com.moondroid.project01_meetingapp.variableobject.ItemVO;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 
-public class G {
-    {
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-    }
+import java.util.ArrayList;
 
-    public static FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    public static DatabaseReference itemsRef = firebaseDatabase.getReference("items");
-    public static DatabaseReference usersRef = firebaseDatabase.getReference("users");
+public class G {
 
     public static UserBaseVO myProfile = new UserBaseVO();
-    public static ItemVO currentItem = new ItemVO();
     public static ItemBaseVO currentItemBase = new ItemBaseVO();
-    public static ItemDetailVO currentItemDetail = new ItemDetailVO();
-    public static ItemMemberVO currentItemMember = new ItemMemberVO();
+    public static ArrayList<String> currentItemMembers = new ArrayList<>();
+
+//    public static FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//    public static DatabaseReference itemsRef = firebaseDatabase.getReference("items");
+//    public static DatabaseReference usersRef = firebaseDatabase.getReference("users");
+//    public static ItemVO currentItem = new ItemVO();
+
+//    public static ItemDetailVO currentItemDetail = new ItemDetailVO();
+//    public static ItemMemberVO currentItemMember = new ItemMemberVO();
 }

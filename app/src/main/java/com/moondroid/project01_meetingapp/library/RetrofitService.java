@@ -57,6 +57,19 @@ public interface RetrofitService {
     @GET("/damoim/checkUserMeetData.php")
     Call<String> checkUserMeetData(@Query("userId") String userId, @Query("meetName") String meetName);
 
-    @GET("damoim/loadMembers.php")
+    @GET("/damoim/loadMembers.php")
     Call<ArrayList<UserBaseVO>> loadMembers(@Query("meetName") String meetName);
+
+    @GET("/damoim/loadUserMeetItem.php")
+    Call<ArrayList<ItemBaseVO>> loadUserMeetItem(@Query("userId") String userId);
+
+
+    @GET("/damoim/saveUserBaseDataToKakako.php")
+    Call<String> saveUserBaseDataToKakao(@Query("userId") String userId, @Query("userName") String userName, @Query("userProfileImgUrl") String profileImgUrl);
+
+    @GET("/damoim/saveFCMToken.php")
+    Call<String> saveFCMToken(@Query("userId") String userId, @Query("FCMToken") String FCMToken);
+
+    @GET("/damoim/sendFCMMessage.php")
+    Call<String> sendFCMMessage(@Query("meetName") String meetName, @Query("userId") String userId);
 }

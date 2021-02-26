@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".page_tab1_info.CreateMoimActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_create_moim_activity"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="모임 설정"
+            android:fontFamily="@font/jalnanche"
+            android:textColor="@color/main_001"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="저장"
+            android:fontFamily="@font/jalnanche"
+            android:textColor="@color/main_001"
+            android:layout_gravity="right"
+            android:layout_marginRight="16dp"
+            android:onClick="clickSave"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_moim_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="12"
+        android:padding="8dp"
+        android:layout_below="@id/toolbar_create_moim_activity"
+        android:background="@drawable/bg_edit_text_create_activity"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"
+        android:clickable="true"
+        android:onClick="clickDate"
+        android:hint="날짜를 선택해주세요"/>
+
+    <TextView
+        android:id="@+id/tv_moim_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="12"
+        android:padding="8dp"
+        android:layout_below="@id/tv_moim_date"
+        android:background="@drawable/bg_edit_text_create_activity"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        android:clickable="true"
+        android:onClick="clickTime"
+        android:hint="시간을 선택해주세요"/>
+
+
+    <EditText
+        android:id="@+id/et_moim_pay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="12"
+        android:padding="8dp"
+        android:layout_below="@id/tv_moim_time"
+        android:background="@drawable/bg_edit_text_create_activity"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        android:inputType="number"
+        android:hint="참가비를 적어주세요"/>
+
+    <EditText
+        android:id="@+id/et_moim_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="12"
+        android:padding="8dp"
+        android:layout_below="@id/et_moim_pay"
+        android:background="@drawable/bg_edit_text_create_activity"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        android:inputType="number"
+        android:hint="모임장소를 적어주세요"/>
+
+    <fragment
+        android:id="@+id/map_view_moim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:name="com.naver.maps.map.MapFragment"
+        android:layout_below="@id/et_moim_location"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="지도에 표시하기"
+        android:layout_alignTop="@id/map_view_moim"/>
+
+
+
+
+</RelativeLayout>

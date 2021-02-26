@@ -67,8 +67,6 @@ public class ProfileSetActivity extends AppCompatActivity {
     RadioButton radioButtonMale, radioButtonFemale;
     Uri uriFromGallery;
 
-    FirebaseStorage firebaseStorage;
-    StorageReference profileImgRef;
     String imgPath;
 
     boolean imgIsChanged = false;
@@ -184,42 +182,6 @@ public class ProfileSetActivity extends AppCompatActivity {
         });
     }
 
-    public void clickSave(View view) {
-        if (imgIsChanged) {
-            firebaseStorage = FirebaseStorage.getInstance();
-            profileImgRef = firebaseStorage.getReference("userProfileImages/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".png");
-            profileImgRef.putFile(uriFromGallery).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    profileImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            G.myProfile = new UserBaseVO(G.myProfile.userId, G.myProfile.userPassword, etName.getText().toString(), tvBirthDate.getText().toString(), gender, G.myProfile.userLocation, G.myProfile.userInterest, uri.toString(), etMessage.getText().toString());
-                            G.usersRef.child(G.myProfile.userId).child("base").setValue(G.myProfile).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(ProfileSetActivity.this, "저장이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        } else {
-            G.myProfile = new UserBaseVO(G.myProfile.userId, G.myProfile.userPassword, etName.getText().toString(), tvBirthDate.getText().toString(), gender, G.myProfile.userLocation, G.myProfile.userInterest, G.myProfile.userProfileImgUrl, etMessage.getText().toString());
-            G.usersRef.child(G.myProfile.userId).child("base").setValue(G.myProfile).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(ProfileSetActivity.this, "저장이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            });
-        }
-
-
-    }
-
     public void clickBirth(View view) {
         String birthDate = tvBirthDate.getText().toString();
         String[] birthDates = birthDate.split("\\.");
@@ -282,8 +244,15 @@ public class ProfileSetActivity extends AppCompatActivity {
     public void loadBasicInfo() {
         if (G.myProfile == null) return;
         if (G.myProfile.userName != null) etName.setText(G.myProfile.userName);
-        if (G.myProfile.userProfileImgUrl != null)
-            Glide.with(this).load(RetrofitHelper.getUrlForImg() + G.myProfile.userProfileImgUrl).into(ivProfileImg);
+        if (G.myProfile.userProfileImgUrl != null) {
+            if (G.myProfile.userProfileImgUrl.contains("http")) {
+                Glide.with(this).load(G.myProfile.userProfileImgUrl).into(ivProfileImg);
+            } else {
+                Glide.with(this).load(RetrofitHelper.getUrlForImg() + G.myProfile.userProfileImgUrl).into(ivProfileImg);
+            }
+        } else {
+            Glide.with(this).load(R.mipmap.ic_launcher).into(ivProfileImg);
+        }
         if (G.myProfile.userGender != null && G.myProfile.userGender.equals("여자")) {
             radioButtonMale.setChecked(false);
             radioButtonFemale.setChecked(true);

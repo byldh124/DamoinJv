@@ -15,11 +15,17 @@ import android.view.MenuItem;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
+import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.main_bnv01meet.MeetItemAdapter;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SearchActivity extends AppCompatActivity implements MenuItem.OnActionExpandListener {
     Toolbar toolbar;
@@ -57,18 +63,22 @@ public class SearchActivity extends AppCompatActivity implements MenuItem.OnActi
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchTarget = query.replace(" ", "");
-                G.itemsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
                     @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        itemVOData.clear();
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            ItemBaseVO itemBaseVO = ds.child("base").getValue(ItemBaseVO.class);
+                    public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            ItemBaseVO itemBaseVO = response.body().get(i);
                             if (itemBaseVO.meetName.contains(searchTarget) || itemBaseVO.purposeMessage.contains(searchTarget)) {
                                 itemVOData.add(0, itemBaseVO);
+                                meetItemAdapter.notifyItemInserted(itemVOData.size() - 1);
                             }
                         }
-                        meetItemAdapter.notifyDataSetChanged();
                         searchView.clearFocus();
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArrayList<ItemBaseVO>> call, Throwable t) {
+
                     }
                 });
                 return true;

@@ -6,19 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
 import com.kakao.sdk.auth.LoginClient;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
-import com.kakao.sdk.user.model.Gender;
 import com.kakao.sdk.user.model.User;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.library.RetrofitService;
@@ -39,10 +36,11 @@ public class LoginActivity extends AppCompatActivity {
 
     final int REQUEST_EXIT = 0;
 
+    long id;
     String inputId;
     String inputPassword;
     String name;
-    String profileImageUrl;
+    String profileImgUrl;
 
     EditText etInputId;
     EditText etInputPassword;
@@ -131,42 +129,28 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void clickKakaoLogin(View view) {
-//        LoginClient.getInstance().loginWithKakaoAccount(this, new Function2<OAuthToken, Throwable, Unit>() {
-//            @Override
-//            public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
-//                if (oAuthToken != null) {
-//                    UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
-//                        @Override
-//                        public Unit invoke(User user, Throwable throwable) {
-//                            if (user != null) {
-//                                long id = user.getId();
-//                                inputId = String.valueOf(id);
-//                                name = user.getKakaoAccount().getProfile().getNickname();
-//                                profileImageUrl = user.getKakaoAccount().getProfile().getProfileImageUrl();
-//
-//                                G.usersRef.child(inputId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                                    @Override
-//                                    public void onSuccess(DataSnapshot dataSnapshot) {
-//                                        saveSharedPreference(inputId);
-//                                        moveToMainActivity();
-//                                    }
-//                                });
-//
-//                                G.usersRef.child(inputId).child("base").setValue(new UserBaseVO(inputId, null, name, null, null, null, null, profileImageUrl, null)).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void aVoid) {
-//                                        saveSharedPreference(inputId);
-//                                        moveToMainActivity();
-//                                    }
-//                                });
-//                            }
-//                            return null;
-//                        }
-//                    });
-//                }
-//                return null;
-//            }
-//        });
+        LoginClient.getInstance().loginWithKakaoAccount(this, new Function2<OAuthToken, Throwable, Unit>() {
+            @Override
+            public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
+                if (oAuthToken != null) {
+                    UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+                        @Override
+                        public Unit invoke(User user, Throwable throwable) {
+                            if (user != null) {
+
+                                id = user.getId();
+                                inputId = String.valueOf(id);
+                                name = user.getKakaoAccount().getProfile().getNickname();
+                                profileImgUrl = user.getKakaoAccount().getProfile().getProfileImageUrl();
+                                saveUserBaseDataOfKakao();
+                            }
+                            return null;
+                        }
+                    });
+                }
+                return null;
+            }
+        });
     }
 
     public void saveSharedPreference(String inputId) {
@@ -179,5 +163,50 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void saveUserBaseDataOfKakao(){
+        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkUserId(inputId).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String str = response.body();
+                if (str.equals("isExist")) {
+                    RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserBaseDBToIntroActivity(inputId).enqueue(new Callback<UserBaseVO>() {
+                        @Override
+                        public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
+                            G.myProfile = response.body();
+                            saveSharedPreference(inputId);
+                            moveToMainActivity();
+                        }
+
+                        @Override
+                        public void onFailure(Call<UserBaseVO> call, Throwable t) {
+                            saveUserBaseDataOfKakao();
+                        }
+                    });
+                } else {
+                    RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveUserBaseDataToKakao(inputId, name, profileImgUrl).enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            G.myProfile.userId = inputId;
+                            G.myProfile.userName = name;
+                            G.myProfile.userProfileImgUrl = profileImgUrl;
+                            saveSharedPreference(inputId);
+                            moveToMainActivity();
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            saveUserBaseDataOfKakao();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                saveUserBaseDataOfKakao();
+            }
+        });
     }
 }

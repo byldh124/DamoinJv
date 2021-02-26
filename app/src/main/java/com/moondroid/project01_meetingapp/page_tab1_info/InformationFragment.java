@@ -109,17 +109,20 @@ public class InformationFragment extends Fragment {
 
     public void loadMembers() {
         memberVOS.clear();
+        G.currentItemMembers.clear();
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserBaseDBToIntroActivity(G.currentItemBase.masterId).enqueue(new Callback<UserBaseVO>() {
             @Override
             public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
-                memberVOS.add(0,response.body());
+                memberVOS.add(0, response.body());
+                G.currentItemMembers.add(G.currentItemBase.masterId);
                 memberAdapter.notifyItemInserted(0);
                 RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMembers(G.currentItemBase.meetName).enqueue(new Callback<ArrayList<UserBaseVO>>() {
                     @Override
                     public void onResponse(Call<ArrayList<UserBaseVO>> call, Response<ArrayList<UserBaseVO>> response) {
                         for (int i = 0; i < response.body().size(); i++) {
                             memberVOS.add(response.body().get(i));
-                            memberAdapter.notifyItemInserted(memberVOS.size()-1);
+                            G.currentItemMembers.add(response.body().get(i).userId);
+                            memberAdapter.notifyItemInserted(memberVOS.size() - 1);
                         }
                     }
 
@@ -137,7 +140,7 @@ public class InformationFragment extends Fragment {
         });
     }
 
-    public void saveUserMeet(){
+    public void saveUserMeet() {
         RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkUserMeetData(G.myProfile.userId, G.currentItemBase.meetName).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

@@ -95,23 +95,6 @@ public class AccountActivity extends AppCompatActivity {
 
     }
 
-    public void saveData() {
-//        G.myProfile = new UserBaseVO(userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest, null, null);
-//        G.usersRef.child(userId).child("base").setValue(G.myProfile).addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//                SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.putString("userId", userId).commit();
-//                Toast.makeText(AccountActivity.this, "아이디 올라갔다잉", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(AccountActivity.this, MainActivity.class);
-//                startActivity(intent);
-//                setResult(RESULT_OK, null);
-//                finish();
-//            }
-//        });
-    }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -245,7 +228,7 @@ public class AccountActivity extends AppCompatActivity {
 
     public void saveDataToRetrofit() {
 
-        userBaseVO = new UserBaseVO(userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest, null, null);
+        userBaseVO = new UserBaseVO(userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest, null, null, null);
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
         Call<UserBaseVO> call = retrofitService.saveUserBaseDataToAccountActivity(userBaseVO);

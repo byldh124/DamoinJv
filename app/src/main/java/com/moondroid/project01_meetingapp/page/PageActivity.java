@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.material.tabs.TabLayout;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.page_tab1_info.CreateMoimActivity;
 import com.moondroid.project01_meetingapp.page_tab1_info.OptionModifyActivity;
 
 public class PageActivity extends AppCompatActivity {
@@ -69,6 +70,13 @@ public class PageActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.add_moim_info:
+                if (!G.currentItemBase.masterId.equals(G.myProfile.userId)){
+                    Toast.makeText(this, "모임장만 할수 있습니다.", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else {
+                    Intent intent = new Intent(this, CreateMoimActivity.class);
+                    startActivity(intent);
+                }
                 break;
 
         }

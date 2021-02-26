@@ -9,12 +9,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.library.LinearLayoutManagerWrapper;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.main_bnv01meet.MeetItemAdapter;
@@ -22,12 +24,14 @@ import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class MyPageFragmentBottomTab3 extends Fragment {
     RecyclerView recyclerView;
     ArrayList<ItemBaseVO> itemBaseVOS;
-    ArrayList<String> strings = new ArrayList<>();
     MeetItemAdapter adapter;
 
     @Nullable
@@ -40,8 +44,9 @@ public class MyPageFragmentBottomTab3 extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.recycler_my_page);
+        recyclerView.setLayoutManager(new LinearLayoutManagerWrapper(getContext(), LinearLayoutManager.VERTICAL, false));
         itemBaseVOS = new ArrayList<>();
-        adapter = new MeetItemAdapter(getActivity(),itemBaseVOS);
+        adapter = new MeetItemAdapter(getActivity(), itemBaseVOS);
         recyclerView.setAdapter(adapter);
 
     }
@@ -50,7 +55,6 @@ public class MyPageFragmentBottomTab3 extends Fragment {
     public void onResume() {
         super.onResume();
         loadData();
-//        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -59,29 +63,40 @@ public class MyPageFragmentBottomTab3 extends Fragment {
     }
 
     public void loadData() {
-        strings.clear();
         itemBaseVOS.clear();
-        G.usersRef.child(G.myProfile.userId).child("meets").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    strings.add(ds.getValue(String.class));
+            public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
+                for (int i = 0; i < response.body().size(); i++) {
+                    if (response.body().get(i).masterId.equals(G.myProfile.userId)){
+                        itemBaseVOS.add(response.body().get(i));
+                        adapter.notifyItemInserted(itemBaseVOS.size() - 1);
+                    }
                 }
-                G.itemsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+
+                RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserMeetItem(G.myProfile.userId).enqueue(new Callback<ArrayList<ItemBaseVO>>() {
                     @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            for (int i =0 ; i < strings.size(); i++){
-                                if (ds.getKey().equals(strings.get(i))){
-                                    itemBaseVOS.add(ds.child("base").getValue(ItemBaseVO.class));
-                                }
-                            }
+                    public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            itemBaseVOS.add(response.body().get(i));
+                            adapter.notifyItemInserted(itemBaseVOS.size() - 1);
                         }
-                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArrayList<ItemBaseVO>> call, Throwable t) {
+                        loadData();
                     }
                 });
             }
+
+            @Override
+            public void onFailure(Call<ArrayList<ItemBaseVO>> call, Throwable t) {
+                loadData();
+            }
         });
+
+
     }
 }
 

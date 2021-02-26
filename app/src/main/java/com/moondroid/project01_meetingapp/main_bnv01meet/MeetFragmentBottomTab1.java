@@ -23,6 +23,7 @@ import com.moondroid.project01_meetingapp.createmeet.CreateActivity;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.library.RetrofitService;
+import com.moondroid.project01_meetingapp.page.PageActivity;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 
 import java.util.ArrayList;
@@ -124,6 +125,7 @@ public class MeetFragmentBottomTab1 extends Fragment {
     public void loadData(String interest) {
         snapshots.clear();
         itemList.clear();
+        itemAdapter.notifyDataSetChanged();
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override
             public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
@@ -132,7 +134,7 @@ public class MeetFragmentBottomTab1 extends Fragment {
                 }
 
                 for (int i = 0; i < snapshots.size(); i++) {
-                    if (snapshots.get(i).meetInterest.equals(interest)){
+                    if (snapshots.get(i).meetInterest.equals(interest)) {
                         itemList.add(snapshots.get(i));
                         itemAdapter.notifyItemInserted(itemList.size() - 1);
                     }

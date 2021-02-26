@@ -39,10 +39,14 @@ public class InformationMemberAdapter extends RecyclerView.Adapter<InformationMe
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         if (memberVOS.get(position) == null) return;
-        if (position ==0) holder.tvMaster.setVisibility(View.VISIBLE);
+        if (position == 0) holder.tvMaster.setVisibility(View.VISIBLE);
 
         if (memberVOS.get(position).userProfileImgUrl != null) {
-            Glide.with(context).load(RetrofitHelper.getUrlForImg() + memberVOS.get(position).userProfileImgUrl).into(holder.ivProfile);
+            if (memberVOS.get(position).userProfileImgUrl.contains("http")) {
+                Glide.with(context).load(memberVOS.get(position).userProfileImgUrl).into(holder.ivProfile);
+            } else {
+                Glide.with(context).load(RetrofitHelper.getUrlForImg() + memberVOS.get(position).userProfileImgUrl).into(holder.ivProfile);
+            }
         }
 
         holder.tvName.setText(memberVOS.get(position).userName);

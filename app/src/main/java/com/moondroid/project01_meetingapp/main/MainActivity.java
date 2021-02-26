@@ -15,20 +15,24 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.InterestActivity;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.main_bnv01meet.MeetFragmentBottomTab1;
 import com.moondroid.project01_meetingapp.main_bnv02charge.ChargeFragmentBottomTab2;
 import com.moondroid.project01_meetingapp.main_bnv03mypage.MyPageFragmentBottomTab3;
@@ -44,6 +48,9 @@ import com.moondroid.project01_meetingapp.option02notification.NotificationActiv
 import com.moondroid.project01_meetingapp.profileset.ProfileSetActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     String userId;
 
     View headerView;
+    String token;
 
     CircleImageView ivNavigationUserProfileImg;
     TextView tvNavigationUserName;
@@ -72,12 +80,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       
+
         //동적 퍼미션
-        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_DENIED){
+        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
+        if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_DENIED || ActivityCompat.checkSelfPermission(this, permissions[1]) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, permissions, 100);
         }
+
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (!task.isComplete()) {
+                    Toast.makeText(MainActivity.this, "앱 등록 실패", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                token = task.getResult();
+                saveToken();
+            }
+        });
 
         //xml Reference
         toolbar = findViewById(R.id.toolbar_main);
@@ -253,7 +273,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadUserInformation() {
         if (G.myProfile.userProfileImgUrl != null) {
-            Glide.with(MainActivity.this).load(RetrofitHelper.getUrlForImg() + G.myProfile.userProfileImgUrl).into(ivNavigationUserProfileImg);
+            if (G.myProfile.userProfileImgUrl.contains("http")) {
+                Glide.with(MainActivity.this).load(G.myProfile.userProfileImgUrl).into(ivNavigationUserProfileImg);
+            } else {
+                Glide.with(MainActivity.this).load(RetrofitHelper.getUrlForImg() + G.myProfile.userProfileImgUrl).into(ivNavigationUserProfileImg);
+            }
         }
         if (G.myProfile.userName != null) {
             tvNavigationUserName.setText(G.myProfile.userName);
@@ -261,5 +285,21 @@ public class MainActivity extends AppCompatActivity {
         if (G.myProfile.userProfileMessage != null) {
             tvNavigationUserMessage.setText(G.myProfile.userProfileMessage);
         }
+    }
+
+    public void saveToken(){
+
+        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveFCMToken(G.myProfile.userId, token).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Toast.makeText(MainActivity.this, "" + response.body(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+
     }
 }
