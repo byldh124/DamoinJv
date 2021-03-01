@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.graphics.PointF;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.moondroid.project01_meetingapp.R;
 import com.naver.maps.geometry.LatLng;
@@ -20,10 +24,21 @@ import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.OverlayImage;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     FragmentManager fm;
     MapFragment mapFragment;
+
+    Geocoder geocoder;
+
+    String clientId = "csit8ak1h9";
+    String clientPw = "MfeaQuyD4fb728rDiVQIXFvIWmgLnVFg8wxPVBhl";
+
+    EditText etLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +48,14 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
         fm = getSupportFragmentManager();
         mapFragment = (MapFragment)fm.findFragmentById(R.id.map_view_moim);
 
+        etLocation = findViewById(R.id.et_moim_location);
+
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance();
             fm.beginTransaction().add(R.id.map_view_moim, mapFragment).commit();
         }
+
+        geocoder = new Geocoder(this, Locale.KOREAN);
     }
 
     @Override
@@ -66,5 +85,16 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void clickSave(View view) {
+    }
+
+    public void clickFindLocation(View view) {
+        String locationQuery = etLocation.getText().toString();
+        try {
+            List<Address> addresses = geocoder.getFromLocationName(locationQuery, 10);
+            Toast.makeText(this, "" + addresses.get(0).getAddressLine(0), Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -3,7 +3,6 @@ package com.moondroid.project01_meetingapp.main;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -16,7 +15,7 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.option02notification.NotificationActivity;
+import com.moondroid.project01_meetingapp.login.IntroActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -58,7 +57,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         builder.setContentText(notiText);
         builder.setAutoCancel(true);
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, IntroActivity.class);
         if (notiText.contains("메세지")) {
             intent.putExtra("meetName", notiText.replace("에서 새로운 메세지가 왔습니다.", ""));
         }

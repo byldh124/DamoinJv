@@ -86,8 +86,18 @@
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:textSize="16sp"
-        android:inputType="number"
+        android:inputType="text"
         android:hint="모임장소를 적어주세요"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="찾기"
+        android:layout_toRightOf="@id/et_moim_location"
+        android:layout_alignBottom="@id/et_moim_location"
+        android:layout_marginTop="4dp"
+        android:onClick="clickFindLocation"/>
+
 
     <fragment
         android:id="@+id/map_view_moim"
