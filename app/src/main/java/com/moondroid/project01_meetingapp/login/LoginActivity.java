@@ -74,6 +74,10 @@ public class LoginActivity extends AppCompatActivity {
             call.enqueue(new Callback<UserBaseVO>() {
                 @Override
                 public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
+                    if (response.body() == null) {
+                        Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     UserBaseVO userBaseVO = response.body();
                     if (userBaseVO.userPassword.equals(inputPassword)) {
                         G.myProfile = userBaseVO;
