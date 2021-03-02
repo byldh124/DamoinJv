@@ -74,6 +74,21 @@ public class ChattingFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 ChatItemVO chatItem = snapshot.getValue(ChatItemVO.class);
+                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadChatInfo(chatItem.userId).enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if (response.body() != null) {
+                            String[] responses = response.body().split("&&");
+                            chatItem.userName = responses[0];
+                            chatItem.profileImgUrl = responses[1];
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
                 chatItems.add(chatItem);
                 chatAdapter.notifyDataSetChanged();
                 listView.setSelection(chatItems.size() - 1);

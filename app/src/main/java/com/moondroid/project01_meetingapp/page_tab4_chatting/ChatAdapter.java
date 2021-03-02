@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.variableobject.ChatItemVO;
 
 import java.util.ArrayList;
@@ -72,5 +73,9 @@ public class ChatAdapter extends BaseAdapter {
         }
 
         return itemView;
+    }
+
+    public void loadMemberChatInfo(){
+
     }
 }

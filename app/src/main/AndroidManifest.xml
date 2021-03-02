@@ -12,20 +12,30 @@
     <application
         android:name=".library.KakaoApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher_logo"
+        android:label="@string/app_name_release"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project01_MeetingApp"
         android:usesCleartextTraffic="true">
-        <activity android:name=".page_tab1_info.CreateMoimActivity"></activity>
+        <activity
+            android:name=".page_tab3_gallery.ChoicePictureActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".page_tab1_info.ChoiceMoimActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".page_tab1_info.CreateMoimActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="csit8ak1h9" />
 
-        <activity android:name=".page_tab1_info.OptionModifyActivity" />
+        <activity
+            android:name=".page_tab1_info.OptionModifyActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".page.PageActivity"
             android:screenOrientation="portrait" />

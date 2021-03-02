@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
         RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveFCMToken(G.myProfile.userId, token).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Toast.makeText(MainActivity.this, "" + response.body(), Toast.LENGTH_SHORT).show();
+                
             }
 
             @Override

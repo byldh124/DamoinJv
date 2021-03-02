@@ -58,35 +58,7 @@ public class IntroActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-
                     startApp();
-//                    Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
-//                    RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-//                    Call<UserBaseVO> call = retrofitService.loadUserBaseDBToIntroActivity(userId);
-//                    call.enqueue(new Callback<UserBaseVO>() {
-//                        @Override
-//                        public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
-//                            G.myProfile = response.body();
-//                            intent = new Intent(IntroActivity.this, MainActivity.class);
-//                            startActivity(intent);
-//                            finish();
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<UserBaseVO> call, Throwable t) {
-//                            Toast.makeText(IntroActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-
-//                    G.usersRef.child(userId).child("base").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                        @Override
-//                        public void onSuccess(DataSnapshot dataSnapshot) {
-//                            G.myProfile = dataSnapshot.getValue(UserBaseVO.class);
-//                            intent = new Intent(IntroActivity.this, MainActivity.class);
-//                            startActivity(intent);
-//                            finish();
-//                        }
-//                    });
                 }
             }
         }, 1000);

@@ -65,7 +65,8 @@ public class LoginActivity extends AppCompatActivity {
     public void clickLogIn(View view) {
         inputId = etInputId.getText().toString();
         inputPassword = etInputPassword.getText().toString();
-        if (inputId == null || inputId.equals("") || inputPassword == null || inputPassword.equals("")) return;
+        if (inputId == null || inputId.equals("") || inputPassword == null || inputPassword.equals(""))
+            return;
 
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
@@ -74,7 +75,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
                 UserBaseVO userBaseVO = response.body();
-                if (userBaseVO.userPassword.equals(inputPassword)){
+                if (userBaseVO.userPassword.equals(inputPassword)) {
+                    if (response.body() == null) {
+                        Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     G.myProfile = userBaseVO;
                     saveSharedPreference(inputId);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -90,26 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-//        G.usersRef.child(inputId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//            @Override
-//            public void onSuccess(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.getValue() == null) {
-//                    Toast.makeText(LoginActivity.this, "아이디가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                } else {
-//                    UserBaseVO userBaseVO = dataSnapshot.child("base").getValue(UserBaseVO.class);
-//                    if (!userBaseVO.userPassword.equals(inputPassword)) {
-//                        Toast.makeText(LoginActivity.this, "비밀번호가 틀립니다,", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//                    G.myProfile = dataSnapshot.child("base").getValue(UserBaseVO.class);
-//                    saveSharedPreference(inputId);
-//                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                }
-//            }
-//        });
     }
 
     public void clickAddAccount(View view) {
@@ -165,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    public void saveUserBaseDataOfKakao(){
+    public void saveUserBaseDataOfKakao() {
         RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkUserId(inputId).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

@@ -25,6 +25,7 @@ import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.library.LinearLayoutManagerWrapper;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.library.RetrofitService;
+import com.moondroid.project01_meetingapp.variableobject.MoimVO;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 import com.squareup.picasso.Picasso;
 
@@ -46,10 +47,14 @@ public class InformationFragment extends Fragment {
     ArrayList<UserBaseVO> memberVOS;
     InformationMemberAdapter memberAdapter;
 
+    ArrayList<MoimVO> moimVOS;
+    InformationMoimAdapter moimAdapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         memberVOS = new ArrayList<>();
+        moimVOS = new ArrayList<>();
         return inflater.inflate(R.layout.fragment_page_tab1_information, container, false);
     }
 
@@ -63,12 +68,17 @@ public class InformationFragment extends Fragment {
         tvMessage = view.findViewById(R.id.tv_page_modify_message);
         tvMeetName = view.findViewById(R.id.tv_page_modify_title);
         recyclerViewJungMo = view.findViewById(R.id.recycler_page_moim_information);
+        recyclerViewJungMo.setLayoutManager(new LinearLayoutManagerWrapper(getContext(),LinearLayoutManager.VERTICAL, false));
         recyclerViewMembers = view.findViewById(R.id.recycler_page_members);
         recyclerViewMembers.setLayoutManager(new LinearLayoutManagerWrapper(getContext(), LinearLayoutManager.VERTICAL, false));
         btnJoin = view.findViewById(R.id.btn_join);
 
         memberAdapter = new InformationMemberAdapter(getContext(), memberVOS);
         recyclerViewMembers.setAdapter(memberAdapter);
+
+        moimAdapter = new InformationMoimAdapter(getContext(), moimVOS);
+        recyclerViewJungMo.setAdapter(moimAdapter);
+
 
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +101,7 @@ public class InformationFragment extends Fragment {
     public void onStart() {
         super.onStart();
         loadMembers();
+        loadMoims();
         if (G.currentItemBase.introImgUrl != null) {
             Picasso.get().load(RetrofitHelper.getUrlForImg() + G.currentItemBase.introImgUrl).into(ivIntroImg);
         }
@@ -171,6 +182,24 @@ public class InformationFragment extends Fragment {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 saveUserMeet();
+            }
+        });
+    }
+
+    public void loadMoims() {
+        moimVOS.clear();
+        RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMoims(G.currentItemBase.meetName).enqueue(new Callback<ArrayList<MoimVO>>() {
+            @Override
+            public void onResponse(Call<ArrayList<MoimVO>> call, Response<ArrayList<MoimVO>> response) {
+                for (int i = 0; i < response.body().size(); i++) {
+                    moimVOS.add(response.body().get(i));
+                    moimAdapter.notifyItemInserted(moimVOS.size() - 1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<MoimVO>> call, Throwable t) {
+                loadMoims();
             }
         });
     }

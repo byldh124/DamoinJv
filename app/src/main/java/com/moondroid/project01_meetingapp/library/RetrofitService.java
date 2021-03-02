@@ -1,6 +1,7 @@
 package com.moondroid.project01_meetingapp.library;
 
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
+import com.moondroid.project01_meetingapp.variableobject.MoimVO;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 
 import java.util.ArrayList;
@@ -72,4 +73,19 @@ public interface RetrofitService {
 
     @GET("/damoim/sendFCMMessage.php")
     Call<String> sendFCMMessage(@Query("meetName") String meetName, @Query("userId") String userId);
+
+    @POST("/damoim/saveMoimInfo.php")
+    Call<MoimVO> saveMoimInfo(@Body MoimVO moimVO);
+
+    @GET("/damoim/loadMoims.php")
+    Call<ArrayList<MoimVO>> loadMoims(@Query("meetName") String meetName);
+
+    @GET("/damoim/loadChatInfo.php")
+    Call<String> loadChatInfo (@Query("userId") String userId);
+
+    @GET("/damoim/sendFCMMessageMoim.php")
+    Call<String> sendFCMMessageMoim(@Query("meetName") String meetName);
+
+    @GET("/damoim/loadMoimsAll.php")
+    Call<ArrayList<MoimVO>> loadMoimsAll();
 }
