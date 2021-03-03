@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.moondroid.project01_meetingapp.R;
 
 public class NotificationActivity extends AppCompatActivity {
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
