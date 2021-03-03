@@ -50,50 +50,46 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyCallback {
-    final int REQUEST_CODE_FOR_LOCATION_CHOICE = 0;
-    final int PERMISSION_REQUEST_CODE = 5;
-
-    Geocoder geocoder;
-    double lat;
-    double lng;
-    MapView mapView;
-    FusedLocationSource locationSource;
-    NaverMap mNaverMap;
-    Marker marker;
-
-    Toolbar toolbar;
-
-    TextView tvLocation;
-    TextView tvMoimDate;
-    TextView tvMoimTime;
-    EditText etMoimPay;
-
-    String address;
-    int y = 0, m = 0, d = 0, h = 0, mi = 0;
+    private final int REQUEST_CODE_FOR_LOCATION_CHOICE = 0;
+    private final int PERMISSION_REQUEST_CODE = 5;
+    private Geocoder geocoder;
+    private double lat;
+    private double lng;
+    private MapView mapView;
+    private FusedLocationSource locationSource;
+    private NaverMap mNaverMap;
+    private Marker marker;
+    private Toolbar toolbar;
+    private TextView tvLocation;
+    private TextView tvMoimDate;
+    private TextView tvMoimTime;
+    private EditText etMoimPay;
+    private String address;
+    private int y = 0, m = 0, d = 0, h = 0, mi = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_moim);
 
+        //xml 참조영역
         tvLocation = findViewById(R.id.tv_moim_location);
         tvMoimDate = findViewById(R.id.tv_moim_date);
         tvMoimTime = findViewById(R.id.tv_moim_time);
         etMoimPay = findViewById(R.id.et_moim_pay);
 
+        //액션바 세팅
         toolbar = findViewById(R.id.toolbar_create_moim_activity);
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+        //네이버 맵 맵뷰 세팅
+        //fragment 사용을 권장하지만 Marker가 제대로 보이지 않아서 맵뷰를 사용함
         mapView = findViewById(R.id.map_view_moim);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
-
         locationSource = new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
-
         geocoder = new Geocoder(this, Locale.KOREAN);
         marker = new Marker();
 
@@ -113,17 +109,19 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
         String moimPay = etMoimPay.getText().toString();
         String moimAddress = tvLocation.getText().toString();
 
+        //기입된 정보 확인작업
         if (moimDate.equals("")) return;
         if (moimTime.equals("")) return;
         if (moimPay.equals("")) return;
         if (moimAddress.equals("")) return;
 
-        MoimVO moimVO = new MoimVO(G.currentItemBase.meetName, moimAddress, moimDate, moimTime, moimPay, lat, lng);
+        //정모 내용 서버에 저장
+        MoimVO moimVO = new MoimVO(G.currentItemBase.getMeetName(), moimAddress, moimDate, moimTime, moimPay, lat, lng);
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).saveMoimInfo(moimVO).enqueue(new Callback<MoimVO>() {
             @Override
             public void onResponse(Call<MoimVO> call, Response<MoimVO> response) {
                 Toast.makeText(CreateMoimActivity.this, "모임내용이 저장되었습니다.", Toast.LENGTH_SHORT).show();
-                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).sendFCMMessageMoim(G.currentItemBase.meetName).enqueue(new Callback<String>() {
+                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).sendFCMMessageMoim(G.currentItemBase.getMeetName()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         finish();
@@ -156,6 +154,7 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) return;
 
+        //지역검색 화면에서 가져온 값으로 지도에 마커 표시.
         switch (requestCode) {
             case REQUEST_CODE_FOR_LOCATION_CHOICE:
                 address = data.getStringExtra("address");
@@ -186,13 +185,15 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING, true);
         naverMap.setIndoorEnabled(true);
 
+        //카메라 세팅
         CameraPosition cameraPosition = new CameraPosition(new LatLng(37.5670135, 126.9783740), 16, 0, 0);
         naverMap.setCameraPosition(cameraPosition);
         mNaverMap = naverMap;
         mNaverMap.setLocationSource(locationSource);
         UiSettings uiSettings = mNaverMap.getUiSettings();
         mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-
+    
+        //네이버맵 UI 설정. 로고 클릭은 반드시 true 값으로 해야함(정책사항)
         uiSettings.setCompassEnabled(true);
         uiSettings.setLocationButtonEnabled(true);
         uiSettings.setLogoClickEnabled(true);
@@ -201,6 +202,7 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
         uiSettings.setRotateGesturesEnabled(false);
     }
 
+    //맵뷰 사용시 액티비티의 생명주기에 따른 맵뷰 생명주기 설정.
     @Override
     protected void onStart() {
         super.onStart();

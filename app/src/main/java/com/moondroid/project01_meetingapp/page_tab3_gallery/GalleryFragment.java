@@ -24,10 +24,10 @@ import com.moondroid.project01_meetingapp.library.GridLayoutManagerWrapper;
 import java.util.ArrayList;
 
 public class GalleryFragment extends Fragment {
-    RecyclerView recyclerView;
-    ArrayList<String> imgs;
-    GalleryAdapter adapter;
-    FloatingActionButton actionButton;
+    private RecyclerView recyclerView;
+    private ArrayList<String> imgs;
+    private GalleryAdapter adapter;
+    private FloatingActionButton actionButton;
 
     @Nullable
     @Override
@@ -47,7 +47,7 @@ public class GalleryFragment extends Fragment {
 
         actionButton = view.findViewById(R.id.action_button_gallery);
 
-        if (G.currentItemMembers.indexOf(G.myProfile.userId) < 0) {
+        if (G.currentItemMembers.indexOf(G.myProfile.getUserId()) < 0) {
             actionButton.setVisibility(View.INVISIBLE);
         }
 
@@ -68,7 +68,7 @@ public class GalleryFragment extends Fragment {
     public void loadImg() {
         imgs.clear();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/" + G.currentItemBase.meetName);
+        DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/" + G.currentItemBase.getMeetName());
         databaseReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {

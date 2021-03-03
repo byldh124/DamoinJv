@@ -45,32 +45,29 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OptionModifyActivity extends AppCompatActivity {
-    final int REQUEST_CODE_FOR_INTRO_IMG_SELECT = 0;
-    final int REQUEST_CODE_FOR_TITLE_IMG_SELECT = 2;
-    final int REQUEST_CODE_FOR_INTEREST_ICON = 1;
-
-    Toolbar toolbar;
-    ImageView ivIntro;
-    ImageView ivIcon;
-    CircleImageView ivTitleImg;
-    TextView tvTitle;
-    TextView tvMessage;
-    TextView tvPurpose;
-
-    Uri introImgUri = null;
-    Uri titleImgUri = null;
-    String introImgPath;
-    String titleImgPath;
-    String meetInterest;
-    String iconUrl;
-    String meetName;
-    String message;
-    String purposeMessage;
-    EditText editText;
-    Map<String, String> dataPart;
-    String[] dstName;
-
-    boolean meetNameIsChanged = false;
+    private final int REQUEST_CODE_FOR_INTRO_IMG_SELECT = 0;
+    private final int REQUEST_CODE_FOR_TITLE_IMG_SELECT = 2;
+    private final int REQUEST_CODE_FOR_INTEREST_ICON = 1;
+    private Toolbar toolbar;
+    private ImageView ivIntro;
+    private ImageView ivIcon;
+    private CircleImageView ivTitleImg;
+    private TextView tvTitle;
+    private TextView tvMessage;
+    private TextView tvPurpose;
+    private Uri introImgUri = null;
+    private Uri titleImgUri = null;
+    private String introImgPath;
+    private String titleImgPath;
+    private String meetInterest;
+    private String iconUrl;
+    private String meetName;
+    private String message;
+    private String purposeMessage;
+    private EditText editText;
+    private Map<String, String> dataPart;
+    private String[] dstName;
+    private boolean meetNameIsChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,25 +83,25 @@ public class OptionModifyActivity extends AppCompatActivity {
         ivTitleImg = findViewById(R.id.iv_page_modify_title_img);
         tvPurpose = findViewById(R.id.tv_page_modify_purpose);
 
-        meetName = G.currentItemBase.meetName;
-        meetInterest = G.currentItemBase.meetInterest;
-        purposeMessage = G.currentItemBase.purposeMessage;
-        message = G.currentItemBase.message;
+        meetName = G.currentItemBase.getMeetName();
+        meetInterest = G.currentItemBase.getMeetInterest();
+        purposeMessage = G.currentItemBase.getPurposeMessage();
+        message = G.currentItemBase.getMessage();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (G.currentItemBase.introImgUrl != null)
-            Picasso.get().load(RetrofitHelper.getUrlForImg() + G.currentItemBase.introImgUrl).into(ivIntro);
+        if (G.currentItemBase.getIntroImgUrl() != null)
+            Picasso.get().load(RetrofitHelper.getUrlForImg() + G.currentItemBase.getIntroImgUrl()).into(ivIntro);
 
         ArrayList<String> interests = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.interest_list)));
         Glide.with(this).load(getResources().getStringArray(R.array.interest_icon_img_url)[interests.indexOf(meetInterest)]).into(ivIcon);
 
         tvTitle.setText(meetName);
 
-        if (G.currentItemBase.titleImgUrl != null)
-            Picasso.get().load(RetrofitHelper.getUrlForImg() + G.currentItemBase.titleImgUrl).into(ivTitleImg);
+        if (G.currentItemBase.getTitleImgUrl() != null)
+            Picasso.get().load(RetrofitHelper.getUrlForImg() + G.currentItemBase.getTitleImgUrl()).into(ivTitleImg);
         if (purposeMessage != null) tvPurpose.setText(purposeMessage);
         if (message == null || message.equals("")) {
             tvMessage.setText("모임 설명을 작성해주세요");
@@ -142,7 +139,7 @@ public class OptionModifyActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 meetName = editText.getText().toString();
                 tvTitle.setText(meetName);
-                if (!meetName.equals(G.currentItemBase.meetName)) {
+                if (!meetName.equals(G.currentItemBase.getMeetName())) {
                     meetNameIsChanged = true;
                 } else {
                     meetNameIsChanged = false;
@@ -241,7 +238,7 @@ public class OptionModifyActivity extends AppCompatActivity {
 
     public void saveData() {
         dataPart = new HashMap<>();
-        dataPart.put("originMeetName", G.currentItemBase.meetName);
+        dataPart.put("originMeetName", G.currentItemBase.getMeetName());
         dataPart.put("meetName", meetName);
         dataPart.put("meetInterest", meetInterest);
         dataPart.put("purposeMessage", purposeMessage);
@@ -269,18 +266,18 @@ public class OptionModifyActivity extends AppCompatActivity {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.body() != null) {
                     dstName = response.body().split("&&");
-                    G.currentItemBase.meetName = meetName;
-                    G.currentItemBase.meetInterest = meetInterest;
-                    G.currentItemBase.purposeMessage = purposeMessage;
-                    G.currentItemBase.message = message;
+                    G.currentItemBase.setMeetName(meetName);
+                    G.currentItemBase.setMeetInterest(meetInterest);
+                    G.currentItemBase.setPurposeMessage(purposeMessage);
+                    G.currentItemBase.setMessage(message);
                     if (dstName[0] != null) {
-                        G.currentItemBase.titleImgUrl = dstName[0];
+                        G.currentItemBase.setTitleImgUrl(dstName[0]);
                     }
                     try {
-                        G.currentItemBase.introImgUrl = dstName[1];
+                        G.currentItemBase.setIntroImgUrl(dstName[1]);
                         onBackPressed();
                     } catch (Exception e) {
-                        G.currentItemBase.introImgUrl = null;
+                        G.currentItemBase.setIntroImgUrl(null);
                         onBackPressed();
                     }
                 }

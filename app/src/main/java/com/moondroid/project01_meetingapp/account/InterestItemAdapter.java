@@ -27,12 +27,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapter.VH> {
-    Activity context;
-    Resources resources;
-    String[] imgUrls;
-    String[] itemTitles;
-    String interest;
-    String iconUrl;
+    private Activity context;
+    private Resources resources;
+    private String[] imgUrls;
+    private String[] itemTitles;
+    private String interest;
+    private String iconUrl;
 
     public InterestItemAdapter(Activity context) {
         this.context = context;
@@ -81,10 +81,10 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
 
                     switch (sendClass){
                         case "Main":
-                            //TODO interest 받아서 DB에 넣기 users/userName/interest 교체
-                            G.myProfile.userInterest = interest;
+                            //개인 설정 화면(메인)에서 설정시 DB 업데이트
+                            G.myProfile.setUserInterest(interest);
                             Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
-                            retrofit.create(RetrofitService.class).updateUserInterest(G.myProfile.userId, interest).enqueue(new Callback<String>() {
+                            retrofit.create(RetrofitService.class).updateUserInterest(G.myProfile.getUserId(), interest).enqueue(new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
                                     if (response.body().equals("changed")){
@@ -101,6 +101,7 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                                 }
                             });
                             break;
+                            //모임 관심사 설정시 값 전달
                         case "Create":
                         case "Modify":
                             intent.putExtra("interest", interest);
@@ -108,6 +109,7 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                             context.setResult(Activity.RESULT_OK, intent);
                             context.finish();
                             break;
+                            //회원가입에서 관심사 설정시 값 전달
                         case "Account":
                             intent.putExtra("interest", interest);
                             context.setResult(Activity.RESULT_OK, intent);

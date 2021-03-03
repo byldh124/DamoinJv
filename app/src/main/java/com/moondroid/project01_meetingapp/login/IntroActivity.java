@@ -28,28 +28,29 @@ import retrofit2.Retrofit;
 
 public class IntroActivity extends AppCompatActivity {
 
-    Animation logoAnim;
-    ImageView logoImg;
-    ImageView campaignImg;
+    private Animation logoAnim;
+    private ImageView logoImg;
+    private ImageView campaignImg;
 
-    String userId;
-    Intent intent;
+    private String userId;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
-
+        
+        //로고 애니메이션 작업
         logoAnim = AnimationUtils.loadAnimation(this, R.anim.logo_anim);
         logoImg = findViewById(R.id.intro_logo);
         campaignImg = findViewById(R.id.intro_campaign);
-
         logoImg.startAnimation(logoAnim);
         campaignImg.startAnimation(logoAnim);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                //SharedPreferences 에 저장된 값 확인 후 Login, Main 액티비티로 화면 전환
                 SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
 
                 userId = sharedPreferences.getString("userId", null);
@@ -64,6 +65,7 @@ public class IntroActivity extends AppCompatActivity {
         }, 1000);
     }
 
+    //SharedPreferences 에 저장된 유저 ID에 따라 DB에 저장된 유저의 정보들을 가져오는 작업
     public void startApp(){
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);

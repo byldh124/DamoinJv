@@ -13,8 +13,8 @@ import com.moondroid.project01_meetingapp.page_tab4_chatting.ChattingFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    Fragment[] fragments;
-    String[] tabTitles;
+    private Fragment[] fragments;
+    private String[] tabTitles;
 
     public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);

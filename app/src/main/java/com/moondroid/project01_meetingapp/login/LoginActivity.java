@@ -34,25 +34,25 @@ import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
 
-    final int REQUEST_EXIT = 0;
-
-    long id;
-    String inputId;
-    String inputPassword;
-    String name;
-    String profileImgUrl;
-
-    EditText etInputId;
-    EditText etInputPassword;
+    private final int REQUEST_EXIT = 0;
+    private long id;
+    private String inputId;
+    private String inputPassword;
+    private String name;
+    private String profileImgUrl;
+    private EditText etInputId;
+    private EditText etInputPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //xml 참조영역
         etInputId = findViewById(R.id.log_in_edit_id);
         etInputPassword = findViewById(R.id.log_in_edit_pass);
 
+        //EditText 입력 완료 후 Enter 이벤트 처리
         etInputPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -65,38 +65,45 @@ public class LoginActivity extends AppCompatActivity {
     public void clickLogIn(View view) {
         inputId = etInputId.getText().toString();
         inputPassword = etInputPassword.getText().toString();
+
+        //기입된 값 확인 작업
         if (inputId == null || inputId.equals("") || inputPassword == null || inputPassword.equals(""))
             return;
 
+        //기입된 ID로 DB에 저장된 값을 불러오는 작업
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
         Call<UserBaseVO> call = retrofitService.loadUserBaseDBToIntroActivity(inputId);
         call.enqueue(new Callback<UserBaseVO>() {
             @Override
             public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
+                //DB에 아이디가 저장되어 있는지 확인하는 작업
+                if (response.body() == null) {
+                    Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 UserBaseVO userBaseVO = response.body();
-                if (userBaseVO.userPassword.equals(inputPassword)) {
-                    if (response.body() == null) {
-                        Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                //저장되어 있는 패스워드와 기입된 패스워드를 확인
+                if (userBaseVO.getUserPassword().equals(inputPassword)) {
+                    //아이디가 저장된 값이 있고 비밀번호가 일치하면 sharedPreferences에 아이디 저장후 메인 화면으로 전환
                     G.myProfile = userBaseVO;
                     saveSharedPreference(inputId);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
+                    //기입된 패스워드와 저장된 패스워드가 틀릴시 발동
                     Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UserBaseVO> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    //회원가입 버튼 클릭시 회원가입 화면으로 전환
     public void clickAddAccount(View view) {
         Intent intent = new Intent(this, AccountActivity.class);
         startActivityForResult(intent, REQUEST_EXIT);
@@ -113,6 +120,8 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    //카카오 로그인 버튼 클릭시 카카오 서버에서 유저 정보를 가져온 후 DB에 저장
+    //기존에 DB에 저장된 값이 있으면 DB에서 유저 정보를 가져옴
     public void clickKakaoLogin(View view) {
         LoginClient.getInstance().loginWithKakaoAccount(this, new Function2<OAuthToken, Throwable, Unit>() {
             @Override
@@ -154,11 +163,13 @@ public class LoginActivity extends AppCompatActivity {
         RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkUserId(inputId).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                //기존에 카카오아이디로 로그인 한 적이 있는지 확인
                 String str = response.body();
                 if (str.equals("isExist")) {
                     RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserBaseDBToIntroActivity(inputId).enqueue(new Callback<UserBaseVO>() {
                         @Override
                         public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
+                            //로그인 기록이 있을 시 DB에서 불러온 유저 정보를 전역으로 세팅하고 sharedPreferences에 아이디 저장
                             G.myProfile = response.body();
                             saveSharedPreference(inputId);
                             moveToMainActivity();
@@ -170,12 +181,13 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
                 } else {
+                    //기존에 카카오 아이디로 로그인 한 기록 없을 시 DB에 정보 저장하고 현재 유저 정보를 전역으로 세팅하고 sharedPreferences에 아이디 저장
                     RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveUserBaseDataToKakao(inputId, name, profileImgUrl).enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
-                            G.myProfile.userId = inputId;
-                            G.myProfile.userName = name;
-                            G.myProfile.userProfileImgUrl = profileImgUrl;
+                            G.myProfile.setUserId(inputId);
+                            G.myProfile.setUserName(name);
+                            G.myProfile.setUserProfileImgUrl(profileImgUrl);
                             saveSharedPreference(inputId);
                             moveToMainActivity();
                         }

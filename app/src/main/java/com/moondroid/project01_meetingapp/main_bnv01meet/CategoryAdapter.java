@@ -20,9 +20,9 @@ import com.moondroid.project01_meetingapp.option01search.SearchActivity;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
 
-    Context context;
-    String[] categories;
-    Fragment fragment;
+    private Context context;
+    private String[] categories;
+    private Fragment fragment;
 
     public CategoryAdapter(Context context, String[] categories, Fragment fragment) {
         this.context = context;

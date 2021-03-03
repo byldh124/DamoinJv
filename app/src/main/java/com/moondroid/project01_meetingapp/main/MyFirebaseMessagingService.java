@@ -58,7 +58,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         builder.setContentTitle(notiTitle);
         builder.setContentText(notiText);
         builder.setAutoCancel(true);
-
+        
+        //푸시에서 온 내용을 알림으로 전환, 클릭시 IntroActivity 로 화면 전환. (sharedPreference 에서 값을 불러오기 위해 인트로로 이동)
         Intent intent = new Intent(this, IntroActivity.class);
         if (notiText.contains("메세지")) {
             intent.putExtra("meetName", notiText.replace("에서 새로운 메세지가 왔습니다.", ""));

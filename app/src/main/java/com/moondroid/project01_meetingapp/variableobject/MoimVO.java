@@ -1,13 +1,13 @@
 package com.moondroid.project01_meetingapp.variableobject;
 
 public class MoimVO {
-    String meetName;
-    String address;
-    String date;
-    String time;
-    String pay;
-    double lat;
-    double lng;
+    private String meetName;
+    private String address;
+    private String date;
+    private String time;
+    private String pay;
+    private double lat;
+    private double lng;
 
     public MoimVO() {
     }
@@ -48,5 +48,33 @@ public class MoimVO {
 
     public double getLng() {
         return lng;
+    }
+
+    public void setMeetName(String meetName) {
+        this.meetName = meetName;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setPay(String pay) {
+        this.pay = pay;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

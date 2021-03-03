@@ -16,8 +16,8 @@ import java.util.ArrayList;
 
 public class InformationMoimAdapter extends RecyclerView.Adapter<InformationMoimAdapter.VH> {
 
-    Context context;
-    ArrayList<MoimVO> moimVOS;
+    private Context context;
+    private ArrayList<MoimVO> moimVOS;
 
     public InformationMoimAdapter(Context context, ArrayList<MoimVO> moimVOS) {
         this.context = context;

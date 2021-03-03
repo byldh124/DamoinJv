@@ -54,27 +54,23 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    final int REQUEST_CODE_FOR_PROFILE_SET = -1;
-    final int REQUEST_CODE_FOR_INTEREST_SET = -2;
-    final int REQUEST_EXIT = 0;
-
-    Toolbar toolbar;
-    DrawerLayout drawerLayout;
-    ActionBarDrawerToggle drawerToggle;
-    BottomNavigationView bottomNavigationView;
-    Fragment[] fragments;
-    FragmentManager fragmentManager;
-    TextView tvMainTitle;
-    NavigationView navigationView;
-
-    String userId;
-
-    View headerView;
-    String token;
-
-    CircleImageView ivNavigationUserProfileImg;
-    TextView tvNavigationUserName;
-    TextView tvNavigationUserMessage;
+    private final int REQUEST_CODE_FOR_PROFILE_SET = -1;
+    private final int REQUEST_CODE_FOR_INTEREST_SET = -2;
+    private final int REQUEST_EXIT = 0;
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+    private BottomNavigationView bottomNavigationView;
+    private Fragment[] fragments;
+    private FragmentManager fragmentManager;
+    private TextView tvMainTitle;
+    private NavigationView navigationView;
+    private String userId;
+    private View headerView;
+    private String token;
+    private CircleImageView ivNavigationUserProfileImg;
+    private TextView tvNavigationUserName;
+    private TextView tvNavigationUserMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_DENIED || ActivityCompat.checkSelfPermission(this, permissions[1]) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, permissions, 100);
         }
-
+        
+        //푸시 메세지를 보내기 위한 기기의 Token 값 가져오는 작업
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
             public void onComplete(@NonNull Task<String> task) {
@@ -124,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         fragments[0] = new MeetFragmentBottomTab1();
         fragmentManager.beginTransaction().add(R.id.container_fragment_main, fragments[0]).commit();
-
+        
+        //BottomNavigation fragment 전환시 화면 깨짐을 방지하기 위해 .hide, .show 메소드 사용
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -185,7 +183,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_FOR_PROFILE_SET);
             }
         });
-
+        
+        //네이게이션뷰의 아이템 클릭에 대한 화면 전환
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -238,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    //옵션 메뉴 선택에 대한 화면 전환
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent = null;
@@ -263,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case REQUEST_CODE_FOR_INTEREST_SET:
                 String interest = data.getStringExtra("interest");
-                //TODO firebase/users/username/interest 교체하면 됨
                 break;
             case REQUEST_EXIT:
                 finish();
@@ -271,25 +270,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //네이게이션뷰 개인 프로필 화면 설정
     public void loadUserInformation() {
-        if (G.myProfile.userProfileImgUrl != null) {
-            if (G.myProfile.userProfileImgUrl.contains("http")) {
-                Glide.with(MainActivity.this).load(G.myProfile.userProfileImgUrl).into(ivNavigationUserProfileImg);
+        if (G.myProfile.getUserProfileImgUrl() != null) {
+            if (G.myProfile.getUserProfileImgUrl().contains("http")) {
+                Glide.with(MainActivity.this).load(G.myProfile.getUserProfileImgUrl()).into(ivNavigationUserProfileImg);
             } else {
-                Glide.with(MainActivity.this).load(RetrofitHelper.getUrlForImg() + G.myProfile.userProfileImgUrl).into(ivNavigationUserProfileImg);
+                Glide.with(MainActivity.this).load(RetrofitHelper.getUrlForImg() + G.myProfile.getUserProfileImgUrl()).into(ivNavigationUserProfileImg);
             }
         }
-        if (G.myProfile.userName != null) {
-            tvNavigationUserName.setText(G.myProfile.userName);
+        if (G.myProfile.getUserName() != null) {
+            tvNavigationUserName.setText(G.myProfile.getUserName());
         }
-        if (G.myProfile.userProfileMessage != null) {
-            tvNavigationUserMessage.setText(G.myProfile.userProfileMessage);
+        if (G.myProfile.getUserProfileMessage() != null) {
+            tvNavigationUserMessage.setText(G.myProfile.getUserProfileMessage());
         }
     }
-
+    
+    //푸시 서비스를 위한 Token을 DB에 저장
     public void saveToken(){
 
-        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveFCMToken(G.myProfile.userId, token).enqueue(new Callback<String>() {
+        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveFCMToken(G.myProfile.getUserId(), token).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 

@@ -16,8 +16,8 @@ import java.util.ArrayList;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.VH> {
 
-    Context context;
-    ArrayList<String> imgs;
+    private Context context;
+    private ArrayList<String> imgs;
 
     public GalleryAdapter(Context context, ArrayList<String> imgs) {
         this.context = context;

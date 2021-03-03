@@ -1,6 +1,5 @@
 package com.moondroid.project01_meetingapp.main_bnv04location;
 
-import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,6 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import java.util.ArrayList;
@@ -35,13 +33,12 @@ import retrofit2.Response;
 
 public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCallback {
 
-    MapView mapView;
-    FusedLocationSource locationSource;
-    NaverMap mNaverMap;
-    ArrayList<MoimVO> moimVOS;
-    int i = 0;
-
-    final int PERMISSION_REQUEST_CODE = 10;
+    private MapView mapView;
+    private FusedLocationSource locationSource;
+    private NaverMap mNaverMap;
+    private ArrayList<MoimVO> moimVOS;
+    private int i = 0;
+    private final int PERMISSION_REQUEST_CODE = 10;
 
     public LocationFragmentBottomTab4() {
     }
@@ -71,12 +68,15 @@ public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCa
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
+        //네이버 맵에 대한 세팅
+        //보여지는 화면 설정
         naverMap.setMapType(NaverMap.MapType.Basic);
 
         //건물 표시
         naverMap.setLayerGroupEnabled(naverMap.LAYER_GROUP_BUILDING, true);
         naverMap.setIndoorEnabled(true);
-
+    
+        //카메라 포지션 설정 [위치, 줌, 방향, 기울기]
         CameraPosition cameraPosition = new CameraPosition(new LatLng(37.5670135, 126.9783740), 16, 0, 0);
         naverMap.setCameraPosition(cameraPosition);
         mNaverMap = naverMap;
@@ -84,7 +84,8 @@ public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCa
         mNaverMap.setLocationSource(locationSource);
         UiSettings uiSettings = mNaverMap.getUiSettings();
         mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-
+        
+        //네이버맵 UI 세팅
         uiSettings.setCompassEnabled(true);
         uiSettings.setLocationButtonEnabled(true);
         uiSettings.setLogoClickEnabled(true);
@@ -94,6 +95,8 @@ public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCa
 
     }
 
+    //MapView 사용시 프레그먼트, 액티비티의 생명주기에 따른 MapView 생명주기를 호출해 줘야 함.
+    //fragment 사용하는 걸 권장하지만, fragment 사용시 마커가 잘 생성되지 않는 버그가 있음.
     @Override
     public void onStart() {
         String addr;

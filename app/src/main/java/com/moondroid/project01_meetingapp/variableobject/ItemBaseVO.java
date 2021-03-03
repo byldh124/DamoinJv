@@ -1,14 +1,14 @@
 package com.moondroid.project01_meetingapp.variableobject;
 
 public class ItemBaseVO {
-    public String meetName;
-    public String meetLocation;
-    public String purposeMessage;
-    public String titleImgUrl;
-    public String meetInterest;
-    public String introImgUrl;
-    public String message;
-    public String masterId;
+    private String meetName;
+    private String meetLocation;
+    private String purposeMessage;
+    private String titleImgUrl;
+    private String meetInterest;
+    private String introImgUrl;
+    private String message;
+    private String masterId;
 
     public ItemBaseVO() {
     }
@@ -29,6 +29,70 @@ public class ItemBaseVO {
         this.meetInterest = meetInterest;
         this.introImgUrl = introImgUrl;
         this.message = message;
+        this.masterId = masterId;
+    }
+
+    public String getMeetName() {
+        return meetName;
+    }
+
+    public String getMeetLocation() {
+        return meetLocation;
+    }
+
+    public String getPurposeMessage() {
+        return purposeMessage;
+    }
+
+    public String getTitleImgUrl() {
+        return titleImgUrl;
+    }
+
+    public String getMeetInterest() {
+        return meetInterest;
+    }
+
+    public String getIntroImgUrl() {
+        return introImgUrl;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getMasterId() {
+        return masterId;
+    }
+
+    public void setMeetName(String meetName) {
+        this.meetName = meetName;
+    }
+
+    public void setMeetLocation(String meetLocation) {
+        this.meetLocation = meetLocation;
+    }
+
+    public void setPurposeMessage(String purposeMessage) {
+        this.purposeMessage = purposeMessage;
+    }
+
+    public void setTitleImgUrl(String titleImgUrl) {
+        this.titleImgUrl = titleImgUrl;
+    }
+
+    public void setMeetInterest(String meetInterest) {
+        this.meetInterest = meetInterest;
+    }
+
+    public void setIntroImgUrl(String introImgUrl) {
+        this.introImgUrl = introImgUrl;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setMasterId(String masterId) {
         this.masterId = masterId;
     }
 }

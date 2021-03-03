@@ -27,11 +27,10 @@ import java.util.Date;
 
 public class ChoicePictureActivity extends AppCompatActivity {
 
-    final int REQUEST_CODE_FOR_PICK = 0;
-
-    Toolbar toolbar;
-    ImageView ivPicture;
-    Uri imgUri;
+    private final int REQUEST_CODE_FOR_PICK = 0;
+    private Toolbar toolbar;
+    private ImageView ivPicture;
+    private Uri imgUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +82,7 @@ public class ChoicePictureActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                        DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/" + G.currentItemBase.meetName);
+                        DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/" + G.currentItemBase.getMeetName());
                         databaseReference.child(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())).setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {

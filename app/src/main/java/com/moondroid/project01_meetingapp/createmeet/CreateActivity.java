@@ -51,43 +51,35 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CreateActivity extends AppCompatActivity {
-    final int REQUEST_CODE_FOR_INTEREST = 0;
-    final int REQUEST_CODE_FOR_LOCATION = 1;
-    final int REQUEST_CODE_FOR_IMAGE = 2;
-
-    String meetInterest;
-    String meetLocation;
-    String meetName;
-    String titleImgUrl;
-    String purposeMessage;
-
-    Uri imgUri;
-
-    String iconUrl;
-    Toolbar toolbarCreateActivity;
-    EditText etMeetName, etPurposeMessage;
-    TextView locationInCreate;
-    ImageView ivInterestChoose, ivTitleImage;
-
-    FirebaseStorage firebaseStorage;
-    StorageReference titleImgRef;
-
-    ArrayList<String> meets;
-
-    String imgPath;
+    private final int REQUEST_CODE_FOR_INTEREST = 0;
+    private final int REQUEST_CODE_FOR_LOCATION = 1;
+    private final int REQUEST_CODE_FOR_IMAGE = 2;
+    private String meetInterest;
+    private String meetLocation;
+    private String meetName;
+    private String purposeMessage;
+    private Uri imgUri;
+    private String iconUrl;
+    private Toolbar toolbarCreateActivity;
+    private EditText etMeetName, etPurposeMessage;
+    private TextView locationInCreate;
+    private ImageView ivInterestChoose, ivTitleImage;
+    private String imgPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
-
+        
+        //xml 참조영역
         locationInCreate = findViewById(R.id.tv_create_location);
         toolbarCreateActivity = findViewById(R.id.toolbar_create_activity);
         ivInterestChoose = findViewById(R.id.iv_choose_interest);
         etMeetName = findViewById(R.id.et_meet_name);
         etPurposeMessage = findViewById(R.id.et_purpose_message);
         ivTitleImage = findViewById(R.id.iv_title_image);
-
+    
+        //액션바 세팅
         setSupportActionBar(toolbarCreateActivity);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -101,6 +93,7 @@ public class CreateActivity extends AppCompatActivity {
 
     }
 
+    //관심사 선택화면으로 전환
     public void moveToInterestActivity() {
         Intent intent = new Intent(this, InterestActivity.class);
         intent.putExtra("sendClass", "Create");
@@ -137,6 +130,7 @@ public class CreateActivity extends AppCompatActivity {
         }
     }
 
+    //활동지역 설정 화면으로 전환
     public void clickSearchLocation(View view) {
         Intent intent = new Intent(this, LocationChoiceActivity.class);
         startActivityForResult(intent, REQUEST_CODE_FOR_LOCATION);
@@ -156,9 +150,6 @@ public class CreateActivity extends AppCompatActivity {
 
     public void clickCreateMeet(View view) {
 
-        firebaseStorage = FirebaseStorage.getInstance();
-        String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()).concat(".png");
-        titleImgRef = firebaseStorage.getReference("meetTitleImg/" + fileName);
         meetName = etMeetName.getText().toString();
         purposeMessage = etPurposeMessage.getText().toString();
 
@@ -167,6 +158,7 @@ public class CreateActivity extends AppCompatActivity {
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.i("qqqq", response.body());
                 try {
+                    //모임 설정에 대해 기입된 값 확인 작업
                     int isExist = Integer.parseInt(response.body());
                     if (isExist > 0) {
                         Toast.makeText(CreateActivity.this, "동일한 모임명이 존재합니다.\n다른 이름을 생성해주세요", Toast.LENGTH_SHORT).show();
@@ -187,6 +179,7 @@ public class CreateActivity extends AppCompatActivity {
                             return;
                         }
 
+                        //확인 작업이 끝난 후 모임 내용에 대해 DB에 저장
                         MultipartBody.Part filePart = null;
 
                         if (imgPath != null) {
@@ -199,113 +192,43 @@ public class CreateActivity extends AppCompatActivity {
                         dataPart.put("meetLocation", meetLocation);
                         dataPart.put("meetInterest", meetInterest);
                         dataPart.put("purposeMessage", purposeMessage);
-                        dataPart.put("masterId", G.myProfile.userId);
+                        dataPart.put("masterId", G.myProfile.getUserId());
                         RetrofitService retrofitService = RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class);
                         retrofitService.saveItemBaseDataToCreateActivity(dataPart, filePart).enqueue(new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
-                                G.currentItemBase.meetName = meetName;
-                                G.currentItemBase.meetLocation = meetLocation;
-                                G.currentItemBase.purposeMessage = purposeMessage;
-                                G.currentItemBase.meetInterest = meetInterest;
-                                G.currentItemBase.titleImgUrl = response.body();
-                                G.currentItemBase.masterId = G.myProfile.userId;
+                                //DB에 저장된 내역을 전역변수로 세팅
+                                G.currentItemBase.setMeetName(meetName);
+                                G.currentItemBase.setMeetLocation(meetLocation);
+                                G.currentItemBase.setPurposeMessage(purposeMessage);
+                                G.currentItemBase.setMeetInterest(meetInterest);
+                                G.currentItemBase.setTitleImgUrl(response.body());
+                                G.currentItemBase.setMasterId(G.myProfile.getUserId());
                                 onBackPressed();
                             }
                             @Override
                             public void onFailure(Call<String> call, Throwable t) {
-
                             }
                         });
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     Toast.makeText(CreateActivity.this, "동일한 모임명이 존재합니다.\n다른 이름을 생성해주세요", Toast.LENGTH_SHORT).show();
                 }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+            }
+        });
+    }
 
-        }
-
-        @Override
-        public void onFailure (Call < String > call, Throwable t){
-
-        }
-    });
-
-
-//        G.itemsRef.child(meetName).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//            @Override
-//            public void onSuccess(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.getValue() != null) {
-//                    new AlertDialog.Builder(CreateActivity.this).setMessage("동일한 모임 이름이 존재합니다.\n다른 모임 이름을 작성해주세요.").setPositiveButton("확인", null).create().show();
-//                    return;
-//                } else if (meetName == null || meetName.equals("")) {
-//                    Toast.makeText(CreateActivity.this, "모임 이름을 설정해주세요", Toast.LENGTH_SHORT).show();
-//                    return;
-//                } else if (meetLocation == null || meetLocation.equals("")) {
-//                    Toast.makeText(CreateActivity.this, "모임 지역을 설정해주세요", Toast.LENGTH_SHORT).show();
-//                    return;
-//                } else if (purposeMessage == null || purposeMessage.equals("")) {
-//                    Toast.makeText(CreateActivity.this, "모임 목표를 작성해주세요", Toast.LENGTH_SHORT).show();
-//                    return;
-//                } else if (meetInterest == null || meetInterest.equals("")) {
-//                    Toast.makeText(CreateActivity.this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                titleImgRef.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        titleImgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                            @Override
-//                            public void onSuccess(Uri uri) {
-//                                titleImgUrl = uri.toString();
-//                                G.currentItemBase = new ItemBaseVO(meetName, meetLocation, purposeMessage, titleImgUrl, meetInterest);
-//                                G.currentItem.setItemBaseVO(G.currentItemBase);
-//                                G.itemsRef.child(meetName).child("base").setValue(G.currentItemBase).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void aVoid) {
-//                                        G.itemsRef.child(meetName).child("members").child("master").setValue(G.myProfile.userId).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                            @Override
-//                                            public void onSuccess(Void aVoid) {
-//                                                meets = new ArrayList<>();
-//                                                G.currentItemMember.master = G.myProfile.userId;
-//                                                G.usersRef.child(G.myProfile.userId).child("meets").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                                                    @Override
-//                                                    public void onSuccess(DataSnapshot dataSnapshot) {
-//                                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                                                            meets.add(ds.getValue(String.class));
-//                                                        }
-//                                                        meets.add(G.currentItemBase.meetName);
-//                                                        G.usersRef.child(G.myProfile.userId).child("meets").setValue(meets).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                            @Override
-//                                                            public void onSuccess(Void aVoid) {
-//                                                                Intent intent = new Intent(CreateActivity.this, PageActivity.class);
-//                                                                startActivity(intent);
-//                                                                finish();
-//                                                            }
-//                                                        });
-//                                                    }
-//                                                });
-//
-//                                            }
-//                                        });
-//                                    }
-//                                });
-//                            }
-//                        });
-//                    }
-//                });
-//            }
-//        });
-
-
-}
-
+    //갤러리에서 이미지 불러오는 작업
     public void clickImageInput(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_CODE_FOR_IMAGE);
     }
-
+    
+    //DB에 저장하기 위해 이미지의 절대 경로를 String 값으로 변환
     String getRealPathFromUri(Uri uri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         CursorLoader loader = new CursorLoader(this, uri, proj, null, null, null);

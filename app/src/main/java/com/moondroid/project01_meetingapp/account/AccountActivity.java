@@ -39,20 +39,20 @@ import retrofit2.Retrofit;
 
 public class AccountActivity extends AppCompatActivity {
 
-    final int REQUEST_CODE_FOR_LOCATION_CHOICE = 0;
-    final int REQUEST_CODE_FOR_INTEREST_SELECT = 1;
+    private final int REQUEST_CODE_FOR_LOCATION_CHOICE = 0;
+    private final int REQUEST_CODE_FOR_INTEREST_SELECT = 1;
 
-    Toolbar toolbarAccountActivity;
-    TextView tvLocation, tvBirthDate, tvUserInterest;
-    EditText etId, etPassword, etPasswordCheck, etName;
-    RadioGroup radioGroup;
-    String userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest;
+    private Toolbar toolbarAccountActivity;
+    private TextView tvLocation, tvBirthDate, tvUserInterest;
+    private EditText etId, etPassword, etPasswordCheck, etName;
+    private RadioGroup radioGroup;
+    private String userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest;
 
-    int y = 0, m = 0, d = 0;
+    private int y = 0, m = 0, d = 0;
 
-    boolean idChecked = false;
+    private boolean idChecked = false;
 
-    UserBaseVO userBaseVO;
+    private UserBaseVO userBaseVO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +68,9 @@ public class AccountActivity extends AppCompatActivity {
         etPasswordCheck = findViewById(R.id.et_password_check_add_account);
         etName = findViewById(R.id.et_name_add_account);
         radioGroup = findViewById(R.id.radio_group_account);
-
         toolbarAccountActivity = findViewById(R.id.toolbar_account_activity);
+        
+        //액션바 세팅
         setSupportActionBar(toolbarAccountActivity);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -82,7 +83,8 @@ public class AccountActivity extends AppCompatActivity {
                 userGender = radioButton.getText().toString();
             }
         });
-
+        
+        //중복확인 후 아이디 기입을 다시 할시 중복확인 제거
         etId.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -103,6 +105,7 @@ public class AccountActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //지역 설정 화면으로 전환
     public void clickLocationAccount(View view) {
         Intent intent = new Intent(this, LocationChoiceActivity.class);
         startActivityForResult(intent, REQUEST_CODE_FOR_LOCATION_CHOICE);
@@ -132,9 +135,9 @@ public class AccountActivity extends AppCompatActivity {
         userPassword = etPassword.getText().toString();
         userName = etName.getText().toString();
         userBirthDate = tvBirthDate.getText().toString();
-
         userAddress = tvLocation.getText().toString();
-
+        
+        //유저가 기입한 정보 확인
         if (idChecked == false) {
             Toast.makeText(this, "아이디 중복을 확인해주세요", Toast.LENGTH_SHORT).show();
             return;
@@ -162,6 +165,7 @@ public class AccountActivity extends AppCompatActivity {
 
     }
 
+    //생년월일 기입에 대한 다이얼로그
     public void clickBirth(View view) {
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -180,12 +184,14 @@ public class AccountActivity extends AppCompatActivity {
 
     }
 
+    //관심사 선택 화면으로 전환
     public void clickInterest(View view) {
         Intent intent = new Intent(this, InterestActivity.class);
         intent.putExtra("sendClass", "Account");
         startActivityForResult(intent, REQUEST_CODE_FOR_INTEREST_SELECT);
     }
 
+    //아이디 중복 확인 작업
     public void clickAccountCheck(View view) {
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
@@ -208,26 +214,14 @@ public class AccountActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.i("checkId", t.getMessage());
+
             }
         });
 
-//        G.usersRef.child(etId.getText().toString()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//            @Override
-//            public void onSuccess(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.getValue() == null) {
-//                    new AlertDialog.Builder(AccountActivity.this).setMessage("사용할 수 있는 아이디 입니다.\n이 아이디를 사용하시겠습니까?").setPositiveButton("확인", null).create().show();
-//                    idChecked = true;
-//                } else {
-//                    new AlertDialog.Builder(AccountActivity.this).setMessage("존재하는 아이디 입니다.").setPositiveButton("확인", null).create().show();
-//                }
-//            }
-//        });
-
     }
 
+    //유저가 기입한 정보를 DB에 저장
     public void saveDataToRetrofit() {
-
         userBaseVO = new UserBaseVO(userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest, null, null, null);
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
@@ -239,7 +233,7 @@ public class AccountActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("userId", userId).commit();
                 G.myProfile = userBaseVO;
-                Toast.makeText(AccountActivity.this, "" + response.body().userId, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AccountActivity.this, "" + response.body().getUserId(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                 startActivity(intent);
                 setResult(RESULT_OK, null);
@@ -249,7 +243,6 @@ public class AccountActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<UserBaseVO> call, Throwable t) {
 
-                Log.i("throwable", t.getMessage());
             }
         });
     }

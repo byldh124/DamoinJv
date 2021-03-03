@@ -22,12 +22,12 @@ import com.moondroid.project01_meetingapp.page_tab1_info.OptionModifyActivity;
 
 public class PageActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    FragmentManager fragmentManager;
-    ViewPagerAdapter adapter;
-    TextView tvTitle;
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private FragmentManager fragmentManager;
+    private ViewPagerAdapter adapter;
+    private TextView tvTitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +51,7 @@ public class PageActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         //title
-        tvTitle.setText(G.currentItemBase.meetName);
+        tvTitle.setText(G.currentItemBase.getMeetName());
     }
 
     @Override
@@ -61,7 +61,7 @@ public class PageActivity extends AppCompatActivity {
                 onBackPressed();
                 break;
             case R.id.modify_page_activity:
-                if (!G.currentItemBase.masterId.equals(G.myProfile.userId)){
+                if (!G.currentItemBase.getMasterId().equals(G.myProfile.getUserId())){
                     Toast.makeText(this, "모임장만 할수 있습니다.", Toast.LENGTH_SHORT).show();
                     return true;
                 } else {
@@ -70,7 +70,7 @@ public class PageActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.add_moim_info:
-                if (!G.currentItemBase.masterId.equals(G.myProfile.userId)){
+                if (!G.currentItemBase.getMasterId().equals(G.myProfile.getUserId())){
                     Toast.makeText(this, "모임장만 할수 있습니다.", Toast.LENGTH_SHORT).show();
                     return true;
                 } else {

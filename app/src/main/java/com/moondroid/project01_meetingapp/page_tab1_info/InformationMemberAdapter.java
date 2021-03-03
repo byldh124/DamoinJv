@@ -22,8 +22,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class InformationMemberAdapter extends RecyclerView.Adapter<InformationMemberAdapter.VH> {
 
-    Context context;
-    ArrayList<UserBaseVO> memberVOS;
+    private Context context;
+    private ArrayList<UserBaseVO> memberVOS;
 
     public InformationMemberAdapter(Context context, ArrayList<UserBaseVO> memberVOS) {
         this.context = context;
@@ -41,18 +41,18 @@ public class InformationMemberAdapter extends RecyclerView.Adapter<InformationMe
         if (memberVOS.get(position) == null) return;
         if (position == 0) holder.tvMaster.setVisibility(View.VISIBLE);
 
-        if (memberVOS.get(position).userProfileImgUrl != null) {
-            if (memberVOS.get(position).userProfileImgUrl.contains("http")) {
-                Glide.with(context).load(memberVOS.get(position).userProfileImgUrl).into(holder.ivProfile);
+        if (memberVOS.get(position).getUserProfileImgUrl() != null) {
+            if (memberVOS.get(position).getUserProfileImgUrl().contains("http")) {
+                Glide.with(context).load(memberVOS.get(position).getUserProfileImgUrl()).into(holder.ivProfile);
             } else {
-                Glide.with(context).load(RetrofitHelper.getUrlForImg() + memberVOS.get(position).userProfileImgUrl).into(holder.ivProfile);
+                Glide.with(context).load(RetrofitHelper.getUrlForImg() + memberVOS.get(position).getUserProfileImgUrl()).into(holder.ivProfile);
             }
         }
 
-        holder.tvName.setText(memberVOS.get(position).userName);
+        holder.tvName.setText(memberVOS.get(position).getUserName());
 
-        if (memberVOS.get(position).userProfileMessage != null) {
-            holder.tvMsg.setText(memberVOS.get(position).userProfileMessage);
+        if (memberVOS.get(position).getUserProfileMessage() != null) {
+            holder.tvMsg.setText(memberVOS.get(position).getUserProfileMessage());
         }
     }
 

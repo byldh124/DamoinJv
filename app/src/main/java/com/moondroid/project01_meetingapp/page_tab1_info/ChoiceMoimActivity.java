@@ -26,13 +26,12 @@ import java.util.Locale;
 
 public class ChoiceMoimActivity extends AppCompatActivity {
 
-    //    ArrayList<String> addresses;
-    EditText etLocation;
-    Toolbar toolbar;
-    RecyclerView recyclerView;
-    Geocoder geocoder;
-    ChoiceMoimLocationAdapter adapter;
-    ArrayList<LocationVO> addresses;
+   private EditText etLocation;
+   private Toolbar toolbar;
+   private RecyclerView recyclerView;
+   private Geocoder geocoder;
+   private ChoiceMoimLocationAdapter adapter;
+   private ArrayList<LocationVO> addresses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

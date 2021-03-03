@@ -35,20 +35,16 @@ import retrofit2.Response;
 
 public class MeetFragmentBottomTab1 extends Fragment {
 
-    SwipeRefreshLayout swipeRefreshLayout;
-
-    RecyclerView recyclerCategory;
-    String[] categories;
-    CategoryAdapter categoryAdapter;
-
-    RecyclerView recyclerItems;
-    ArrayList<ItemBaseVO> itemList;
-    MeetItemAdapter itemAdapter;
-
-    Resources resources;
-
-    FloatingActionButton buttonAdd;
-    ArrayList<ItemBaseVO> snapshots;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerCategory;
+    private String[] categories;
+    private CategoryAdapter categoryAdapter;
+    private RecyclerView recyclerItems;
+    private ArrayList<ItemBaseVO> itemList;
+    private MeetItemAdapter itemAdapter;
+    private Resources resources;
+    private FloatingActionButton buttonAdd;
+    private ArrayList<ItemBaseVO> snapshots;
 
     @Nullable
     @Override
@@ -65,7 +61,8 @@ public class MeetFragmentBottomTab1 extends Fragment {
         recyclerCategory = view.findViewById(R.id.recycler_category);
         recyclerItems = view.findViewById(R.id.recycler_items);
         buttonAdd = view.findViewById(R.id.btn_add_meet);
-
+    
+        //리사이클러뷰 세팅
         snapshots = new ArrayList<>();
         itemList = new ArrayList<>();
         itemAdapter = new MeetItemAdapter(getContext(), itemList);
@@ -100,7 +97,8 @@ public class MeetFragmentBottomTab1 extends Fragment {
             }
         });
     }
-
+    
+    //DB에 저장된 모임 아이템을 불러와서 유저정보와 비교 후 화면 전환 (추후 모임 아이템이 많아지면 진행할 예정)
     public void loadData() {
         snapshots.clear();
         itemList.clear();
@@ -122,6 +120,7 @@ public class MeetFragmentBottomTab1 extends Fragment {
         });
     }
 
+    //카테고리 선택에 따른 아이템 선별 과정
     public void loadData(String interest) {
         snapshots.clear();
         itemList.clear();
@@ -134,7 +133,7 @@ public class MeetFragmentBottomTab1 extends Fragment {
                 }
 
                 for (int i = 0; i < snapshots.size(); i++) {
-                    if (snapshots.get(i).meetInterest.equals(interest)) {
+                    if (snapshots.get(i).getMeetInterest().equals(interest)) {
                         itemList.add(snapshots.get(i));
                         itemAdapter.notifyItemInserted(itemList.size() - 1);
                     }

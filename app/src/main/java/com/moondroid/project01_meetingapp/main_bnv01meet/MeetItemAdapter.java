@@ -31,11 +31,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
 
-    Context context;
-    ArrayList<ItemBaseVO> itemList;
-    String[] interestList;
-    String[] interestIconList;
-    Resources res;
+   private Context context;
+   private ArrayList<ItemBaseVO> itemList;
+   private String[] interestList;
+   private String[] interestIconList;
+   private Resources res;
 
     public MeetItemAdapter(Context context, ArrayList<ItemBaseVO> itemList) {
         this.context = context;
@@ -55,19 +55,19 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
     public void onBindViewHolder(@NonNull VH holder, int position) {
         ItemBaseVO item = itemList.get(position);
 
-        Picasso.get().load(RetrofitHelper.getUrlForImg() + item.titleImgUrl).into(holder.ivProfile);
+        Picasso.get().load(RetrofitHelper.getUrlForImg() + item.getTitleImgUrl()).into(holder.ivProfile);
 
-        int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.meetInterest);
+        int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.getMeetInterest());
         if (interestNum < 0) interestNum = 1;
         Glide.with(context).load(interestIconList[interestNum]).into(holder.iconImg);
 
-        holder.meetName.setText(item.meetName);
-        if (item.meetLocation != null) {
-            String[] addresses = item.meetLocation.split(" ");
+        holder.meetName.setText(item.getMeetName());
+        if (item.getMeetLocation() != null) {
+            String[] addresses = item.getMeetLocation().split(" ");
             String lastAddress = addresses[addresses.length - 1];
             holder.meetAddress.setText(lastAddress);
         }
-        holder.purposeMessage.setText(item.purposeMessage);
+        holder.purposeMessage.setText(item.getPurposeMessage());
 
 
     }
@@ -98,7 +98,7 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
-                    itemTitle = itemList.get(pos).meetName;
+                    itemTitle = itemList.get(pos).getMeetName();
 
                     G.currentItemBase = itemList.get(pos);
                     Intent intent = new Intent(context, PageActivity.class);

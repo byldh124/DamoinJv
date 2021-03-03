@@ -30,9 +30,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class MyPageFragmentBottomTab3 extends Fragment {
-    RecyclerView recyclerView;
-    ArrayList<ItemBaseVO> itemBaseVOS;
-    MeetItemAdapter adapter;
+    private RecyclerView recyclerView;
+    private ArrayList<ItemBaseVO> itemBaseVOS;
+    private MeetItemAdapter adapter;
 
     @Nullable
     @Override
@@ -43,6 +43,8 @@ public class MyPageFragmentBottomTab3 extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //리사이클러뷰 참조 및 어댑터, 리스트 세팅
         recyclerView = view.findViewById(R.id.recycler_my_page);
         recyclerView.setLayoutManager(new LinearLayoutManagerWrapper(getContext(), LinearLayoutManager.VERTICAL, false));
         itemBaseVOS = new ArrayList<>();
@@ -62,19 +64,21 @@ public class MyPageFragmentBottomTab3 extends Fragment {
         super.onStart();
     }
 
+    //DB에 저장된 아이템 리스트를 불러온후 유저가 가입한 아이템만 선별하여 리사이클러 리스트에 전달.
     public void loadData() {
         itemBaseVOS.clear();
+        //유저가 모임장인 경우 우선적으로 불러옴
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override
             public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
                 for (int i = 0; i < response.body().size(); i++) {
-                    if (response.body().get(i).masterId.equals(G.myProfile.userId)){
+                    if (response.body().get(i).getMasterId().equals(G.myProfile.getUserId())) {
                         itemBaseVOS.add(response.body().get(i));
                         adapter.notifyItemInserted(itemBaseVOS.size() - 1);
                     }
                 }
-
-                RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserMeetItem(G.myProfile.userId).enqueue(new Callback<ArrayList<ItemBaseVO>>() {
+                //유저가 모임원인 경우 불러오는 작업
+                RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserMeetItem(G.myProfile.getUserId()).enqueue(new Callback<ArrayList<ItemBaseVO>>() {
                     @Override
                     public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
                         for (int i = 0; i < response.body().size(); i++) {

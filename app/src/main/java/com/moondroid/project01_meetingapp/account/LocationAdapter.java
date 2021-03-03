@@ -17,8 +17,8 @@ import java.util.ArrayList;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.VH> {
 
-    Activity context;
-    ArrayList<String> locations;
+    private Activity context;
+    private ArrayList<String> locations;
 
     public LocationAdapter(Activity context, ArrayList<String> locations) {
         this.context = context;

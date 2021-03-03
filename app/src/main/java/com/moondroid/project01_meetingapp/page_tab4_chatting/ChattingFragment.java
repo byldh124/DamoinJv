@@ -35,14 +35,14 @@ import retrofit2.Response;
 
 public class ChattingFragment extends Fragment {
 
-    LinearLayout chatContainer;
-    ListView listView;
-    Button btnSend;
-    EditText etMessage;
-    ArrayList<ChatItemVO> chatItems;
-    ChatAdapter chatAdapter;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference chatRef;
+    private LinearLayout chatContainer;
+    private ListView listView;
+    private Button btnSend;
+    private EditText etMessage;
+    private ArrayList<ChatItemVO> chatItems;
+    private ChatAdapter chatAdapter;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference chatRef;
 
     @Nullable
     @Override
@@ -59,7 +59,7 @@ public class ChattingFragment extends Fragment {
         btnSend = view.findViewById(R.id.btn_chat_send);
         etMessage = view.findViewById(R.id.et_chat_message);
 
-        if (G.currentItemMembers.contains(G.myProfile.userId) == false) {
+        if (G.currentItemMembers.contains(G.myProfile.getUserId()) == false) {
             chatContainer.setVisibility(View.INVISIBLE);
         }
 
@@ -69,18 +69,18 @@ public class ChattingFragment extends Fragment {
         listView.setAdapter(chatAdapter);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        chatRef = firebaseDatabase.getReference("chat/" + G.currentItemBase.meetName);
+        chatRef = firebaseDatabase.getReference("chat/" + G.currentItemBase.getMeetName());
         chatRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 ChatItemVO chatItem = snapshot.getValue(ChatItemVO.class);
-                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadChatInfo(chatItem.userId).enqueue(new Callback<String>() {
+                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadChatInfo(chatItem.getUserId()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         if (response.body() != null) {
                             String[] responses = response.body().split("&&");
-                            chatItem.userName = responses[0];
-                            chatItem.profileImgUrl = responses[1];
+                            chatItem.setUserName(responses[0]);
+                            chatItem.setProfileImgUrl(responses[1]);
                         }
                     }
 
@@ -123,12 +123,12 @@ public class ChattingFragment extends Fragment {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ChatItemVO chatItemVO = new ChatItemVO(G.myProfile.userId, G.myProfile.userName, new SimpleDateFormat("MM.dd HH:mm").format(new Date()), G.myProfile.userProfileImgUrl, etMessage.getText().toString());
+            ChatItemVO chatItemVO = new ChatItemVO(G.myProfile.getUserId(), G.myProfile.getUserName(), new SimpleDateFormat("MM.dd HH:mm").format(new Date()), G.myProfile.getUserProfileImgUrl(), etMessage.getText().toString());
             chatRef.child(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())).setValue(chatItemVO).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     etMessage.setText("");
-                    RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).sendFCMMessage(G.currentItemBase.meetName, G.myProfile.userId).enqueue(new Callback<String>() {
+                    RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).sendFCMMessage(G.currentItemBase.getMeetName(), G.myProfile.getUserId()).enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
 

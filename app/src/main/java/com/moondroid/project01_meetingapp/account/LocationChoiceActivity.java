@@ -17,32 +17,36 @@ import java.util.ArrayList;
 
 public class LocationChoiceActivity extends AppCompatActivity {
 
-    Toolbar toolbarLocationChoiceActivity;
-    EditText etLocationSearch;
-    RecyclerView recyclerLocationResult;
-    ArrayList<String> locations;
-    LocationAdapter locationAdapter;
-    String[] locationData;
+   private Toolbar toolbarLocationChoiceActivity;
+   private EditText etLocationSearch;
+   private RecyclerView recyclerLocationResult;
+   private ArrayList<String> locations;
+   private LocationAdapter locationAdapter;
+   private String[] locationData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_choice);
-
+    
+        //xml 참조영역
         toolbarLocationChoiceActivity = findViewById(R.id.toolbar_location_choice_activity);
         etLocationSearch = findViewById(R.id.et_location_activity_search_location);
         recyclerLocationResult = findViewById(R.id.recycler_location_search_result);
 
         locationData = getResources().getStringArray(R.array.location);
 
+        //액션바 세팅
         setSupportActionBar(toolbarLocationChoiceActivity);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //리사이클러뷰 세팅
         locations = new ArrayList<>();
         locationAdapter = new LocationAdapter(this, locations);
         recyclerLocationResult.setAdapter(locationAdapter);
-
+    
+        //유저가 지역 입력시 리사이클러뷰 아이템 선택
         etLocationSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

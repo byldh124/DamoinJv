@@ -3,8 +3,8 @@ package com.moondroid.project01_meetingapp.variableobject;
 import java.util.ArrayList;
 
 public class ItemMemberVO {
-    public String master;
-    public ArrayList<String> member;
+    private String master;
+    private ArrayList<String> member;
 
     public ItemMemberVO() {
         member = new ArrayList<>();

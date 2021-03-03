@@ -20,8 +20,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatAdapter extends BaseAdapter {
 
-    Context context;
-    ArrayList<ChatItemVO> chatItems;
+    private Context context;
+    private ArrayList<ChatItemVO> chatItems;
 
     public ChatAdapter(Context context, ArrayList<ChatItemVO> chatItems) {
         this.context = context;
@@ -49,7 +49,7 @@ public class ChatAdapter extends BaseAdapter {
         ChatItemVO chatItem = chatItems.get(position);
         View itemView = null;
         LayoutInflater inflater = LayoutInflater.from(context);
-        if (chatItem.userId.equals(G.myProfile.userId)) {
+        if (chatItem.getUserId().equals(G.myProfile.getUserId())) {
             itemView = inflater.inflate(R.layout.layout_chat_list_view_my_box, parent, false);
         } else {
             itemView = inflater.inflate(R.layout.layout_chat_list_view_other_box, parent, false);
@@ -60,15 +60,15 @@ public class ChatAdapter extends BaseAdapter {
         TextView tvMsg = itemView.findViewById(R.id.tv_chat_message);
         TextView tvTime = itemView.findViewById(R.id.tv_chat_time);
 
-        tvName.setText(chatItem.userName);
-        tvMsg.setText(chatItem.message);
-        tvTime.setText(chatItem.time);
+        tvName.setText(chatItem.getUserName());
+        tvMsg.setText(chatItem.getMessage());
+        tvTime.setText(chatItem.getTime());
 
-        if (chatItem.profileImgUrl != null) {
-            if (chatItem.profileImgUrl.contains("http")) {
-                Glide.with(context).load(chatItem.profileImgUrl).into(civ);
+        if (chatItem.getProfileImgUrl() != null) {
+            if (chatItem.getProfileImgUrl().contains("http")) {
+                Glide.with(context).load(chatItem.getProfileImgUrl()).into(civ);
             } else {
-                Glide.with(context).load(RetrofitHelper.getUrlForImg() + chatItem.profileImgUrl).into(civ);
+                Glide.with(context).load(RetrofitHelper.getUrlForImg() + chatItem.getProfileImgUrl()).into(civ);
             }
         }
 

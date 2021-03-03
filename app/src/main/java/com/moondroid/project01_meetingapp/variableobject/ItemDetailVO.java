@@ -1,8 +1,8 @@
 package com.moondroid.project01_meetingapp.variableobject;
 
 public class ItemDetailVO {
-    public String introImgUrl;
-    public String message;
+    private String introImgUrl;
+    private String message;
 
     public ItemDetailVO() {
     }

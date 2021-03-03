@@ -53,29 +53,29 @@ import retrofit2.Retrofit;
 
 public class ProfileSetActivity extends AppCompatActivity {
 
-    final int REQUEST_CODE_FOR_LOCATION_CHOICE = 0;
-    final int REQUEST_CODE_FOR_PROFILE_IMAGE_SELECT = 1;
+    private final int REQUEST_CODE_FOR_LOCATION_CHOICE = 0;
+    private final int REQUEST_CODE_FOR_PROFILE_IMAGE_SELECT = 1;
 
-    Toolbar toolbar;
-    CircleImageView ivProfileImg;
-    EditText etName;
-    RadioGroup radioGroupGender;
-    TextView tvBirthDate;
-    TextView tvLocation;
-    EditText etMessage;
-    TextView tvMessageLength;
-    RadioButton radioButtonMale, radioButtonFemale;
-    Uri uriFromGallery;
+    private Toolbar toolbar;
+    private CircleImageView ivProfileImg;
+    private EditText etName;
+    private RadioGroup radioGroupGender;
+    private TextView tvBirthDate;
+    private TextView tvLocation;
+    private EditText etMessage;
+    private TextView tvMessageLength;
+    private RadioButton radioButtonMale, radioButtonFemale;
+    private Uri uriFromGallery;
 
-    String imgPath;
+    private String imgPath;
 
-    boolean imgIsChanged = false;
+    private boolean imgIsChanged = false;
 
-    int y = 0, m = 0, d = 0;
+    private int y = 0, m = 0, d = 0;
 
-    String location, gender;
+    private String location, gender;
 
-    Map<String, String> dataPart;
+    private Map<String, String> dataPart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +117,7 @@ public class ProfileSetActivity extends AppCompatActivity {
             }
         });
 
-        if (G.myProfile.userGender != null) gender = G.myProfile.userGender;
+        if (G.myProfile.getUserGender() != null) gender = G.myProfile.getUserGender();
         else gender = "남자";
         radioGroupGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -142,11 +142,11 @@ public class ProfileSetActivity extends AppCompatActivity {
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
 
         dataPart = new HashMap<>();
-        dataPart.put("userId", G.myProfile.userId);
+        dataPart.put("userId", G.myProfile.getUserId());
         dataPart.put("userName", etName.getText().toString());
         dataPart.put("userBirthDate", tvBirthDate.getText().toString());
         dataPart.put("userGender", gender);
-        dataPart.put("userLocation", G.myProfile.userLocation);
+        dataPart.put("userLocation", G.myProfile.getUserLocation());
         dataPart.put("userProfileMessage", etMessage.getText().toString());
 
         MultipartBody.Part filePart = null;
@@ -162,12 +162,12 @@ public class ProfileSetActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
 
-                G.myProfile.userProfileImgUrl = response.body();
-                G.myProfile.userName = dataPart.get("userName");
-                G.myProfile.userGender = dataPart.get("userGender");
-                G.myProfile.userLocation = dataPart.get("userLocation");
-                G.myProfile.userBirthDate = dataPart.get("userBirthDate");
-                G.myProfile.userProfileMessage = dataPart.get("userProfileMessage");
+                G.myProfile.setUserProfileImgUrl(response.body());
+                G.myProfile.setUserName(dataPart.get("userName"));
+                G.myProfile.setUserProfileImgUrl(dataPart.get("userGender"));
+                G.myProfile.setUserProfileImgUrl(dataPart.get("userLocation"));
+                G.myProfile.setUserProfileImgUrl(dataPart.get("userBirthDate"));
+                G.myProfile.setUserProfileImgUrl(dataPart.get("userProfileMessage"));
 
                 Log.i("response", response.body());
 
@@ -223,7 +223,7 @@ public class ProfileSetActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_CODE_FOR_LOCATION_CHOICE:
                 location = data.getStringExtra("location");
-                G.myProfile.userLocation = location;
+                G.myProfile.setUserLocation(location);
                 String[] locations = location.split(" ");
                 tvLocation.setText(locations[0]);
                 break;
@@ -243,27 +243,27 @@ public class ProfileSetActivity extends AppCompatActivity {
 
     public void loadBasicInfo() {
         if (G.myProfile == null) return;
-        if (G.myProfile.userName != null) etName.setText(G.myProfile.userName);
-        if (G.myProfile.userProfileImgUrl != null) {
-            if (G.myProfile.userProfileImgUrl.contains("http")) {
-                Glide.with(this).load(G.myProfile.userProfileImgUrl).into(ivProfileImg);
+        if (G.myProfile.getUserName() != null) etName.setText(G.myProfile.getUserName());
+        if (G.myProfile.getUserProfileImgUrl() != null) {
+            if (G.myProfile.getUserProfileImgUrl().contains("http")) {
+                Glide.with(this).load(G.myProfile.getUserProfileImgUrl()).into(ivProfileImg);
             } else {
-                Glide.with(this).load(RetrofitHelper.getUrlForImg() + G.myProfile.userProfileImgUrl).into(ivProfileImg);
+                Glide.with(this).load(RetrofitHelper.getUrlForImg() + G.myProfile.getUserProfileImgUrl()).into(ivProfileImg);
             }
         } else {
             Glide.with(this).load(R.mipmap.ic_launcher).into(ivProfileImg);
         }
-        if (G.myProfile.userGender != null && G.myProfile.userGender.equals("여자")) {
+        if (G.myProfile.getUserGender() != null && G.myProfile.getUserGender().equals("여자")) {
             radioButtonMale.setChecked(false);
             radioButtonFemale.setChecked(true);
         }
-        if (G.myProfile.userBirthDate != null) tvBirthDate.setText(G.myProfile.userBirthDate);
-        if (G.myProfile.userLocation != null) {
-            String[] locations = G.myProfile.userLocation.split(" ");
+        if (G.myProfile.getUserBirthDate() != null) tvBirthDate.setText(G.myProfile.getUserBirthDate());
+        if (G.myProfile.getUserLocation() != null) {
+            String[] locations = G.myProfile.getUserLocation().split(" ");
             tvLocation.setText(locations[0]);
         }
-        if (G.myProfile.userProfileMessage != null)
-            etMessage.setText(G.myProfile.userProfileMessage);
+        if (G.myProfile.getUserProfileMessage() != null)
+            etMessage.setText(G.myProfile.getUserProfileMessage());
 
     }
 

@@ -21,8 +21,8 @@ import java.util.List;
 
 public class ChoiceMoimLocationAdapter extends RecyclerView.Adapter<ChoiceMoimLocationAdapter.VH> {
 
-    Context context;
-    ArrayList<LocationVO> addresses;
+    private Context context;
+    private ArrayList<LocationVO> addresses;
 
     public ChoiceMoimLocationAdapter(Context context, ArrayList<LocationVO> addresses) {
         this.context = context;

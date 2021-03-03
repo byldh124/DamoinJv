@@ -13,9 +13,9 @@ import com.moondroid.project01_meetingapp.R;
 
 public class InterestActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
-    RecyclerView recyclerInterest;
-    InterestItemAdapter adapter;
+    private Toolbar toolbar;
+    private RecyclerView recyclerInterest;
+    private InterestItemAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
