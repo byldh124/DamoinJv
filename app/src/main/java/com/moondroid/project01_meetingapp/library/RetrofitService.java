@@ -88,4 +88,16 @@ public interface RetrofitService {
 
     @GET("/damoim/loadMoimsAll.php")
     Call<ArrayList<MoimVO>> loadMoimsAll();
+
+    @GET("/damoim/insertFavor.php")
+    Call<String> insertFavor(@Query("userId") String userId, @Query("meetName") String meetName);
+
+    @GET("/damoim/deleteFavor.php")
+    Call<String> deleteFavor(@Query("userId") String userId, @Query("meetName") String meetName);
+
+    @GET("/damoim/loadUserFavoriteItem.php")
+    Call<ArrayList<ItemBaseVO>> loadUserFavoriteItem(@Query("userId") String userId);
+
+    @GET("/damoim/checkUserFavorite.php")
+    Call<String> checkFavorite(@Query("userId") String userId, @Query("meetName") String meetName);
 }

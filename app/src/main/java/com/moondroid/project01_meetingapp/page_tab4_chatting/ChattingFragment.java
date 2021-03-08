@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,6 +44,7 @@ public class ChattingFragment extends Fragment {
     private ChatAdapter chatAdapter;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference chatRef;
+    private ChatItemVO chatItem;
 
     @Nullable
     @Override
@@ -73,7 +75,7 @@ public class ChattingFragment extends Fragment {
         chatRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                ChatItemVO chatItem = snapshot.getValue(ChatItemVO.class);
+                chatItem = snapshot.getValue(ChatItemVO.class);
                 RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadChatInfo(chatItem.getUserId()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -83,7 +85,6 @@ public class ChattingFragment extends Fragment {
                             chatItem.setProfileImgUrl(responses[1]);
                         }
                     }
-
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
 
@@ -92,8 +93,6 @@ public class ChattingFragment extends Fragment {
                 chatItems.add(chatItem);
                 chatAdapter.notifyDataSetChanged();
                 listView.setSelection(chatItems.size() - 1);
-
-
             }
 
             @Override

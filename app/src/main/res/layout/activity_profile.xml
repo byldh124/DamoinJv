@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".page_tab1_info.ProfileActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_profile_activity"
+        android:layout_width="match_parent"
+        android:theme="@style/ToolbarTheme_Red"
+        android:layout_height="?attr/actionBarSize">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="프로필"
+            android:fontFamily="@font/jalnanche"
+            android:textColor="@color/main_001"
+            android:textSize="16sp"/>
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_profile_profile_img"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_below="@id/toolbar_profile_activity"
+        android:layout_marginLeft="16dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/tv_profile_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iv_profile_profile_img"
+        android:text="이다형"
+        android:textColor="#ff333333"
+        android:textSize="16sp"
+        android:layout_alignTop="@id/iv_profile_profile_img"
+        android:layout_marginLeft="16dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_profile_birth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tv_profile_name"
+        android:layout_alignBottom="@id/tv_profile_name"
+        android:text="1991.02.04"
+        android:layout_marginLeft="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_profile_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:text="서울특별시"
+        android:textColor="#ff333333"
+        android:layout_alignBottom="@id/tv_profile_name"/>
+    <TextView
+        android:id="@+id/tv_profile_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_profile_name"
+        android:layout_alignLeft="@id/tv_profile_name"
+        android:layout_marginTop="8dp"
+        android:textColor="#ff666666"
+        android:text="안녕하세요 이다형 입니다."/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_profile_interest"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/icon10_volunteer"
+        android:layout_alignLeft="@id/tv_profile_name"
+        android:layout_below="@id/tv_profile_message"
+        android:layout_marginTop="16dp"/>
+    <TextView
+        android:id="@+id/tv_profile_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="가입한 모임"
+        android:layout_below="@id/iv_profile_profile_img"
+        android:layout_margin="16dp"
+        android:textColor="#ff333333"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_profile_activity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_profile_text"
+        android:layout_margin="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"/>
+</RelativeLayout>

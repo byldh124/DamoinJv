@@ -1,6 +1,7 @@
 package com.moondroid.project01_meetingapp.page_tab1_info;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
@@ -71,6 +73,15 @@ public class InformationMemberAdapter extends RecyclerView.Adapter<InformationMe
             tvName = itemView.findViewById(R.id.tv_information_member_name);
             tvMsg = itemView.findViewById(R.id.tv_information_member_msg);
             tvMaster = itemView.findViewById(R.id.tv_master);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    UserBaseVO userBaseVO = memberVOS.get(pos);
+                    String memberInformation = new Gson().toJson(userBaseVO);
+                    context.startActivity(new Intent(context, ProfileActivity.class).putExtra("memberInformation", memberInformation));
+                }
+            });
         }
     }
 }

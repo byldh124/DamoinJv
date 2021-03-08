@@ -108,7 +108,7 @@ public class ProfileSetActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                tvMessageLength.setText(String.valueOf(s.length()).concat("/40자"));
+                tvMessageLength.setText(String.valueOf(s.length()).concat("/50자"));
             }
 
             @Override
