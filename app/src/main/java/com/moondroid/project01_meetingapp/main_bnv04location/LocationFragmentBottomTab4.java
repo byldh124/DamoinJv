@@ -25,7 +25,9 @@ import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.util.FusedLocationSource;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -145,8 +147,10 @@ public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCa
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMoimsAll().enqueue(new Callback<ArrayList<MoimVO>>() {
             @Override
             public void onResponse(Call<ArrayList<MoimVO>> call, Response<ArrayList<MoimVO>> response) {
-
-                moimVOS = response.body();
+                MoimVO moimVO = response.body().get(i);
+                if (Integer.parseInt(moimVO.getDate().replace(".","")) >= Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
+                    moimVOS.add(response.body().get(i));
+                }
                 for (i = 0; i < moimVOS.size(); i++) {
                     Marker marker = new Marker(new LatLng(moimVOS.get(i).getLat(), moimVOS.get(i).getLng()));
                     marker.setMap(mNaverMap);
@@ -165,7 +169,6 @@ public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCa
             @Override
             public void onFailure(Call<ArrayList<MoimVO>> call, Throwable t) {
                 Toast.makeText(getContext(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-
             }
         });
     }
