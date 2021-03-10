@@ -201,10 +201,6 @@ public class InformationFragment extends Fragment {
                         moimVOS.add(response.body().get(i));
                         moimAdapter.notifyItemInserted(moimVOS.size() - 1);
                     }
-                    if (Integer.parseInt(moimVO.getDate().replace(".","")) >= Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
-                        moimVOS.add(response.body().get(i));
-                        moimAdapter.notifyItemInserted(moimVOS.size() - 1);
-                    }
                 }
             }
 
