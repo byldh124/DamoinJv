@@ -83,23 +83,6 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, permissions, 100);
         }
 
-        //푸시 메세지를 보내기 위한 기기의 Token 값 가져오는 작업
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                if (!task.isComplete()) {
-                    Toast.makeText(MainActivity.this, "앱 등록 실패", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                try {
-                    token = task.getResult();
-                    saveToken();
-                } catch (Exception e) {
-
-                }
-            }
-        });
-
         //xml Reference
         toolbar = findViewById(R.id.toolbar_main);
         drawerLayout = findViewById(R.id.layout_drawer);
@@ -225,6 +208,24 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        //푸시 메세지를 보내기 위한 기기의 Token 값 가져오는 작업
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (!task.isComplete()) {
+                    Toast.makeText(MainActivity.this, "앱 등록 실패", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                try {
+                    token = task.getResult();
+                    saveToken();
+                } catch (Exception e) {
+
+                }
+            }
+        });
+
 
     }
 
