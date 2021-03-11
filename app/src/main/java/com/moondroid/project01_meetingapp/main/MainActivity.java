@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_DENIED || ActivityCompat.checkSelfPermission(this, permissions[1]) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, permissions, 100);
         }
-        
+
         //푸시 메세지를 보내기 위한 기기의 Token 값 가져오는 작업
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
@@ -91,8 +91,12 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "앱 등록 실패", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                token = task.getResult();
-                saveToken();
+                try {
+                    token = task.getResult();
+                    saveToken();
+                } catch (Exception e) {
+
+                }
             }
         });
 
@@ -121,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         fragments[0] = new MeetFragmentBottomTab1();
         fragmentManager.beginTransaction().add(R.id.container_fragment_main, fragments[0]).commit();
-        
+
         //BottomNavigation fragment 전환시 화면 깨짐을 방지하기 위해 .hide, .show 메소드 사용
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -183,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_FOR_PROFILE_SET);
             }
         });
-        
+
         //네이게이션뷰의 아이템 클릭에 대한 화면 전환
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -286,14 +290,14 @@ public class MainActivity extends AppCompatActivity {
             tvNavigationUserMessage.setText(G.myProfile.getUserProfileMessage());
         }
     }
-    
+
     //푸시 서비스를 위한 Token을 DB에 저장
-    public void saveToken(){
+    public void saveToken() {
 
         RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveFCMToken(G.myProfile.getUserId(), token).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                
+
             }
 
             @Override
