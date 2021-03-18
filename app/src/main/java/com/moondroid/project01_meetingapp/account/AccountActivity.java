@@ -239,7 +239,7 @@ public class AccountActivity extends AppCompatActivity {
                 if (G.myProfile.getUserProfileMessage() == null || G.myProfile.getUserProfileMessage().equals("")){
                     G.myProfile.setUserProfileMessage("만나서 반갑습니다.");
                 }
-                Toast.makeText(AccountActivity.this, "" + response.body().getUserId(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(AccountActivity.this, "" + response.body().getUserId(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                 intent.putExtra("sendActivity", "loginActivity");
                 startActivity(intent);
