@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //xml 참조영역
         etInputId = findViewById(R.id.log_in_edit_id);
-        etInputPassword = findViewById(R.id.log_in_edit_pass);
+//        etInputPassword = findViewById(R.id.log_in_edit_pass);
 
         //EditText 입력 완료 후 Enter 이벤트 처리
         etInputPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -81,20 +81,27 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.body() == null) {
                     Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
                     return;
-                }
-                UserBaseVO userBaseVO = response.body();
-                //저장되어 있는 패스워드와 기입된 패스워드를 확인
-                if (userBaseVO.getUserPassword().equals(inputPassword)) {
-                    //아이디가 저장된 값이 있고 비밀번호가 일치하면 sharedPreferences에 아이디 저장후 메인 화면으로 전환
+                } else{
+                    UserBaseVO userBaseVO = response.body();
                     G.myProfile = userBaseVO;
                     saveSharedPreference(inputId);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
-                } else {
-                    //기입된 패스워드와 저장된 패스워드가 틀릴시 발동
-                    Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
                 }
+
+                //저장되어 있는 패스워드와 기입된 패스워드를 확인
+//                if (userBaseVO.getUserPassword().equals(inputPassword)) {
+//                    //아이디가 저장된 값이 있고 비밀번호가 일치하면 sharedPreferences에 아이디 저장후 메인 화면으로 전환
+//                    G.myProfile = userBaseVO;
+//                    saveSharedPreference(inputId);
+//                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                } else {
+//                    //기입된 패스워드와 저장된 패스워드가 틀릴시 발동
+//                    Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
+//                }
             }
 
             @Override

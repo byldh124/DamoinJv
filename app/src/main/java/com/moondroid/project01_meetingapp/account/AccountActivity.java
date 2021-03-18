@@ -222,7 +222,7 @@ public class AccountActivity extends AppCompatActivity {
 
     //유저가 기입한 정보를 DB에 저장
     public void saveDataToRetrofit() {
-        userBaseVO = new UserBaseVO(userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest, null, null, null);
+        userBaseVO = new UserBaseVO(userId, userName, userBirthDate, userGender, userAddress, userInterest, null, null, null);
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
         Call<UserBaseVO> call = retrofitService.saveUserBaseDataToAccountActivity(userBaseVO);

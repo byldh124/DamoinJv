@@ -69,27 +69,27 @@
 
 
 
-        <EditText
-            android:id="@+id/et_password_add_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_edit_text_basic"
-            android:privateImeOptions="defaultInputmode=english"
-            android:padding="8dp"
-            android:hint="비밀번호"
-            android:inputType="textPassword"
-            android:layout_marginBottom="16dp"/>
+<!--        <EditText-->
+<!--            android:id="@+id/et_password_add_account"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/bg_edit_text_basic"-->
+<!--            android:privateImeOptions="defaultInputmode=english"-->
+<!--            android:padding="8dp"-->
+<!--            android:hint="비밀번호"-->
+<!--            android:inputType="textPassword"-->
+<!--            android:layout_marginBottom="16dp"/>-->
 
-        <EditText
-            android:id="@+id/et_password_check_add_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_edit_text_basic"
-            android:privateImeOptions="defaultInputmode=english"
-            android:padding="8dp"
-            android:hint="비밀번호 확인"
-            android:inputType="textPassword"
-            android:layout_marginBottom="16dp"/>
+<!--        <EditText-->
+<!--            android:id="@+id/et_password_check_add_account"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/bg_edit_text_basic"-->
+<!--            android:privateImeOptions="defaultInputmode=english"-->
+<!--            android:padding="8dp"-->
+<!--            android:hint="비밀번호 확인"-->
+<!--            android:inputType="textPassword"-->
+<!--            android:layout_marginBottom="16dp"/>-->
 
         <EditText
             android:id="@+id/et_name_add_account"
