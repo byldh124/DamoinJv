@@ -87,6 +87,12 @@ public class LoginActivity extends AppCompatActivity {
                 if (userBaseVO.getUserPassword().equals(inputPassword)) {
                     //아이디가 저장된 값이 있고 비밀번호가 일치하면 sharedPreferences에 아이디 저장후 메인 화면으로 전환
                     G.myProfile = userBaseVO;
+                    if (G.myProfile.getUserProfileImgUrl() == null || G.myProfile.getUserProfileImgUrl().equals("")){
+                        G.myProfile.setUserProfileImgUrl("./userProfileImg/IMG_20210302153242unnamed.jpg");
+                    }
+                    if (G.myProfile.getUserProfileMessage() == null || G.myProfile.getUserProfileMessage().equals("")){
+                        G.myProfile.setUserProfileMessage("만나서 반갑습니다.");
+                    }
                     saveSharedPreference(inputId);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
