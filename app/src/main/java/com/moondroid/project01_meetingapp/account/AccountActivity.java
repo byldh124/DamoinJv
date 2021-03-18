@@ -64,8 +64,8 @@ public class AccountActivity extends AppCompatActivity {
         tvBirthDate = findViewById(R.id.tv_birth_date_add_account);
         tvUserInterest = findViewById(R.id.tv_interest_add_account);
         etId = findViewById(R.id.et_id_add_account);
-        etPassword = findViewById(R.id.et_password_add_account);
-        etPasswordCheck = findViewById(R.id.et_password_check_add_account);
+//        etPassword = findViewById(R.id.et_password_add_account);
+//        etPasswordCheck = findViewById(R.id.et_password_check_add_account);
         etName = findViewById(R.id.et_name_add_account);
         radioGroup = findViewById(R.id.radio_group_account);
         toolbarAccountActivity = findViewById(R.id.toolbar_account_activity);
@@ -132,7 +132,7 @@ public class AccountActivity extends AppCompatActivity {
     public void clickSave(View view) {
 
         userId = etId.getText().toString();
-        userPassword = etPassword.getText().toString();
+//        userPassword = etPassword.getText().toString();
         userName = etName.getText().toString();
         userBirthDate = tvBirthDate.getText().toString();
         userAddress = tvLocation.getText().toString();
@@ -144,9 +144,9 @@ public class AccountActivity extends AppCompatActivity {
         } else if (userId == null || userId.equals("")) {
             Toast.makeText(this, "아이디를 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
-        } else if (userPassword == null || userPassword.equals("") || !(userPassword.equals(etPasswordCheck.getText().toString()))) {
-            Toast.makeText(this, "비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
-            return;
+//        } else if (userPassword == null || userPassword.equals("") || !(userPassword.equals(etPasswordCheck.getText().toString()))) {
+//            Toast.makeText(this, "비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
+//            return;
         } else if (userName == null || userName.equals("")) {
             Toast.makeText(this, "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
             return;

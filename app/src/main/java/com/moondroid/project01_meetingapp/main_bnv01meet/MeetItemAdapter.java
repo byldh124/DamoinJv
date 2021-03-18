@@ -109,8 +109,6 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
                     RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).uploadRecentMoim(G.myProfile.getUserId(), G.currentItemBase.getMeetName(), new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())).enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
-
-
                             Intent intent = new Intent(context, PageActivity.class);
                             context.startActivity(intent);
                         }

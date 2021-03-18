@@ -20,15 +20,15 @@ public class RetrofitHelper {
         return retrofit;
     }
 
-//    public static Retrofit getRetrofitInstanceGsonSetLenient(){
-//        Gson gson = new GsonBuilder().setLenient().create();
-//        Retrofit.Builder builder = new Retrofit.Builder();
-//        builder.baseUrl(baseUrl);
-//        builder.addConverterFactory(new NullOnEmptyConverterFactory());
-//        builder.addConverterFactory(GsonConverterFactory.create(gson));
-//        Retrofit retrofit = builder.build();
-//        return retrofit;
-//    }
+    public static Retrofit getRetrofitInstanceGsonSetLenient(){
+        Gson gson = new GsonBuilder().setLenient().create();
+        Retrofit.Builder builder = new Retrofit.Builder();
+        builder.baseUrl(baseUrl);
+        builder.addConverterFactory(new NullOnEmptyConverterFactory());
+        builder.addConverterFactory(GsonConverterFactory.create(gson));
+        Retrofit retrofit = builder.build();
+        return retrofit;
+    }
 
     public static Retrofit getRetrofitInstanceScalars(){
         Retrofit.Builder builder = new Retrofit.Builder();

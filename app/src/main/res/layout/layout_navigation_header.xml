@@ -16,12 +16,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="수정"
-        android:layout_alignTop="@id/navigation_header_tv_name"
+        android:text="프로필 수정"
+        android:layout_marginTop="16dp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="16dp"
         android:textSize="14sp"
-        android:textColor="#ff666666"/>
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/navigation_header_tv_name"

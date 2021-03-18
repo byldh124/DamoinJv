@@ -71,7 +71,7 @@
         android:text="아이디, 비밀번호 찾기"
         android:layout_below="@id/log_in_text_log"
         android:layout_toRightOf="@id/log_in_text_add_account"
-        android:layout_alignRight="@id/log_in_edit_pass"
+        android:layout_alignRight="@id/log_in_edit_id"
         android:gravity="center"
         android:textColor="#ff666666"
         android:layout_marginTop="16dp"/>

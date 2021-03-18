@@ -102,5 +102,10 @@ public interface RetrofitService {
     Call<String> checkFavorite(@Query("userId") String userId, @Query("meetName") String meetName);
 
     @GET("/damoim/uploadRecentMoim.php")
-    Call<String> uploadRecentMoim(@Query("userId") String userId, @Query("meetName") String meetName, @Query("time")String time);
+    Call<String> uploadRecentMoim(@Query("userId") String userId, @Query("meetName") String meetName, @Query("lastTime")String lastTime);
+
+    @GET("/damoim/loadRecentMoim.php")
+    Call<ArrayList<ItemBaseVO>> loadUserRecentViewItem(@Query("userId") String userId);
+
+
 }

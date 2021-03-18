@@ -52,22 +52,22 @@ public class LoginActivity extends AppCompatActivity {
         etInputId = findViewById(R.id.log_in_edit_id);
 //        etInputPassword = findViewById(R.id.log_in_edit_pass);
 
-        //EditText 입력 완료 후 Enter 이벤트 처리
-        etInputPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                clickLogIn(etInputPassword);
-                return true;
-            }
-        });
+//        //EditText 입력 완료 후 Enter 이벤트 처리
+//        etInputPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                clickLogIn(etInputPassword);
+//                return true;
+//            }
+//        });
     }
 
     public void clickLogIn(View view) {
         inputId = etInputId.getText().toString();
-        inputPassword = etInputPassword.getText().toString();
+//        inputPassword = etInputPassword.getText().toString();
 
         //기입된 값 확인 작업
-        if (inputId == null || inputId.equals("") || inputPassword == null || inputPassword.equals(""))
+        if (inputId == null || inputId.equals(""))
             return;
 
         //기입된 ID로 DB에 저장된 값을 불러오는 작업
