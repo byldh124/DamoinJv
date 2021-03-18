@@ -10,6 +10,7 @@
         android:inputType="text"
         android:background="@drawable/bg_edit_text_basic"
         android:padding="8dp"
+        android:privateImeOptions="defaultInputmode=korean"
         android:layout_margin="8dp"
         android:hint="input title"/>
 

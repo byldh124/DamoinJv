@@ -12,6 +12,7 @@
         android:gravity="top"
         android:maxLines="15"
         android:background="@drawable/bg_edit_text_basic"
+        android:privateImeOptions="defaultInputmode=korean"
         android:padding="8dp"
         android:layout_margin="8dp"
         android:hint="input message"/>

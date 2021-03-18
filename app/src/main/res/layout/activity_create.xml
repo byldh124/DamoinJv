@@ -75,6 +75,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
             android:hint="모임이름"
+            android:privateImeOptions="defaultInputmode=korean"
             android:inputType="text"
             android:padding="8dp"/>
     </LinearLayout>
@@ -87,6 +88,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
         android:hint="모임 목표"
+        android:privateImeOptions="defaultInputmode=korean"
         android:inputType="textMultiLine"
         android:maxLength="40"
         android:layout_marginTop="16dp"

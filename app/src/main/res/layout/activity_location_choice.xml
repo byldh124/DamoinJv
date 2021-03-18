@@ -25,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_edit_text_create_activity"
+        android:privateImeOptions="defaultInputmode=korean"
         android:layout_margin="16dp"
         android:padding="8dp"
         android:hint="동 읍 면 을 입력해주세요"/>

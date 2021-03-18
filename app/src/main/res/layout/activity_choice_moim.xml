@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar_choice_moim"
         android:background="@drawable/bg_edit_text_create_activity"
+        android:privateImeOptions="defaultInputmode=korean"
         android:padding="16dp"
         android:layout_margin="16dp"
         android:inputType="text"
