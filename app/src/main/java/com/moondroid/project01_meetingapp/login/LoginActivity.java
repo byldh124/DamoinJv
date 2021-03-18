@@ -50,6 +50,13 @@ public class LoginActivity extends AppCompatActivity {
 
         //xml 참조영역
         etInputId = findViewById(R.id.log_in_edit_id);
+        etInputId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                clickLogIn(etInputPassword);
+                return true;
+            }
+        });
 //        etInputPassword = findViewById(R.id.log_in_edit_pass);
 
 //        //EditText 입력 완료 후 Enter 이벤트 처리
