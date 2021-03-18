@@ -97,7 +97,6 @@ public class ProfileSetActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         loadBasicInfo();
 
         etMessage.addTextChangedListener(new TextWatcher() {
@@ -162,22 +161,19 @@ public class ProfileSetActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
 
-                G.myProfile.setUserProfileImgUrl(response.body());
+                if (imgIsChanged) G.myProfile.setUserProfileImgUrl(response.body());
                 G.myProfile.setUserName(dataPart.get("userName"));
-                G.myProfile.setUserProfileImgUrl(dataPart.get("userGender"));
-                G.myProfile.setUserProfileImgUrl(dataPart.get("userLocation"));
-                G.myProfile.setUserProfileImgUrl(dataPart.get("userBirthDate"));
-                G.myProfile.setUserProfileImgUrl(dataPart.get("userProfileMessage"));
-
-                Log.i("response", response.body());
-
-                Toast.makeText(ProfileSetActivity.this, "저장이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                G.myProfile.setUserGender(dataPart.get("userGender"));
+                G.myProfile.setUserLocation(dataPart.get("userLocation"));
+                G.myProfile.setUserBirthDate(dataPart.get("userBirthDate"));
+                G.myProfile.setUserProfileMessage(dataPart.get("userProfileMessage"));
                 finish();
+
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.i("throwableInProfileSet", t.getMessage());
+                Log.i("ttt", t.getMessage());
             }
         });
     }
@@ -233,7 +229,6 @@ public class ProfileSetActivity extends AppCompatActivity {
                 Glide.with(this).load(uriFromGallery).into(ivProfileImg);
                 if (uriFromGallery != null) {
                     imgPath = getRealPathFromUri(uriFromGallery);
-                    Toast.makeText(this, "" + imgPath, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -257,13 +252,16 @@ public class ProfileSetActivity extends AppCompatActivity {
             radioButtonMale.setChecked(false);
             radioButtonFemale.setChecked(true);
         }
-        if (G.myProfile.getUserBirthDate() != null) tvBirthDate.setText(G.myProfile.getUserBirthDate());
+        if (G.myProfile.getUserBirthDate() != null)
+            tvBirthDate.setText(G.myProfile.getUserBirthDate());
         if (G.myProfile.getUserLocation() != null) {
             String[] locations = G.myProfile.getUserLocation().split(" ");
             tvLocation.setText(locations[0]);
         }
-        if (G.myProfile.getUserProfileMessage() != null)
+        if (G.myProfile.getUserProfileMessage() != null) {
             etMessage.setText(G.myProfile.getUserProfileMessage());
+            tvMessageLength.setText(String.valueOf(etMessage.getText().toString().length()).concat("/50자"));
+        }
 
     }
 

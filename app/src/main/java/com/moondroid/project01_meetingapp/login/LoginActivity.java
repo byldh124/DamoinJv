@@ -84,6 +84,12 @@ public class LoginActivity extends AppCompatActivity {
                 } else{
                     UserBaseVO userBaseVO = response.body();
                     G.myProfile = userBaseVO;
+                    if (G.myProfile.getUserProfileImgUrl() == null || G.myProfile.getUserProfileImgUrl().equals("")){
+                        G.myProfile.setUserProfileImgUrl("./userProfileImg/IMG_20210302153242unnamed.jpg");
+                    }
+                    if (G.myProfile.getUserProfileMessage() == null || G.myProfile.getUserProfileMessage().equals("")){
+                        G.myProfile.setUserProfileMessage("만나서 반갑습니다.");
+                    }
                     saveSharedPreference(inputId);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);

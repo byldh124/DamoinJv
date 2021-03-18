@@ -233,8 +233,15 @@ public class AccountActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("userId", userId).commit();
                 G.myProfile = userBaseVO;
+                if (G.myProfile.getUserProfileImgUrl() == null || G.myProfile.getUserProfileImgUrl().equals("")){
+                    G.myProfile.setUserProfileImgUrl("./userProfileImg/IMG_20210302153242unnamed.jpg");
+                }
+                if (G.myProfile.getUserProfileMessage() == null || G.myProfile.getUserProfileMessage().equals("")){
+                    G.myProfile.setUserProfileMessage("만나서 반갑습니다.");
+                }
                 Toast.makeText(AccountActivity.this, "" + response.body().getUserId(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
+                intent.putExtra("sendActivity", "loginActivity");
                 startActivity(intent);
                 setResult(RESULT_OK, null);
                 finish();
