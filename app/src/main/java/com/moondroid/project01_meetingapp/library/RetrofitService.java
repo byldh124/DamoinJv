@@ -100,4 +100,7 @@ public interface RetrofitService {
 
     @GET("/damoim/checkUserFavorite.php")
     Call<String> checkFavorite(@Query("userId") String userId, @Query("meetName") String meetName);
+
+    @GET("/damoim/uploadRecentMoim.php")
+    Call<String> uploadRecentMoim(@Query("userId") String userId, @Query("meetName") String meetName, @Query("time")String time);
 }

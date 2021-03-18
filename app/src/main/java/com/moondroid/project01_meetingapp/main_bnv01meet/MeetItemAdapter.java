@@ -19,15 +19,21 @@ import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.page.PageActivity;
 import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
 import com.moondroid.project01_meetingapp.variableobject.ItemDetailVO;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
 
@@ -99,10 +105,23 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     itemTitle = itemList.get(pos).getMeetName();
-
                     G.currentItemBase = itemList.get(pos);
-                    Intent intent = new Intent(context, PageActivity.class);
-                    context.startActivity(intent);
+                    RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).uploadRecentMoim(G.myProfile.getUserId(), G.currentItemBase.getMeetName(), new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())).enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+
+
+                            Intent intent = new Intent(context, PageActivity.class);
+                            context.startActivity(intent);
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
+
+
                 }
             });
         }

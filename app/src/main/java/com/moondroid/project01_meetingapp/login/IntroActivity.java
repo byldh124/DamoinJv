@@ -74,6 +74,12 @@ public class IntroActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
                 G.myProfile = response.body();
+                if (G.myProfile.getUserProfileImgUrl() == null || G.myProfile.getUserProfileImgUrl().equals("")){
+                    G.myProfile.setUserProfileImgUrl("./userProfileImg/IMG_20210302153242unnamed.jpg");
+                }
+                if (G.myProfile.getUserProfileMessage() == null || G.myProfile.getUserProfileMessage().equals("")){
+                    G.myProfile.setUserProfileMessage("만나서 반갑습니다.");
+                }
                 intent = new Intent(IntroActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();

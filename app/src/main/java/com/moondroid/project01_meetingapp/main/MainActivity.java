@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final int REQUEST_CODE_FOR_PROFILE_SET = -1;
     private final int REQUEST_CODE_FOR_INTEREST_SET = -2;
+    private final int REQUEST_CODE_FOR_PERMISSION = 3;
     private final int REQUEST_EXIT = 0;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         //동적 퍼미션
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
         if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_DENIED || ActivityCompat.checkSelfPermission(this, permissions[1]) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, permissions, 100);
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_FOR_PERMISSION);
         }
 
         //xml Reference
@@ -230,6 +233,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_FOR_PERMISSION){
+            if (getIntent().getStringExtra("sendActivity") != null && getIntent().getStringExtra("sendActivity").equals("loginActivity")){
+                startActivity(new Intent(this, ProfileSetActivity.class).putExtra("sendActivity", "loginActivity"));
+            }
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if (G.myProfile != null) loadUserInformation();
@@ -307,5 +320,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this).setMessage("나가시겠습니까?").setNegativeButton("아니오", null).setPositiveButton("네", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MainActivity.super.onBackPressed();
+            }
+        }).create().show();
     }
 }
