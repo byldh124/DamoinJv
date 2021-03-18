@@ -2,7 +2,6 @@ package com.moondroid.project01_meetingapp.variableobject;
 
 public class UserBaseVO {
     private String userId;
-    private String userPassword;
     private String userName;
     private String userBirthDate;
     private String userGender;
@@ -16,9 +15,8 @@ public class UserBaseVO {
     }
 
 
-    public UserBaseVO(String userId, String userPassword, String userName, String userBirthDate, String userGender, String userLocation, String userInterest, String userProfileImgUrl, String userProfileMessage, String FCMToken) {
+    public UserBaseVO(String userId, String userName, String userBirthDate, String userGender, String userLocation, String userInterest, String userProfileImgUrl, String userProfileMessage, String FCMToken) {
         this.userId = userId;
-        this.userPassword = userPassword;
         this.userName = userName;
         this.userBirthDate = userBirthDate;
         this.userGender = userGender;
@@ -31,10 +29,6 @@ public class UserBaseVO {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
     }
 
     public void setUserName(String userName) {
@@ -71,10 +65,6 @@ public class UserBaseVO {
 
     public String getUserId() {
         return userId;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
     }
 
     public String getUserName() {

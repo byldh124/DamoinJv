@@ -164,7 +164,6 @@ public class CreateActivity extends AppCompatActivity {
                         Toast.makeText(CreateActivity.this, "동일한 모임명이 존재합니다.\n다른 이름을 생성해주세요", Toast.LENGTH_SHORT).show();
                         return;
                     } else {
-
                         if (meetName == null || meetName.equals("")) {
                             Toast.makeText(CreateActivity.this, "모임 이름을 설정해주세요", Toast.LENGTH_SHORT).show();
                             return;

@@ -21,32 +21,30 @@
         android:background="@drawable/bg_edit_text_basic"
         android:ems="10"
         android:padding="8dp"
-        android:layout_above="@id/log_in_edit_pass"
-        android:privateImeOptions="defaultInputmode=english"
+        android:layout_centerInParent="true"
         android:layout_marginBottom="16dp"
         android:inputType="text"
         android:layout_centerHorizontal="true"
         android:hint="id"/>
 
-    <EditText
-        android:id="@+id/log_in_edit_pass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_edit_text_basic"
-        android:privateImeOptions="defaultInputmode=english"
-        android:ems="10"
-        android:padding="8dp"
-        android:layout_centerInParent="true"
-        android:inputType="textPassword"
-        android:imeOptions="actionDone"
-        android:hint="password"/>
+<!--    <EditText-->
+<!--        android:id="@+id/log_in_edit_pass"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@drawable/bg_edit_text_basic"-->
+<!--        android:ems="10"-->
+<!--        android:padding="8dp"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:inputType="textPassword"-->
+<!--        android:imeOptions="actionDone"-->
+<!--        android:hint="password"/>-->
 
     <TextView
         android:id="@+id/log_in_text_log"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="로그인"
-        android:layout_below="@id/log_in_edit_pass"
+        android:layout_below="@id/log_in_edit_id"
         android:layout_centerHorizontal="true"
         android:clickable="true"
         android:onClick="clickLogIn"
