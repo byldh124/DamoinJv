@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Project01_MeetingApp"
         android:usesCleartextTraffic="true">
+        <activity android:name=".page_tab1_info.MoimInfoActivity"></activity>
         <activity
             android:name=".page_tab1_info.ProfileActivity"
             android:screenOrientation="portrait" />

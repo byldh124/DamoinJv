@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".page_tab1_info.MoimInfoActivity">
+
+    <Button
+        android:id="@+id/btn_join"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="모임 참여하기"
+        android:layout_margin="16dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/jalnanche"
+        android:background="@drawable/selector_information_fragment_join_button"
+        app:backgroundTint="@null"
+        android:onClick="clickJoin"
+        android:textSize="16sp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_moim_infor_members"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_join"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        android:layout_margin="8dp"/>
+
+</RelativeLayout>

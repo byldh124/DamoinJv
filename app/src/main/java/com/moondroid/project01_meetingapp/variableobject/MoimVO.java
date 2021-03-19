@@ -8,11 +8,12 @@ public class MoimVO {
     private String pay;
     private double lat;
     private double lng;
+    private String joinMembers;
 
     public MoimVO() {
     }
 
-    public MoimVO(String meetName, String address, String date, String time, String pay, double lat, double lng) {
+    public MoimVO(String meetName, String address, String date, String time, String pay, double lat, double lng, String joinMembers) {
         this.meetName = meetName;
         this.address = address;
         this.date = date;
@@ -20,6 +21,15 @@ public class MoimVO {
         this.pay = pay;
         this.lat = lat;
         this.lng = lng;
+        this.joinMembers = joinMembers;
+    }
+
+    public String getJoinMembers() {
+        return joinMembers;
+    }
+
+    public void setJoinMembers(String joinMembers) {
+        this.joinMembers = joinMembers;
     }
 
     public String getMeetName() {

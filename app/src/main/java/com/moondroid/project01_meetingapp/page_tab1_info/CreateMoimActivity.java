@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
@@ -42,6 +43,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -116,7 +118,10 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
         if (moimAddress.equals("")) return;
 
         //정모 내용 서버에 저장
-        MoimVO moimVO = new MoimVO(G.currentItemBase.getMeetName(), moimAddress, moimDate, moimTime, moimPay, lat, lng);
+        ArrayList<String> joinMembersForJson = new ArrayList<>();
+        joinMembersForJson.add(G.myProfile.getUserId());
+        String joinMembers = new Gson().toJson(joinMembersForJson);
+        MoimVO moimVO = new MoimVO(G.currentItemBase.getMeetName(), moimAddress, moimDate, moimTime, moimPay, lat, lng, joinMembers);
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).saveMoimInfo(moimVO).enqueue(new Callback<MoimVO>() {
             @Override
             public void onResponse(Call<MoimVO> call, Response<MoimVO> response) {

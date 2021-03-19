@@ -107,5 +107,9 @@ public interface RetrofitService {
     @GET("/damoim/loadRecentMoim.php")
     Call<ArrayList<ItemBaseVO>> loadUserRecentViewItem(@Query("userId") String userId);
 
+    @GET("/damoim/loadJoinMembers.php")
+    Call<ArrayList<UserBaseVO>> loadJoinMembers(@Query("joinMembers") String joinMembers);
 
+    @GET("/damoim/addJoinMember.php")
+    Call<String> addJoinMember(@Query("meetName") String meetName, @Query("date") String date, @Query("joinMember") String joinMember);
 }

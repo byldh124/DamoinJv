@@ -1,15 +1,19 @@
 package com.moondroid.project01_meetingapp.page_tab1_info;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.moondroid.project01_meetingapp.R;
+import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.variableobject.MoimVO;
 
 import java.util.ArrayList;
@@ -58,6 +62,22 @@ public class InformationMoimAdapter extends RecyclerView.Adapter<InformationMoim
             tvTime = itemView.findViewById(R.id.tv_information_moim_time);
             tvAddress = itemView.findViewById(R.id.tv_information_moim_location);
             tvPay = itemView.findViewById(R.id.tv_information_moim_pay);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!(G.currentItemMembers.contains(G.myProfile.getUserId()))){
+                        Toast.makeText(context, "모임에 가입된 사람만 가능합니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    int pos = getAdapterPosition();
+                    MoimVO item = moimVOS.get(pos);
+                    String moimItem = new Gson().toJson(item);
+                    Intent intent = new Intent(context, MoimInfoActivity.class);
+                    intent.putExtra("moimInfo", moimItem);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }
