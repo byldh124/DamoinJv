@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private CircleImageView ivNavigationUserProfileImg;
     private TextView tvNavigationUserName;
     private TextView tvNavigationUserMessage;
+    private int clickedBnvPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         transaction.show(fragments[0]);
                         tvMainTitle.setText(R.string.bottom_tab1_title);
+                        clickedBnvPage = 0;
                         break;
                     case R.id.bnv_tab2:
                         if (fragments[1] == null) {
@@ -138,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         transaction.show(fragments[1]);
                         tvMainTitle.setText(R.string.bottom_tab2_title);
+                        clickedBnvPage = 1;
                         break;
                     case R.id.bnv_tab3:
                         if (fragments[2] == null) {
@@ -146,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         transaction.show(fragments[2]);
                         tvMainTitle.setText(R.string.bottom_tab3_title);
+                        clickedBnvPage = 2;
                         break;
                     case R.id.bnv_tab4:
                         if (fragments[3] == null) {
@@ -154,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         transaction.show(fragments[3]);
                         tvMainTitle.setText(R.string.bottom_tab4_title);
+                        clickedBnvPage = 3;
                         break;
                 }
                 transaction.commit();
@@ -324,6 +329,32 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (clickedBnvPage != 0){
+//            FragmentTransaction transaction = fragmentManager.beginTransaction();
+//            for (int i = 0; i < fragments.length; i++) {
+//                if (fragments[i] != null) {
+//                    transaction.hide(fragments[i]);
+//                }
+//            }
+//            if (fragments[0] == null) {
+//                fragments[0] = new MeetFragmentBottomTab1();
+//                transaction.add(R.id.container_fragment_main, fragments[0]);
+//            }
+//            transaction.show(fragments[0]);
+//            tvMainTitle.setText(R.string.bottom_tab1_title);
+//            clickedBnvPage = 0;
+//
+//            transaction.commit();
+            bottomNavigationView.setSelectedItemId(R.id.bnv_tab1);
+            if(navigationView.getVisibility() == View.VISIBLE) {
+                drawerLayout.closeDrawers();
+            }
+            return;
+        }
+        if(navigationView.getVisibility() == View.VISIBLE){
+            drawerLayout.closeDrawers();
+            return;
+        }
         new AlertDialog.Builder(this).setMessage("나가시겠습니까?").setNegativeButton("아니오", null).setPositiveButton("네", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

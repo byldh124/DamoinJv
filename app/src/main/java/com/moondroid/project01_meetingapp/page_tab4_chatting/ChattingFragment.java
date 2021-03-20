@@ -45,6 +45,7 @@ public class ChattingFragment extends Fragment {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference chatRef;
     private ChatItemVO chatItem;
+    int i = 0;
 
     @Nullable
     @Override
@@ -76,23 +77,27 @@ public class ChattingFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 chatItem = snapshot.getValue(ChatItemVO.class);
-                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadChatInfo(chatItem.getUserId()).enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        if (response.body() != null) {
-                            String[] responses = response.body().split("&&");
-                            chatItem.setUserName(responses[0]);
-                            chatItem.setProfileImgUrl(responses[1]);
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-
-                    }
-                });
+                int pos = G.currentItemMembers.indexOf(chatItem.getUserId());
+                chatItem.setUserName(G.currentChatItems.get(pos).getUserName());
+                chatItem.setProfileImgUrl(G.currentChatItems.get(pos).getProfileImgUrl());
                 chatItems.add(chatItem);
                 chatAdapter.notifyDataSetChanged();
                 listView.setSelection(chatItems.size() - 1);
+
+//                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadChatInfo(chatItem.getUserId()).enqueue(new Callback<String>() {
+//                    @Override
+//                    public void onResponse(Call<String> call, Response<String> response) {
+//                        if (response.body() != null) {
+//                            String[] responses = response.body().split("&&");
+//                            chatItem.setUserName(responses[0]);
+//                            chatItem.setProfileImgUrl(responses[1]);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<String> call, Throwable t) {
+//                    }
+//                });
             }
 
             @Override
@@ -115,8 +120,6 @@ public class ChattingFragment extends Fragment {
 
             }
         });
-
-
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {

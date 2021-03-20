@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -72,9 +73,16 @@ public class ChoicePictureActivity extends AppCompatActivity {
         }
     }
 
+    ProgressDialog progressDialog;
+    StorageReference imgRef;
+
     public void clickSave(View view) {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage("업로드 중입니다");
+        progressDialog.show();
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference imgRef = firebaseStorage.getReference("GalleryImgs");
+        imgRef = firebaseStorage.getReference("GalleryImgs").child(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         imgRef.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -86,6 +94,7 @@ public class ChoicePictureActivity extends AppCompatActivity {
                         databaseReference.child(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())).setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+                                progressDialog.dismiss();
                                 finish();
                             }
                         });

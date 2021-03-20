@@ -77,7 +77,7 @@ public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCa
         //건물 표시
         naverMap.setLayerGroupEnabled(naverMap.LAYER_GROUP_BUILDING, true);
         naverMap.setIndoorEnabled(true);
-    
+
         //카메라 포지션 설정 [위치, 줌, 방향, 기울기]
         CameraPosition cameraPosition = new CameraPosition(new LatLng(37.5670135, 126.9783740), 16, 0, 0);
         naverMap.setCameraPosition(cameraPosition);
@@ -86,7 +86,7 @@ public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCa
         mNaverMap.setLocationSource(locationSource);
         UiSettings uiSettings = mNaverMap.getUiSettings();
         mNaverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-        
+
         //네이버맵 UI 세팅
         uiSettings.setCompassEnabled(true);
         uiSettings.setLocationButtonEnabled(true);
@@ -147,9 +147,12 @@ public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCa
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMoimsAll().enqueue(new Callback<ArrayList<MoimVO>>() {
             @Override
             public void onResponse(Call<ArrayList<MoimVO>> call, Response<ArrayList<MoimVO>> response) {
-                MoimVO moimVO = response.body().get(i);
-                if (Integer.parseInt(moimVO.getDate().replace(".","")) >= Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
-                    moimVOS.add(response.body().get(i));
+                MoimVO moimVO;
+                for (int i = 0; i < response.body().size(); i++) {
+                    moimVO = response.body().get(i);
+                    if (Integer.parseInt(moimVO.getDate().replace(".", "")) >= Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
+                        moimVOS.add(moimVO);
+                    }
                 }
                 for (i = 0; i < moimVOS.size(); i++) {
                     Marker marker = new Marker(new LatLng(moimVOS.get(i).getLat(), moimVOS.get(i).getLng()));

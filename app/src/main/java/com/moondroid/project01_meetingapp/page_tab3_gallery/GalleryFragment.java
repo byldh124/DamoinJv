@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,7 +49,7 @@ public class GalleryFragment extends Fragment {
         actionButton = view.findViewById(R.id.action_button_gallery);
 
         if (G.currentItemMembers.indexOf(G.myProfile.getUserId()) < 0) {
-            actionButton.setVisibility(View.INVISIBLE);
+            actionButton.setVisibility(View.GONE);
         }
 
         actionButton.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +69,7 @@ public class GalleryFragment extends Fragment {
     public void loadImg() {
         imgs.clear();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/" + G.currentItemBase.getMeetName());
+        DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/").child(G.currentItemBase.getMeetName());
         databaseReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {

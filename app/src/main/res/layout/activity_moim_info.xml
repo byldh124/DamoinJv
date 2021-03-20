@@ -6,26 +6,138 @@
     android:layout_height="match_parent"
     tools:context=".page_tab1_info.MoimInfoActivity">
 
-    <Button
-        android:id="@+id/btn_join"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_moim_info_activity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="모임 참여하기"
-        android:layout_margin="16dp"
-        android:textStyle="bold"
-        android:fontFamily="@font/jalnanche"
-        android:background="@drawable/selector_information_fragment_join_button"
-        app:backgroundTint="@null"
-        android:onClick="clickJoin"
-        android:textSize="16sp"/>
+        android:layout_height="?attr/actionBarSize">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_moim_infor_members"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/jalnanche"
+            android:text="모임참여"
+            android:textColor="@color/main_001"
+            android:textSize="16sp" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_below="@id/toolbar_moim_info_activity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_join"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical"
-        android:layout_margin="8dp"/>
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/moim_info_moim_infro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/jalnanche"
+                android:text="모임 정보"
+                android:textColor="#ff333333" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/moim_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/moim_info_moim_infro"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@color/white"
+
+                app:cardCornerRadius="8dp"
+                app:strokeColor="@color/pastel_6"
+                app:strokeWidth="1dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tv_date_moim_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="8dp"
+                        android:text="유자바"
+                        android:textColor="#ff333333"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_time_moim_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/tv_date_moim_info"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_toRightOf="@id/tv_date_moim_info"
+                        android:text="안녕하세요"
+                        android:textColor="#ff666666" />
+
+                    <TextView
+                        android:id="@+id/tv_location_moim_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_time_moim_info"
+                        android:layout_alignLeft="@id/tv_date_moim_info"
+                        android:layout_marginTop="4dp"
+                        android:text="안녕하세요"
+                        android:textColor="#ff666666" />
+
+                    <TextView
+                        android:id="@+id/tv_pay_moim_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_location_moim_info"
+                        android:layout_alignLeft="@id/tv_date_moim_info"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="안녕하세요"
+                        android:textColor="#ff666666" />
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btn_join"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/moim_info_container"
+                android:layout_margin="16dp"
+                android:background="@drawable/selector_information_fragment_join_button"
+                android:fontFamily="@font/jalnanche"
+                android:onClick="clickJoin"
+                android:text="모임 참여하기"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="@null" />
+
+            <TextView
+                android:id="@+id/moim_info_member"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btn_join"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/jalnanche"
+                android:text="참여 멤버"
+                android:textColor="#ff333333" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_moim_infor_members"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/moim_info_member"
+                android:layout_margin="8dp"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>

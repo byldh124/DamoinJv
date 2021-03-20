@@ -25,6 +25,7 @@ import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.library.LinearLayoutManagerWrapper;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.library.RetrofitService;
+import com.moondroid.project01_meetingapp.variableobject.ChatItemVO;
 import com.moondroid.project01_meetingapp.variableobject.MoimVO;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 import com.squareup.picasso.Picasso;
@@ -49,6 +50,8 @@ public class InformationFragment extends Fragment {
     private InformationMemberAdapter memberAdapter;
     private ArrayList<MoimVO> moimVOS;
     private InformationMoimAdapter moimAdapter;
+
+
 
     @Nullable
     @Override
@@ -125,18 +128,22 @@ public class InformationFragment extends Fragment {
     public void loadMembers() {
         memberVOS.clear();
         G.currentItemMembers.clear();
+        G.currentChatItems.clear();
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserBaseDBToIntroActivity(G.currentItemBase.getMasterId()).enqueue(new Callback<UserBaseVO>() {
             @Override
             public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
                 memberVOS.add(0, response.body());
                 G.currentItemMembers.add(G.currentItemBase.getMasterId());
+                G.currentChatItems.add(new ChatItemVO(response.body().getUserId(), response.body().getUserName(), null, response.body().getUserProfileImgUrl(), null));
                 memberAdapter.notifyItemInserted(0);
                 RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMembers(G.currentItemBase.getMeetName()).enqueue(new Callback<ArrayList<UserBaseVO>>() {
                     @Override
                     public void onResponse(Call<ArrayList<UserBaseVO>> call, Response<ArrayList<UserBaseVO>> response) {
                         for (int i = 0; i < response.body().size(); i++) {
-                            memberVOS.add(response.body().get(i));
-                            G.currentItemMembers.add(response.body().get(i).getUserId());
+                            UserBaseVO userBaseVO = response.body().get(i);
+                            memberVOS.add(userBaseVO);
+                            G.currentItemMembers.add(userBaseVO.getUserId());
+                            G.currentChatItems.add(new ChatItemVO(userBaseVO.getUserId(), userBaseVO.getUserName(), null, userBaseVO.getUserProfileImgUrl(), null));
                             memberAdapter.notifyItemInserted(memberVOS.size() - 1);
                         }
                     }

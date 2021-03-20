@@ -1,13 +1,17 @@
 package com.moondroid.project01_meetingapp.page_tab1_info;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -32,14 +36,32 @@ public class MoimInfoActivity extends AppCompatActivity {
     private InformationMemberAdapter memberAdapter;
     private RecyclerView recyclerViewMembers;
 
+    private Toolbar toolbar;
+    private TextView tvDate, tvTime, tvLocation, tvPay;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moim_info);
 
+        toolbar = findViewById(R.id.toolbar_moim_info_activity);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        tvDate = findViewById(R.id.tv_date_moim_info);
+        tvTime = findViewById(R.id.tv_time_moim_info);
+        tvLocation = findViewById(R.id.tv_location_moim_info);
+        tvPay = findViewById(R.id.tv_pay_moim_info);
+
         if (getIntent().getStringExtra("moimInfo") != null) {
             moimItem = new Gson().fromJson(getIntent().getStringExtra("moimInfo"), MoimVO.class);
+
+            tvDate.setText(moimItem.getDate());
+            tvTime.setText(moimItem.getTime());
+            tvLocation.setText(moimItem.getAddress());
+            tvPay.setText(moimItem.getPay());
         }
         recyclerViewMembers = findViewById(R.id.recycler_moim_infor_members);
         recyclerViewMembers.setLayoutManager(new LinearLayoutManagerWrapper(this, LinearLayoutManager.VERTICAL, false));
@@ -49,6 +71,14 @@ public class MoimInfoActivity extends AppCompatActivity {
         recyclerViewMembers.setAdapter(memberAdapter);
 
         loadMembers();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            super.onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void loadMembers() {
@@ -70,9 +100,12 @@ public class MoimInfoActivity extends AppCompatActivity {
     }
 
     public void clickJoin(View view) {
-        if(memberVOS.contains(G.myProfile)){
-            Toast.makeText(this, "이미 신청하신 모임입니다.", Toast.LENGTH_SHORT).show();
-            return;
+
+        for (int i = 0; i < memberVOS.size(); i++) {
+            if (memberVOS.get(i).getUserId().equals(G.myProfile.getUserId())) {
+                Toast.makeText(this, "이미 신청하신 모임입니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         new AlertDialog.Builder(this).setMessage("모임 신청 하시겠습니까?").setNegativeButton("아니오", null).setPositiveButton("네", new DialogInterface.OnClickListener() {
@@ -81,7 +114,9 @@ public class MoimInfoActivity extends AppCompatActivity {
                 RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).addJoinMember(moimItem.getMeetName(), moimItem.getDate(), G.myProfile.getUserId()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-
+                        memberVOS.add(G.myProfile);
+                        memberAdapter.notifyItemInserted(memberVOS.size() - 1);
+                        Toast.makeText(MoimInfoActivity.this, "모임에 참여했습니다.", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
