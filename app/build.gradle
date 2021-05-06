@@ -11,8 +11,8 @@ android {
         applicationId "com.moondroid.project01_meetingapp"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 7
-        versionName "1.07"
+        versionCode 8
+        versionName "1.08"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
