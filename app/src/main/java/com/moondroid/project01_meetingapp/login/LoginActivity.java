@@ -3,6 +3,7 @@ package com.moondroid.project01_meetingapp.login;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private String profileImgUrl;
     private EditText etInputId;
     private EditText etInputPassword;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,13 @@ public class LoginActivity extends AppCompatActivity {
         if (inputId == null || inputId.equals(""))
             return;
 
+        progressDialog = new ProgressDialog(this);
+
+        progressDialog.setMessage("잠시만 기다려주십시오.");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+        progressDialog.show();
+
         //기입된 ID로 DB에 저장된 값을 불러오는 작업
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
@@ -87,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                 //DB에 아이디가 저장되어 있는지 확인하는 작업
                 if (response.body() == null) {
                     Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                     return;
                 } else{
                     UserBaseVO userBaseVO = response.body();
@@ -94,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                     saveSharedPreference(inputId);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
+                    progressDialog.dismiss();
                     finish();
                 }
 
@@ -113,6 +124,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UserBaseVO> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(LoginActivity.this, "서버에 연결할 수 없습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }

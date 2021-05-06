@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.loader.content.CursorLoader;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -68,6 +69,7 @@ public class OptionModifyActivity extends AppCompatActivity {
     private Map<String, String> dataPart;
     private String[] dstName;
     private boolean meetNameIsChanged = false;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,6 +239,14 @@ public class OptionModifyActivity extends AppCompatActivity {
     }
 
     public void saveData() {
+
+        progressDialog = new ProgressDialog(this);
+
+        progressDialog.setMessage("잠시만 기다려주십시오.");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+        progressDialog.show();
+
         dataPart = new HashMap<>();
         dataPart.put("originMeetName", G.currentItemBase.getMeetName());
         dataPart.put("meetName", meetName);
@@ -275,9 +285,11 @@ public class OptionModifyActivity extends AppCompatActivity {
                     }
                     try {
                         G.currentItemBase.setIntroImgUrl(dstName[1]);
+                        progressDialog.dismiss();
                         onBackPressed();
                     } catch (Exception e) {
                         G.currentItemBase.setIntroImgUrl(null);
+                        progressDialog.dismiss();
                         onBackPressed();
                     }
                 }
@@ -286,7 +298,6 @@ public class OptionModifyActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                saveData();
 
             }
         });

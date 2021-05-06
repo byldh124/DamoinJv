@@ -6,9 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.loader.content.CursorLoader;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -76,6 +80,8 @@ public class ProfileSetActivity extends AppCompatActivity {
     private String location, gender;
 
     private Map<String, String> dataPart;
+    ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +143,13 @@ public class ProfileSetActivity extends AppCompatActivity {
 
     public void clickSaveToRetrofit(View view) {
 
+        progressDialog = new ProgressDialog(this);
+
+        progressDialog.setMessage("잠시만 기다려주십시오.");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+        progressDialog.show();
+
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
 
@@ -167,13 +180,15 @@ public class ProfileSetActivity extends AppCompatActivity {
                 G.myProfile.setUserLocation(dataPart.get("userLocation"));
                 G.myProfile.setUserBirthDate(dataPart.get("userBirthDate"));
                 G.myProfile.setUserProfileMessage(dataPart.get("userProfileMessage"));
+                progressDialog.dismiss();
                 finish();
 
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.i("ttt", t.getMessage());
+                progressDialog.dismiss();
+                Toast.makeText(ProfileSetActivity.this, "서버에 연결할 수 없습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -225,10 +240,17 @@ public class ProfileSetActivity extends AppCompatActivity {
                 break;
             case REQUEST_CODE_FOR_PROFILE_IMAGE_SELECT:
                 uriFromGallery = data.getData();
-                imgIsChanged = true;
-                Glide.with(this).load(uriFromGallery).into(ivProfileImg);
                 if (uriFromGallery != null) {
                     imgPath = getRealPathFromUri(uriFromGallery);
+                    Bitmap bitMap = BitmapFactory.decodeFile(imgPath);
+                    int h = bitMap.getHeight();
+                    int w = bitMap.getWidth();
+                    if (h>1600 || w>1600){
+                        new AlertDialog.Builder(this).setMessage("파일 용량이 너무 큽니다.").setPositiveButton("확인", null).create().show();
+                    } else {
+                        imgIsChanged = true;
+                        Glide.with(this).load(uriFromGallery).into(ivProfileImg);
+                    }
                 }
                 break;
 

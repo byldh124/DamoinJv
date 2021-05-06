@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.location.Geocoder;
@@ -68,6 +69,7 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
     private EditText etMoimPay;
     private String address;
     private int y = 0, m = 0, d = 0, h = 0, mi = 0;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +119,13 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
         if (moimPay.equals("")) return;
         if (moimAddress.equals("")) return;
 
+        progressDialog = new ProgressDialog(this);
+
+        progressDialog.setMessage("잠시만 기다려주십시오.");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+        progressDialog.show();
+
         //정모 내용 서버에 저장
         ArrayList<String> joinMembersForJson = new ArrayList<>();
         joinMembersForJson.add(G.myProfile.getUserId());
@@ -129,19 +138,21 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
                 RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).sendFCMMessageMoim(G.currentItemBase.getMeetName()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
+                        progressDialog.dismiss();
                         finish();
                     }
 
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
-
+                        progressDialog.dismiss();
                     }
                 });
             }
 
             @Override
             public void onFailure(Call<MoimVO> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Toast.makeText(CreateMoimActivity.this, "저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
 

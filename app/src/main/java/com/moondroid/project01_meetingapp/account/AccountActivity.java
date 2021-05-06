@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,6 +54,7 @@ public class AccountActivity extends AppCompatActivity {
     private boolean idChecked = false;
 
     private UserBaseVO userBaseVO;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,6 +224,14 @@ public class AccountActivity extends AppCompatActivity {
 
     //유저가 기입한 정보를 DB에 저장
     public void saveDataToRetrofit() {
+
+        progressDialog = new ProgressDialog(this);
+
+        progressDialog.setMessage("잠시만 기다려주십시오.");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+        progressDialog.show();
+
         userBaseVO = new UserBaseVO(userId, userName, userBirthDate, userGender, userAddress, userInterest, "./userProfileImg/IMG_20210302153242unnamed.jpg", "만나서 반갑습니다.", null);
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
@@ -237,12 +247,14 @@ public class AccountActivity extends AppCompatActivity {
                 intent.putExtra("sendActivity", "loginActivity");
                 startActivity(intent);
                 setResult(RESULT_OK, null);
+                progressDialog.dismiss();
                 finish();
             }
 
             @Override
             public void onFailure(Call<UserBaseVO> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Toast.makeText(AccountActivity.this, "서버에 연결할 수 없습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }

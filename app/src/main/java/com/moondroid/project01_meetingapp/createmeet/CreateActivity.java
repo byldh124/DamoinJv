@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.loader.content.CursorLoader;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -65,6 +66,7 @@ public class CreateActivity extends AppCompatActivity {
     private TextView locationInCreate;
     private ImageView ivInterestChoose, ivTitleImage;
     private String imgPath;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +178,17 @@ public class CreateActivity extends AppCompatActivity {
                         } else if (meetInterest == null || meetInterest.equals("")) {
                             Toast.makeText(CreateActivity.this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
                             return;
+                        } else if (imgPath == null){
+                            Toast.makeText(CreateActivity.this, "사진을 선택해주세요", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+
+                        progressDialog = new ProgressDialog(CreateActivity.this);
+
+                        progressDialog.setMessage("잠시만 기다려주십시오.");
+                        progressDialog.setCancelable(false);
+                        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+                        progressDialog.show();
 
                         //확인 작업이 끝난 후 모임 내용에 대해 DB에 저장
                         MultipartBody.Part filePart = null;
@@ -203,10 +215,13 @@ public class CreateActivity extends AppCompatActivity {
                                 G.currentItemBase.setMeetInterest(meetInterest);
                                 G.currentItemBase.setTitleImgUrl(response.body());
                                 G.currentItemBase.setMasterId(G.myProfile.getUserId());
+                                progressDialog.dismiss();
                                 onBackPressed();
                             }
                             @Override
                             public void onFailure(Call<String> call, Throwable t) {
+                                progressDialog.dismiss();
+                                Toast.makeText(CreateActivity.this, "저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
