@@ -245,7 +245,7 @@ public class ProfileSetActivity extends AppCompatActivity {
                     Bitmap bitMap = BitmapFactory.decodeFile(imgPath);
                     int h = bitMap.getHeight();
                     int w = bitMap.getWidth();
-                    if (h>1600 || w>1600){
+                    if (h>=2000 || w>=2000){
                         new AlertDialog.Builder(this).setMessage("파일 용량이 너무 큽니다.").setPositiveButton("확인", null).create().show();
                     } else {
                         imgIsChanged = true;

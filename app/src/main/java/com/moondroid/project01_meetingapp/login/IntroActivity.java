@@ -1,9 +1,11 @@
 package com.moondroid.project01_meetingapp.login;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,8 +14,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.main.MainActivity;
@@ -39,7 +44,7 @@ public class IntroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
-        
+
         //로고 애니메이션 작업
         logoAnim = AnimationUtils.loadAnimation(this, R.anim.logo_anim);
         logoImg = findViewById(R.id.intro_logo);
@@ -66,7 +71,7 @@ public class IntroActivity extends AppCompatActivity {
     }
 
     //SharedPreferences 에 저장된 유저 ID에 따라 DB에 저장된 유저의 정보들을 가져오는 작업
-    public void startApp(){
+    public void startApp() {
         Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
         Call<UserBaseVO> call = retrofitService.loadUserBaseDBToIntroActivity(userId);
