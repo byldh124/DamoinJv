@@ -3,6 +3,7 @@ package com.moondroid.project01_meetingapp.account;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.moondroid.project01_meetingapp.R;
+import com.moondroid.project01_meetingapp.library.LinearLayoutManagerWrapper;
 
 import java.util.ArrayList;
 
@@ -28,11 +30,12 @@ public class LocationChoiceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_choice);
-    
+
         //xml 참조영역
         toolbarLocationChoiceActivity = findViewById(R.id.toolbar_location_choice_activity);
         etLocationSearch = findViewById(R.id.et_location_activity_search_location);
         recyclerLocationResult = findViewById(R.id.recycler_location_search_result);
+        recyclerLocationResult.setLayoutManager(new LinearLayoutManagerWrapper(this, LinearLayoutManager.VERTICAL, false));
 
         locationData = getResources().getStringArray(R.array.location);
 
@@ -45,7 +48,7 @@ public class LocationChoiceActivity extends AppCompatActivity {
         locations = new ArrayList<>();
         locationAdapter = new LocationAdapter(this, locations);
         recyclerLocationResult.setAdapter(locationAdapter);
-    
+
         //유저가 지역 입력시 리사이클러뷰 아이템 선택
         etLocationSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -56,10 +59,11 @@ public class LocationChoiceActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 locations.clear();
+                locationAdapter.notifyDataSetChanged();
                 for (int i = 0 ; i<locationData.length; i++){
                     if (locationData[i].contains(s)){
                         locations.add(locationData[i]);
-                        locationAdapter.notifyDataSetChanged();
+                        locationAdapter.notifyItemInserted(locations.size()-1);
                     }
                 }
             }

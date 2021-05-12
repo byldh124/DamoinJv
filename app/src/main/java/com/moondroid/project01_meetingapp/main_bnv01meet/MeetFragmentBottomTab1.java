@@ -102,6 +102,7 @@ public class MeetFragmentBottomTab1 extends Fragment {
     public void loadData() {
         snapshots.clear();
         itemList.clear();
+        itemAdapter.notifyDataSetChanged();
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override
             public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {

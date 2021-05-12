@@ -77,12 +77,18 @@ public class ChattingFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 chatItem = snapshot.getValue(ChatItemVO.class);
-                int pos = G.currentItemMembers.indexOf(chatItem.getUserId());
-                chatItem.setUserName(G.currentChatItems.get(pos).getUserName());
-                chatItem.setProfileImgUrl(G.currentChatItems.get(pos).getProfileImgUrl());
-                chatItems.add(chatItem);
-                chatAdapter.notifyDataSetChanged();
-                listView.setSelection(chatItems.size() - 1);
+                try {
+                    int pos = G.currentItemMembers.indexOf(chatItem.getUserId());
+                    chatItem.setUserName(G.currentChatItems.get(pos).getUserName());
+                    chatItem.setProfileImgUrl(G.currentChatItems.get(pos).getProfileImgUrl());
+
+                } catch (Exception e) {
+
+                } finally {
+                    chatItems.add(chatItem);
+                    chatAdapter.notifyDataSetChanged();
+                    listView.setSelection(chatItems.size() - 1);
+                }
 
 //                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadChatInfo(chatItem.getUserId()).enqueue(new Callback<String>() {
 //                    @Override
