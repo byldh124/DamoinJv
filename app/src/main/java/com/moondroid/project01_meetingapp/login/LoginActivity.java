@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         etInputId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                clickLogIn(etInputPassword);
+                clickLogIn(etInputId);
                 return true;
             }
         });
