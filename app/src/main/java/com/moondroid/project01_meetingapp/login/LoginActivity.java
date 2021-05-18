@@ -52,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
 
         //xml 참조영역
         etInputId = findViewById(R.id.log_in_edit_id);
+
+        //EditText 입력 완료 후 키보드 Enter 이벤트 처리
         etInputId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

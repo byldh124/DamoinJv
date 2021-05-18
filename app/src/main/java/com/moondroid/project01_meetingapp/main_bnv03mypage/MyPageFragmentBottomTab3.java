@@ -67,6 +67,7 @@ public class MyPageFragmentBottomTab3 extends Fragment {
     //DB에 저장된 아이템 리스트를 불러온후 유저가 가입한 아이템만 선별하여 리사이클러 리스트에 전달.
     public void loadData() {
         itemBaseVOS.clear();
+        adapter.notifyDataSetChanged();
         //유저가 모임장인 경우 우선적으로 불러옴
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override

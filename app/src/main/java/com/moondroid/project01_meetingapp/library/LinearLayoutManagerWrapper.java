@@ -19,6 +19,8 @@ public class LinearLayoutManagerWrapper extends LinearLayoutManager {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    //LinearLayoutManager 발생하는 오류 해결을 위한 Wrapper Class
+    //데이터 재로드시에 자주 발생함.
     @Override
     public boolean supportsPredictiveItemAnimations() {
         return false;

@@ -66,6 +66,7 @@ public class MyPageRecentActivity extends AppCompatActivity {
 
     public void loadData(){
         items.clear();
+        meetItemAdapter.notifyDataSetChanged();
         RetrofitHelper.getRetrofitInstanceGsonSetLenient().create(RetrofitService.class).loadUserRecentViewItem(G.myProfile.getUserId()).enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override
             public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {

@@ -23,6 +23,8 @@
         android:theme="@style/Theme.Project01_MeetingApp"
         android:usesCleartextTraffic="true">
 
+
+        <!-- 카카오 SDK 앱키 등록 -->
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="f33663a89ab7e4f6ace89f2ebeade100" /> <!-- 네이티브 앱 키 설정 -->
@@ -65,7 +67,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Google Firebase Dynamic Link Intent Filter -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="moondroid.page"
+                    android:scheme="https"
+                    android:path="/link" />
+            </intent-filter>
         </activity>
+
         <activity
             android:name=".mypages.MyPageSettingActivity"
             android:parentActivityName=".main.MainActivity"
@@ -107,6 +123,8 @@
         <activity
             android:name=".main.MainActivity"
             android:screenOrientation="portrait">
+
+            <!-- Kakao Link Intent Filter -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -117,6 +135,8 @@
                     android:scheme="kakaof33663a89ab7e4f6ace89f2ebeade100" />
             </intent-filter>
         </activity>
+
+        <!-- Kakao Login Activity -->
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -130,6 +150,7 @@
             </intent-filter>
         </activity>
 
+        <!-- Google FCM Background Service -->
         <service
             android:name=".main.MyFirebaseMessagingService"
             android:exported="false">

@@ -59,6 +59,10 @@ public class LocationChoiceActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 locations.clear();
+                //adapter 에 들어간 아이템이 clear 된 후에 notifyDataSetChanged()을 하지 않으면
+                //RecyclerView 안에는 아이템이 포함되어 있지만 실제로 어댑터 내부에 데이터는 비어있는 현상이 발생된다.
+                //(Click Event 처리시 Index Out of Bounds Exception 이 방생하기 좋음)
+                //Data clear 한 이후에는 꼭 어댑터에 notifyDataSetChanged()를 해주자
                 locationAdapter.notifyDataSetChanged();
                 for (int i = 0 ; i<locationData.length; i++){
                     if (locationData[i].contains(s)){

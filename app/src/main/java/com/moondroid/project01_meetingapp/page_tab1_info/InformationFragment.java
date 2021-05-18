@@ -127,6 +127,7 @@ public class InformationFragment extends Fragment {
 
     public void loadMembers() {
         memberVOS.clear();
+        memberAdapter.notifyDataSetChanged();
         G.currentItemMembers.clear();
         G.currentChatItems.clear();
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserBaseDBToIntroActivity(G.currentItemBase.getMasterId()).enqueue(new Callback<UserBaseVO>() {
@@ -199,6 +200,7 @@ public class InformationFragment extends Fragment {
 
     public void loadMoims() {
         moimVOS.clear();
+        moimAdapter.notifyDataSetChanged();
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMoims(G.currentItemBase.getMeetName()).enqueue(new Callback<ArrayList<MoimVO>>() {
             @Override
             public void onResponse(Call<ArrayList<MoimVO>> call, Response<ArrayList<MoimVO>> response) {

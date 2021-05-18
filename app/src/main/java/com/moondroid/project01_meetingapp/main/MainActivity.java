@@ -17,6 +17,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,9 +29,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kakao.kakaolink.v2.KakaoLinkResponse;
 import com.kakao.kakaolink.v2.KakaoLinkService;
@@ -243,6 +247,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Firebase Dynamic 링크를 통해서 들어온 정보를 필터 pendingDynamicLinkData 에 Dynamic Link 의 정보가 담겨져온다.
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
+                .addOnSuccessListener(new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        if (pendingDynamicLinkData != null){
+                            //TODO control Deep Link from Dynamic Link get uri
+                            //Uri deepLinkUri = pendingDynamicLinkData.getLink();
+                            //switch (deepLinkUri.toString){}
+                        }
+                    }
+                });
+
 
     }
 
@@ -282,6 +299,9 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, NotificationActivity.class);
                 break;
             case R.id.option_share:
+
+                //카카오 링크를 통해 보낼 템플릿 메세지 동적 설정
+                //카카오 개발자 사이트에서 기본 템블릿 메세지를 만들어서 보낼 수 도 있다.
                 FeedTemplate params = FeedTemplate
                         .newBuilder(
                         ContentObject.newBuilder(
@@ -294,6 +314,10 @@ public class MainActivity extends AppCompatActivity {
                         .addButton(new ButtonObject("바로가기", LinkObject.newBuilder()
                                 .setWebUrl("https://moondroid.page.link/Zi7X")
                                 .setMobileWebUrl("https://moondroid.page.link/Zi7X").build())).build();
+
+                //카카오링크 서비스를 통해 템플릿 메세지 보내기
+                //메세지가 정상적으로 돌아갔는지는 카카오 개발자 사이트에 등록한 콜백 페이지를 통해서만 확인이 가능함.
+                //앱에서는 카카오 링크가 정상적으로 열렸는지만 확인 [onSuccess()]
                 KakaoLinkService.getInstance().sendDefault(this, params, new ResponseCallback<KakaoLinkResponse>() {
                     @Override
                     public void onFailure(ErrorResult errorResult) {
@@ -365,22 +389,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // 바텀 네비게이션 또는 네비게이션 레이아웃이 활성화 되어 있을 경우
+        // 네이게이션을 비활성화 시킨 후 앱 종료 요청
         if (clickedBnvPage != 0){
-//            FragmentTransaction transaction = fragmentManager.beginTransaction();
-//            for (int i = 0; i < fragments.length; i++) {
-//                if (fragments[i] != null) {
-//                    transaction.hide(fragments[i]);
-//                }
-//            }
-//            if (fragments[0] == null) {
-//                fragments[0] = new MeetFragmentBottomTab1();
-//                transaction.add(R.id.container_fragment_main, fragments[0]);
-//            }
-//            transaction.show(fragments[0]);
-//            tvMainTitle.setText(R.string.bottom_tab1_title);
-//            clickedBnvPage = 0;
-//
-//            transaction.commit();
             bottomNavigationView.setSelectedItemId(R.id.bnv_tab1);
             if(navigationView.getVisibility() == View.VISIBLE) {
                 drawerLayout.closeDrawers();

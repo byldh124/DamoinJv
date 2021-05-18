@@ -62,6 +62,7 @@ public class MyPageFavoriteActivity extends AppCompatActivity {
 
     public void loadData(){
         items.clear();
+        meetItemAdapter.notifyDataSetChanged();
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserFavoriteItem(G.myProfile.getUserId()).enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override
             public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {

@@ -1,5 +1,6 @@
 package com.moondroid.project01_meetingapp.page_tab4_chatting;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,6 +44,7 @@ public class ChattingFragment extends Fragment {
     private Button btnSend;
     private EditText etMessage;
     private ArrayList<ChatItemVO> chatItems;
+    private TextView tvAccessText;
     private ChatAdapter chatAdapter;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference chatRef;
@@ -58,14 +61,12 @@ public class ChattingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //xml Reference
         chatContainer = view.findViewById(R.id.chat_container);
         listView = view.findViewById(R.id.list_view_chat);
         btnSend = view.findViewById(R.id.btn_chat_send);
         etMessage = view.findViewById(R.id.et_chat_message);
-
-        if (G.currentItemMembers.contains(G.myProfile.getUserId()) == false) {
-            chatContainer.setVisibility(View.INVISIBLE);
-        }
+        tvAccessText = view.findViewById(R.id.chat_none_access_text);
 
         btnSend.setOnClickListener(onClickListener);
         chatItems = new ArrayList<>();
@@ -129,6 +130,12 @@ public class ChattingFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkAccess();
+    }
+
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -152,4 +159,15 @@ public class ChattingFragment extends Fragment {
             });
         }
     };
+
+    public void checkAccess(){
+        if (G.currentItemMembers.contains(G.myProfile.getUserId()) == false) {
+            //모임에 가입되지 않은 사람은 채팅이 보이지 않도록
+            chatContainer.setVisibility(View.INVISIBLE);
+            tvAccessText.setVisibility(View.VISIBLE);
+        } else {
+            chatContainer.setVisibility(View.VISIBLE);
+            tvAccessText.setVisibility(View.INVISIBLE);
+        }
+    }
 }

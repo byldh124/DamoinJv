@@ -32,6 +32,7 @@ public class ProfileMeetItemAdapter extends RecyclerView.Adapter<ProfileMeetItem
    private String[] interestList;
    private String[] interestIconList;
    private Resources res;
+   //기존 PageActivity 를 닫고 새로운 PageActivity 를 열기 위한 PageActivity Instance
    PageActivity pageActivity = (PageActivity) PageActivity.activity;
 
     public ProfileMeetItemAdapter(Context context, ArrayList<ItemBaseVO> itemList) {

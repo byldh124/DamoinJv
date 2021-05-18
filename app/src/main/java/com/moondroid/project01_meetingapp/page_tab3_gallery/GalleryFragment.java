@@ -68,6 +68,7 @@ public class GalleryFragment extends Fragment {
 
     public void loadImg() {
         imgs.clear();
+        adapter.notifyDataSetChanged();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/").child(G.currentItemBase.getMeetName());
         databaseReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {

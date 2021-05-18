@@ -79,6 +79,10 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                     interest = itemTitles[pos];
                     iconUrl = imgUrls[pos];
 
+                    // 여러개의 액티비티에서 하나의 액티비티로 화면이 이동될때,
+                    // 이전 액티비티를 알고 싶다면 Intent 의 Extra 를 동일한 이름으로 하여 보낸 액티비티의 정보를 넣어놓고
+                    // 받는 쪽에서 그 정보를 해석하는 방법으로 동일 액티비티에서 여러가지 역할을 할 수 있다.
+                    // (사실 이러면 안되지... 액티비티에서 다양한 역할을 하면 안되지....만 아직 초보니깐)
                     switch (sendClass){
                         case "Main":
                             //개인 설정 화면(메인)에서 설정시 DB 업데이트

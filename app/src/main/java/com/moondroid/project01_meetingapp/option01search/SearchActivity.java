@@ -72,6 +72,7 @@ public class SearchActivity extends AppCompatActivity implements MenuItem.OnActi
             public boolean onQueryTextSubmit(String query) {
                 searchTarget = query.replace(" ", "");
                 itemVOData.clear();
+                meetItemAdapter.notifyDataSetChanged();
                 
                 //검색한 입력어에 따라 보여줄 아이템 선정
                 RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
@@ -111,6 +112,7 @@ public class SearchActivity extends AppCompatActivity implements MenuItem.OnActi
         return super.onOptionsItemSelected(item);
     }
 
+    //검색 바 설정
     @Override
     public boolean onMenuItemActionExpand(MenuItem item) {
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS |

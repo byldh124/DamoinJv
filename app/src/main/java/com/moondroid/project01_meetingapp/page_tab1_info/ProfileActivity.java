@@ -107,6 +107,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void loadData() {
         itemBaseVOS.clear();
+        adapter.notifyDataSetChanged();
         //유저가 모임장인 경우 우선적으로 불러옴
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override

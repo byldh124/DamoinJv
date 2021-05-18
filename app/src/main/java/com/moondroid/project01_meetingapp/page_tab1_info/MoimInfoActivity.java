@@ -45,11 +45,13 @@ public class MoimInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moim_info);
 
+        //ActionBar setting
         toolbar = findViewById(R.id.toolbar_moim_info_activity);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //xml Reference
         tvDate = findViewById(R.id.tv_date_moim_info);
         tvTime = findViewById(R.id.tv_time_moim_info);
         tvLocation = findViewById(R.id.tv_location_moim_info);
@@ -83,6 +85,7 @@ public class MoimInfoActivity extends AppCompatActivity {
 
     public void loadMembers() {
         memberVOS.clear();
+        memberAdapter.notifyDataSetChanged();
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadJoinMembers(moimItem.getJoinMembers()).enqueue(new Callback<ArrayList<UserBaseVO>>() {
             @Override
             public void onResponse(Call<ArrayList<UserBaseVO>> call, Response<ArrayList<UserBaseVO>> response) {

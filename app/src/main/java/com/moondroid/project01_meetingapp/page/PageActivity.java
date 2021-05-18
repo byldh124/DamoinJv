@@ -118,17 +118,6 @@ public class PageActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked) {
-
-            } else {
-
-            }
-        }
-    };
-
     public void checkFavorite(){
         RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkFavorite(G.myProfile.getUserId(), G.currentItemBase.getMeetName()).enqueue(new Callback<String>() {
             @Override

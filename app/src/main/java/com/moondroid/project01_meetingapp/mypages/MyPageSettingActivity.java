@@ -21,6 +21,7 @@ public class MyPageSettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_page_setting);
     }
 
+    //로그아웃시 모든 정보 초기화 후 로그인 액티비티로 화면 전환
     public void clickLogout(View view) {
         G.myProfile = null;
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);

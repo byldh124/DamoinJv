@@ -38,6 +38,7 @@ public class ChoiceMoimActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choice_moim);
 
+        //xml Reference
         toolbar = findViewById(R.id.toolbar_choice_moim);
         etLocation = findViewById(R.id.et_location_input);
         recyclerView = findViewById(R.id.recycler_moim_choice);
@@ -45,8 +46,8 @@ public class ChoiceMoimActivity extends AppCompatActivity {
         geocoder = new Geocoder(this, Locale.KOREA);
         addresses = new ArrayList<>();
 
+        //Action bar setting
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -64,6 +65,7 @@ public class ChoiceMoimActivity extends AppCompatActivity {
 
     public void clickSearchLocation(View view) {
         addresses.clear();
+        adapter.notifyDataSetChanged();
         String objStr = etLocation.getText().toString();
         try {
             List<Address> result = geocoder.getFromLocationName(objStr, 10);

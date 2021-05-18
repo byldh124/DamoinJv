@@ -90,10 +90,12 @@ public class OptionModifyActivity extends AppCompatActivity {
         purposeMessage = G.currentItemBase.getPurposeMessage();
         message = G.currentItemBase.getMessage();
 
+        //Action bar Setting
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //기존 정보 load
         if (G.currentItemBase.getIntroImgUrl() != null)
             Picasso.get().load(RetrofitHelper.getUrlForImg() + G.currentItemBase.getIntroImgUrl()).into(ivIntro);
 

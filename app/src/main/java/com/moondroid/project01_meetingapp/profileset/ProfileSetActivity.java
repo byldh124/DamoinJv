@@ -100,6 +100,7 @@ public class ProfileSetActivity extends AppCompatActivity {
         radioButtonMale = findViewById(R.id.radio_button_profile_set_male);
         radioButtonFemale = findViewById(R.id.radio_button_profile_set_female);
 
+        //Action Bar Setting
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -245,7 +246,7 @@ public class ProfileSetActivity extends AppCompatActivity {
                     Bitmap bitMap = BitmapFactory.decodeFile(imgPath);
                     int h = bitMap.getHeight();
                     int w = bitMap.getWidth();
-                    if (h>=2000 || w>=2000){
+                    if (h>=2400 || w>=2400){
                         new AlertDialog.Builder(this).setMessage("파일 용량이 너무 큽니다.").setPositiveButton("확인", null).create().show();
                     } else {
                         imgIsChanged = true;
