@@ -44,6 +44,7 @@ import com.kakao.message.template.LinkObject;
 import com.kakao.network.ErrorResult;
 import com.kakao.network.callback.ResponseCallback;
 import com.kakao.message.template.FeedTemplate;
+import com.kakao.util.helper.Utility;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.InterestActivity;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
@@ -93,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //카카오 SDK의 경우 Release Version과 Debug Version의 KeyHash 값이 다르다
+        //그래고 release버전과 debug 버전 둘다의 키 해시값을 개발자 사이트에서 앱등록할때 해줘야 한다.
+//        String keyHash = Utility.getKeyHash(this);
+//        new AlertDialog.Builder(this).setMessage(keyHash).setPositiveButton("ok", null).create().show();
 
         //동적 퍼미션
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};

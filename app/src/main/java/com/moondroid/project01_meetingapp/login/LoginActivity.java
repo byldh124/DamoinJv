@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kakao.sdk.auth.LoginClient;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
@@ -152,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
     //카카오 로그인 버튼 클릭시 카카오 서버에서 유저 정보를 가져온 후 DB에 저장
     //기존에 DB에 저장된 값이 있으면 DB에서 유저 정보를 가져옴
     public void clickKakaoLogin(View view) {
-        LoginClient.getInstance().loginWithKakaoAccount(this, new Function2<OAuthToken, Throwable, Unit>() {
+        UserApiClient.getInstance().loginWithKakaoAccount(this, new Function2<OAuthToken, Throwable, Unit>() {
             @Override
             public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
                 if (oAuthToken != null) {
@@ -206,7 +205,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<UserBaseVO> call, Throwable t) {
-                            saveUserBaseDataOfKakao();
+
                         }
                     });
                 } else {
@@ -223,7 +222,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
-                            saveUserBaseDataOfKakao();
+
                         }
                     });
                 }
