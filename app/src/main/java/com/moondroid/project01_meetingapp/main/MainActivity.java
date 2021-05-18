@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +32,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.kakao.kakaolink.v2.KakaoLinkResponse;
+import com.kakao.kakaolink.v2.KakaoLinkService;
+import com.kakao.message.template.ButtonObject;
+import com.kakao.message.template.ContentObject;
+import com.kakao.message.template.LinkObject;
+import com.kakao.network.ErrorResult;
+import com.kakao.network.callback.ResponseCallback;
+import com.kakao.message.template.FeedTemplate;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.account.InterestActivity;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
@@ -260,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
     //옵션 메뉴 선택에 대한 화면 전환
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -271,6 +281,32 @@ public class MainActivity extends AppCompatActivity {
             case R.id.option_notify:
                 intent = new Intent(this, NotificationActivity.class);
                 break;
+            case R.id.option_share:
+                FeedTemplate params = FeedTemplate
+                        .newBuilder(
+                        ContentObject.newBuilder(
+                                "우리들의 모임 앱 다모임",
+                                "https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/logo.png?alt=media&token=029dbc61-ab40-4c21-8da9-7dd8f56fd117",
+                                LinkObject.newBuilder()
+                                        .setWebUrl("https://moondroid.page.link/Zi7X")
+                                        .setMobileWebUrl("https://moondroid.page.link/Zi7X").build())
+                                .setDescrption("다모임에서 다양한 사람들과 새로운 취미를 시작해보세요").build())
+                        .addButton(new ButtonObject("바로가기", LinkObject.newBuilder()
+                                .setWebUrl("https://moondroid.page.link/Zi7X")
+                                .setMobileWebUrl("https://moondroid.page.link/Zi7X").build())).build();
+                KakaoLinkService.getInstance().sendDefault(this, params, new ResponseCallback<KakaoLinkResponse>() {
+                    @Override
+                    public void onFailure(ErrorResult errorResult) {
+//                        Log.i("link error", errorResult.getErrorMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(KakaoLinkResponse result) {
+                    }
+                });
+
+                break;
+
         }
         if (intent != null) startActivity(intent);
         return super.onOptionsItemSelected(item);
