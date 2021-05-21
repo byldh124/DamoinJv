@@ -80,6 +80,13 @@ public class IntroActivity extends AppCompatActivity {
             public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
                 G.myProfile = response.body();
                 intent = new Intent(IntroActivity.this, MainActivity.class);
+
+                if (getIntent().getStringExtra("meetName") != null) {
+                    String meetName = getIntent().getStringExtra("meetName");
+                    if (!meetName.isEmpty()) {
+                        intent.putExtra("meetName", meetName);
+                    }
+                }
                 startActivity(intent);
                 finish();
             }

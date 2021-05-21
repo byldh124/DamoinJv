@@ -61,7 +61,11 @@ import com.moondroid.project01_meetingapp.mypages.MyPageRecentActivity;
 import com.moondroid.project01_meetingapp.mypages.MyPageSettingActivity;
 import com.moondroid.project01_meetingapp.option01search.SearchActivity;
 import com.moondroid.project01_meetingapp.option02notification.NotificationActivity;
+import com.moondroid.project01_meetingapp.page.PageActivity;
 import com.moondroid.project01_meetingapp.profileset.ProfileSetActivity;
+import com.moondroid.project01_meetingapp.variableobject.ItemBaseVO;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -265,6 +269,27 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+        if (getIntent().getStringExtra("meetName") != null){
+            final String meetName = getIntent().getStringExtra("meetName");
+            if (!meetName.equals("data")){
+                RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
+                    @Override
+                    public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
+                        for (int j = 0; j < response.body().size(); j++) {
+                            if (response.body().get(j).getMeetName().equals(meetName)){
+                                G.currentItemBase = response.body().get(j);
+                                startActivity(new Intent(MainActivity.this, PageActivity.class));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArrayList<ItemBaseVO>> call, Throwable t) {
+                    }
+                });
+            }
+        }
 
 
     }
