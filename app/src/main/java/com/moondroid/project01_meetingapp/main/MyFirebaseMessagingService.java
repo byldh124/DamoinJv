@@ -1,3 +1,4 @@
+
 package com.moondroid.project01_meetingapp.main;
 
 import android.app.NotificationChannel;
@@ -33,9 +34,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         //Android API 26버전(오레오) 이상에서는 Notification Channel 을 생성해서 만들어줘야 한다.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("ch01", "push ch", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel("ch01", "push ch", NotificationManager.IMPORTANCE_LOW);
             notificationManager.createNotificationChannel(channel);
-            builder = new NotificationCompat.Builder(this, "ch01");
+            builder = new NotificationCompat.Builder(this, getResources().getString(R.string.default_notification_channel_id));
 
         } else {
             builder = new NotificationCompat.Builder(this, null);
@@ -56,6 +57,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         if (remoteMessage.getData() != null){
+            notiTitle = remoteMessage.getData().get("title");
+            notiText = remoteMessage.getData().get("body");
             data = remoteMessage.getData().get("meetName");
         }
 
@@ -66,13 +69,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         builder.setContentText(notiText);
         builder.setAutoCancel(true);
         
-        //푸시에서 온 내용을 알림으로 전환, 클릭시 IntroActivity 로 화면 전환. (sharedPreference 에서 값을 불러오기 위해 인트로로 이동)
+        //푸시에서 온 내용을 알림으로 전환, 클릭시 IntroActivity 로 화면 전환. (MainActivity 에서 유저정보를 가져오지 않기 때문에 sharedPreference 에 저장된 유저정보 데이터를 불러오기 위해 인트로로 이동)
         Intent intent = new Intent(this, IntroActivity.class);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.putExtra("meetName", data);
-        intent.addFlags(intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         //바로실행되지 않고 알림에 보관되어 있다가 실행되어야 하므로 보류중인 인텐트로 변환
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
         notificationManager.notify(11, builder.build());

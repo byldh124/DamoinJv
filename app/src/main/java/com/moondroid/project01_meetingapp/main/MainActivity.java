@@ -250,7 +250,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 try {
                     token = task.getResult();
-                    saveToken();
+                    String originToken = G.myProfile.getFCMToken();
+                    if (originToken.equals("")  || !originToken.equals(token)) saveToken();
                 } catch (Exception e) {
 
                 }

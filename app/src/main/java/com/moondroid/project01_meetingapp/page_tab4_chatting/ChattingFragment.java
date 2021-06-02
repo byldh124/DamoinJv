@@ -49,7 +49,7 @@ public class ChattingFragment extends Fragment {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference chatRef;
     private ChatItemVO chatItem;
-    int i = 0;
+    private int i = 0;
 
     @Nullable
     @Override
@@ -152,7 +152,7 @@ public class ChattingFragment extends Fragment {
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
-
+                            Toast.makeText(ChattingFragment.this.getActivity(), "Send Failed", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -161,7 +161,7 @@ public class ChattingFragment extends Fragment {
     };
 
     public void checkAccess(){
-        if (G.currentItemMembers.contains(G.myProfile.getUserId()) == false) {
+        if (!G.currentItemMembers.contains(G.myProfile.getUserId())) {
             //모임에 가입되지 않은 사람은 채팅이 보이지 않도록
             chatContainer.setVisibility(View.INVISIBLE);
             tvAccessText.setVisibility(View.VISIBLE);

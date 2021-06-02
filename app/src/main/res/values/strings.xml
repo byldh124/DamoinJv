@@ -7,4 +7,5 @@
     <string name="interest_activity_title">관심사 선택</string>
 
     <string name="app_name_release">다모임</string>
+    <string name="default_notification_channel_id">ch01</string>
 </resources>
