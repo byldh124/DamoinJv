@@ -142,6 +142,7 @@ public class InformationFragment extends Fragment {
                     public void onResponse(Call<ArrayList<UserBaseVO>> call, Response<ArrayList<UserBaseVO>> response) {
                         for (int i = 0; i < response.body().size(); i++) {
                             UserBaseVO userBaseVO = response.body().get(i);
+                            if (userBaseVO.getUserId().equals(G.currentItemBase.getMasterId())) continue;
                             memberVOS.add(userBaseVO);
                             G.currentItemMembers.add(userBaseVO.getUserId());
                             G.currentChatItems.add(new ChatItemVO(userBaseVO.getUserId(), userBaseVO.getUserName(), null, userBaseVO.getUserProfileImgUrl(), null));

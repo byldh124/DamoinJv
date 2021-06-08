@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -93,12 +94,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvNavigationUserName;
     private TextView tvNavigationUserMessage;
     private int clickedBnvPage = 0;
+    private FirebaseAnalytics analytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        analytics = FirebaseAnalytics.getInstance(this);
         //카카오 SDK의 경우 Release Version과 Debug Version의 KeyHash 값이 다르다
         //그래고 release버전과 debug 버전 둘다의 키 해시값을 개발자 사이트에서 앱등록할때 해줘야 한다.
 //        String keyHash = Utility.getKeyHash(this);

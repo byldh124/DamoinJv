@@ -14,5 +14,4 @@ public class G {
     public static ItemBaseVO currentItemBase = new ItemBaseVO();
     public static ArrayList<String> currentItemMembers = new ArrayList<>();
     public static ArrayList<ChatItemVO> currentChatItems = new ArrayList<>();
-
 }

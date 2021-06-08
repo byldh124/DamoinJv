@@ -112,4 +112,10 @@ public interface RetrofitService {
 
     @GET("/damoim/addJoinMember.php")
     Call<String> addJoinMember(@Query("meetName") String meetName, @Query("date") String date, @Query("joinMember") String joinMember);
+
+    @GET("/damoim/updateFCMSetting.php")
+    Call<String> updateFCMSetting(@Query("userId") String userId, @Query("target") String target, @Query("value") String Value);
+
+    @GET("/damoim/loadFCMSetting.php")
+    Call<String> loadFCMSetting(@Query("userId") String userId);
 }

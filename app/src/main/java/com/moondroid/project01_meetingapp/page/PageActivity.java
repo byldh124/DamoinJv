@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
@@ -47,11 +48,13 @@ public class PageActivity extends AppCompatActivity {
     private TextView tvTitle;
     private ImageView favoriteNone;
     private ImageView favoriteDone;
+    private FirebaseAnalytics analytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_page);
+        analytics = FirebaseAnalytics.getInstance(this);
 
         activity = PageActivity.this;
         //xml Reference

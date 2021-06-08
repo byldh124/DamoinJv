@@ -22,6 +22,9 @@ import com.moondroid.project01_meetingapp.option02notification.NotificationActiv
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+    static String chatSetting;
+    static String meetSetting;
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);

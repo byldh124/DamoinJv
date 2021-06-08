@@ -24,6 +24,7 @@ import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.main.MainActivity;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
+import com.moondroid.project01_meetingapp.main.MyFirebaseMessagingService;
 import com.moondroid.project01_meetingapp.variableobject.UserBaseVO;
 
 import retrofit2.Call;
@@ -55,6 +56,10 @@ public class IntroActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+
+                SharedPreferences sharedPreferences2 = getSharedPreferences("setting", MODE_PRIVATE);
+                String chatSetting = sharedPreferences2.getString("chat", "true");
+                String meetSetting = sharedPreferences2.getString("meet", "true");
                 //SharedPreferences 에 저장된 값 확인 후 Login, Main 액티비티로 화면 전환
                 SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
 
