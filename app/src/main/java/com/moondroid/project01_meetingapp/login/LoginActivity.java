@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
+import com.kakao.util.helper.Utility;
+import com.moondroid.project01_meetingapp.library.KakaoApplication;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.main.MainActivity;
@@ -70,6 +72,10 @@ public class LoginActivity extends AppCompatActivity {
 //                return true;
 //            }
 //        });
+
+        String keyHash = Utility.getKeyHash(this);
+        Log.i("kakao Key Hash", keyHash);
+
     }
 
     public void clickLogIn(View view) {
@@ -96,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
                 //DB에 아이디가 저장되어 있는지 확인하는 작업
                 if (response.body() == null) {
-                    Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "아이디를 확인해 주십시오", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                     return;
                 } else{

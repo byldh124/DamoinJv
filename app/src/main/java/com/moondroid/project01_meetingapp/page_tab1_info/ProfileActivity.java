@@ -74,10 +74,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (userBaseVO.getUserName() != null) tvName.setText(userBaseVO.getUserName());
         if (userBaseVO.getUserBirthDate() != null) tvBirth.setText(userBaseVO.getUserBirthDate());
+        else tvBirth.setText("비밀~");
         if (userBaseVO.getUserLocation() != null)
             tvLocation.setText(userBaseVO.getUserLocation().split(" ")[0]);
+        else tvLocation.setText("비밀~");
         if (userBaseVO.getUserProfileMessage() != null)
             tvMessage.setText(userBaseVO.getUserProfileMessage());
+        else tvMessage.setText("만나서 반갑습니다.");
         if (userBaseVO.getUserProfileImgUrl() != null) {
             if (userBaseVO.getUserProfileImgUrl().contains("http")) {
                 Glide.with(this).load(userBaseVO.getUserProfileImgUrl()).into(ivProfile);
@@ -123,6 +126,7 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
                         for (int i = 0; i < response.body().size(); i++) {
+                            if (response.body().get(i).getMasterId().equals(G.myProfile.getUserId())) continue;
                             itemBaseVOS.add(response.body().get(i));
                             adapter.notifyItemInserted(itemBaseVOS.size() - 1);
                         }

@@ -4,69 +4,96 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context=".mypages.MyPageSettingActivity">
 
-    <RelativeLayout
-        android:id="@+id/setting_chat_notify"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="채팅 알림 받기"
-            android:layout_centerVertical="true"/>
-
-        <Switch
-            android:id="@+id/chat_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:checked="true"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-    </RelativeLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#ff888888"
-        android:layout_below="@id/setting_chat_notify"/>
-
-    <RelativeLayout
-        android:id="@+id/setting_meet_notify"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_my_page_setting"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_below="@id/setting_chat_notify">
+        android:theme="@style/ToolbarTheme_Red">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="모임 알림 받기"
-            android:layout_centerVertical="true"/>
+            android:text="설정"
+            android:fontFamily="@font/jalnanche"
+            android:textSize="16sp"
+            android:textColor="@color/main_001"/>
+    </com.google.android.material.appbar.MaterialToolbar>
 
-        <Switch
-            android:id="@+id/meet_switch"
-            android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_my_page_setting"
+        android:padding="16dp">
+
+        <RelativeLayout
+            android:id="@+id/setting_chat_notify"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="채팅 알림 받기"
+                android:textColor="#ff333333"
+                android:layout_centerVertical="true"/>
+
+            <Switch
+                android:id="@+id/chat_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:checked="true"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#ff888888"
+            android:layout_below="@id/setting_chat_notify"/>
+
+        <RelativeLayout
+            android:id="@+id/setting_meet_notify"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_below="@id/setting_chat_notify">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="모임 알림 받기"
+                android:textColor="#ff333333"
+                android:layout_centerVertical="true"/>
+
+            <Switch
+                android:id="@+id/meet_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:checked="true"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#ff888888"
+            android:layout_below="@id/setting_meet_notify"/>
+
+
+        <Button
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:checked="true"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+            android:layout_alignParentBottom="true"
+            android:text="로그아웃"
+            android:fontFamily="@font/jalnanche"
+            android:background="@drawable/selector_information_fragment_join_button"
+            app:backgroundTint="@null"
+            android:onClick="clickLogout"/>
     </RelativeLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#ff888888"
-        android:layout_below="@id/setting_meet_notify"/>
 
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="로그아웃"
-        android:onClick="clickLogout"/>
 
 </RelativeLayout>

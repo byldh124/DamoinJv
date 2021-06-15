@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private String userId;
     private View headerView;
-    private String token;
     private CircleImageView ivNavigationUserProfileImg;
     private TextView tvNavigationUserName;
     private TextView tvNavigationUserMessage;
@@ -252,9 +251,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 try {
-                    token = task.getResult();
-                    String originToken = G.myProfile.getFCMToken();
-                    if (originToken.equals("")  || !originToken.equals(token)) saveToken();
+                    String token = task.getResult();
+                    saveToken(token);
                 } catch (Exception e) {
 
                 }
@@ -406,14 +404,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //푸시 서비스를 위한 Token을 DB에 저장
-    public void saveToken() {
-
+    public void saveToken(String token) {
         RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveFCMToken(G.myProfile.getUserId(), token).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
 
             }
-
             @Override
             public void onFailure(Call<String> call, Throwable t) {
 

@@ -83,6 +83,7 @@ public class MyPageFragmentBottomTab3 extends Fragment {
                     @Override
                     public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
                         for (int i = 0; i < response.body().size(); i++) {
+                            if (response.body().get(i).getMasterId().equals(G.myProfile.getUserId())) continue;
                             itemBaseVOS.add(response.body().get(i));
                             adapter.notifyItemInserted(itemBaseVOS.size() - 1);
                         }

@@ -78,33 +78,13 @@
         android:layout_marginTop="16dp"/>
 
     <ImageView
-        android:id="@+id/log_in_add_account_by_naver"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/naver_icon"
-        android:layout_toLeftOf="@id/log_in_add_account_by_kakao"
-        android:layout_marginRight="16dp"
-        android:layout_below="@id/log_in_text_add_account"
-        android:layout_marginTop="32dp"/>
-
-    <ImageView
         android:id="@+id/log_in_add_account_by_kakao"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/kakao_icon"
+        android:layout_width="210dp"
+        android:layout_height="31.5dp"
+        android:src="@drawable/kakao_login_large_wide"
         android:layout_below="@id/log_in_text_add_account"
         android:layout_centerHorizontal="true"
         android:onClick="clickKakaoLogin"
-        android:layout_marginTop="32dp"/>
-
-    <ImageView
-        android:id="@+id/log_in_add_account_by_google"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/google_icon"
-        android:layout_toRightOf="@id/log_in_add_account_by_kakao"
-        android:layout_marginLeft="16dp"
-        android:layout_below="@id/log_in_text_add_account"
         android:layout_marginTop="32dp"/>
 
 </RelativeLayout>

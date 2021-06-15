@@ -1,6 +1,8 @@
 package com.moondroid.project01_meetingapp.mypages;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -9,6 +11,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -38,6 +41,11 @@ public class MyPageSettingActivity extends AppCompatActivity implements Compound
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page_setting);
 
+        Toolbar toolbar = findViewById(R.id.toolbar_my_page_setting);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         chatSwitch = findViewById(R.id.chat_switch);
         meetSwitch = findViewById(R.id.meet_switch);
 
@@ -45,6 +53,12 @@ public class MyPageSettingActivity extends AppCompatActivity implements Compound
         meetSwitch.setOnCheckedChangeListener(this);
 
         settingSwitch();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) super.onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 
     public void settingSwitch(){
