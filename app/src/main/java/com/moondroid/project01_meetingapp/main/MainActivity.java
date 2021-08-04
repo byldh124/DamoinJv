@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         analytics = FirebaseAnalytics.getInstance(this);
+        analytics.setUserId(G.myProfile.getUserId());
         //카카오 SDK의 경우 Release Version과 Debug Version의 KeyHash 값이 다르다
         //그래고 release버전과 debug 버전 둘다의 키 해시값을 개발자 사이트에서 앱등록할때 해줘야 한다.
 //        String keyHash = Utility.getKeyHash(this);
@@ -265,9 +266,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
                         if (pendingDynamicLinkData != null){
-                            //TODO control Deep Link from Dynamic Link get uri
-                            //Uri deepLinkUri = pendingDynamicLinkData.getLink();
-                            //switch (deepLinkUri.toString){}
+//                            //TODO control Deep Link from Dynamic Link get uri
+//                            Uri deepLinkUri = pendingDynamicLinkData.getLink();
+////                            switch (deepLinkUri.toString){}
+//
+//                            Toast.makeText(MainActivity.this, deepLinkUri.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

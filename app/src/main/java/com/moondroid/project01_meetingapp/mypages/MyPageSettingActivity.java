@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.igaworks.v2.core.AdBrixRm;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.global.G;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
@@ -92,6 +93,7 @@ public class MyPageSettingActivity extends AppCompatActivity implements Compound
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         setResult(RESULT_OK, null);
+        AdBrixRm.logout();
         finish();
     }
 

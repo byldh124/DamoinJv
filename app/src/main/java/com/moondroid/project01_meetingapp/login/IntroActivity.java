@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.igaworks.v2.core.AdBrixRm;
 import com.moondroid.project01_meetingapp.library.RetrofitHelper;
 import com.moondroid.project01_meetingapp.library.RetrofitService;
 import com.moondroid.project01_meetingapp.main.MainActivity;
@@ -69,6 +70,7 @@ public class IntroActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
+                    AdBrixRm.login(userId);
                     startApp();
                 }
             }

@@ -72,7 +72,7 @@ public class MyPageFragmentBottomTab3 extends Fragment {
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
             @Override
             public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
-                for (int i = 0; i < response.body().size(); i++) {
+                for (int i = 0; i < (response.body() != null ? response.body().size() : 0); i++) {
                     if (response.body().get(i).getMasterId().equals(G.myProfile.getUserId())) {
                         itemBaseVOS.add(response.body().get(i));
                         adapter.notifyItemInserted(itemBaseVOS.size() - 1);
@@ -82,7 +82,7 @@ public class MyPageFragmentBottomTab3 extends Fragment {
                 RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserMeetItem(G.myProfile.getUserId()).enqueue(new Callback<ArrayList<ItemBaseVO>>() {
                     @Override
                     public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
-                        for (int i = 0; i < response.body().size(); i++) {
+                        for (int i = 0; i < (response.body() != null ? response.body().size() : 0); i++) {
                             if (response.body().get(i).getMasterId().equals(G.myProfile.getUserId())) continue;
                             itemBaseVOS.add(response.body().get(i));
                             adapter.notifyItemInserted(itemBaseVOS.size() - 1);

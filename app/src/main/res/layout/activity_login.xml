@@ -49,7 +49,7 @@
         android:layout_centerHorizontal="true"
         android:clickable="true"
         android:onClick="clickLogIn"
-        android:textColor="#ff666666"
+        android:textColor="#ff333333"
         android:layout_marginTop="16dp"/>
 
     <TextView
@@ -62,8 +62,10 @@
         android:clickable="true"
         android:onClick="clickAddAccount"
         android:gravity="center"
-        android:textColor="#ff666666"
+        android:textColor="#ff333333"
         android:layout_marginTop="16dp"/>
+
+
 
     <TextView
         android:id="@+id/log_in_text_search_account"
@@ -74,15 +76,17 @@
         android:layout_toRightOf="@id/log_in_text_add_account"
         android:layout_alignRight="@id/log_in_edit_id"
         android:gravity="center"
-        android:textColor="#ff666666"
+        android:textColor="#ff333333"
         android:layout_marginTop="16dp"/>
+
+
 
     <ImageView
         android:id="@+id/log_in_add_account_by_kakao"
         android:layout_width="210dp"
-        android:layout_height="31.5dp"
-        android:src="@drawable/kakao_login_large_wide"
-        android:layout_below="@id/log_in_text_add_account"
+        android:layout_height="37dp"
+        android:src="@drawable/btn_kakao_login"
+        android:layout_below="@id/log_in_text_search_account"
         android:layout_centerHorizontal="true"
         android:onClick="clickKakaoLogin"
         android:layout_marginTop="32dp"/>

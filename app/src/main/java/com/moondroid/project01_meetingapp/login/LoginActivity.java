@@ -189,6 +189,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void moveToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("sendActivity", "loginActivity");
         startActivity(intent);
         finish();
     }

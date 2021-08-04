@@ -11,8 +11,8 @@ android {
         applicationId "com.moondroid.project01_meetingapp"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 16
-        versionName "1.16"
+        versionCode 17
+        versionName "1.17"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -65,5 +65,7 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
 
     implementation 'com.google.firebase:firebase-messaging'
-
+    implementation 'io.dfinery:android-sdk:2.0.0.8'
+    implementation 'com.google.android.gms:play-services-ads:15.0.0'
+    implementation 'com.android.installreferrer:installreferrer:1.0'
 }
