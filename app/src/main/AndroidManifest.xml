@@ -3,14 +3,15 @@
     package="com.moondroid.project01_meetingapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <queries>
-        <package android:name="com.kakao.talk"/>
+        <package android:name="com.kakao.talk" />
     </queries>
 
     <application
@@ -33,7 +34,9 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="f33663a89ab7e4f6ace89f2ebeade100" /> <!-- 네이티브 앱 키 설정 -->
 
-        <activity android:name=".page_tab1_info.MoimInfoActivity"></activity>
+        <activity
+            android:name=".page_tab1_info.MoimInfoActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".page_tab1_info.ProfileActivity"
             android:screenOrientation="portrait" />
@@ -65,8 +68,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".login.IntroActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -82,8 +86,8 @@
 
                 <data
                     android:host="moondroid.page"
-                    android:scheme="https"
-                    android:path="/link" />
+                    android:path="/link"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
@@ -127,22 +131,26 @@
         </activity>
         <activity
             android:name=".main.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
 
             <!-- Kakao Link Intent Filter -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <!-- "kakao{YOUR_NATIVE_APP_KEY}://kakaolink" 형식의 앱 실행 스킴을 설정하는데 사용 -->
-                <data android:host="kakaolink"
+                <data
+                    android:host="kakaolink"
                     android:scheme="kakaof33663a89ab7e4f6ace89f2ebeade100" />
             </intent-filter>
         </activity>
 
         <!-- Kakao Login Activity -->
-        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
+        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
