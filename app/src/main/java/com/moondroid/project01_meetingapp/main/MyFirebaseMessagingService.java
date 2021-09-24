@@ -42,7 +42,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             builder = new NotificationCompat.Builder(this, getResources().getString(R.string.default_notification_channel_id));
 
         } else {
-            builder = new NotificationCompat.Builder(this, getResources().getString(R.string.default_notification_channel_id));
+            builder = new NotificationCompat.Builder(this);
         }
 
         String fromWho = remoteMessage.getFrom(); // 메세지를 보낸 사람 기기명 [firebase 서버에서 자동 지정한 이름]
