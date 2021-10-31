@@ -15,7 +15,7 @@
     </queries>
 
     <application
-        android:name=".library.KakaoApplication"
+        android:name=".application.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_logo"
         android:label="@string/app_name_release"
@@ -35,19 +35,19 @@
             android:value="f33663a89ab7e4f6ace89f2ebeade100" /> <!-- 네이티브 앱 키 설정 -->
 
         <activity
-            android:name=".page_tab1_info.MoimInfoActivity"
+            android:name=".ui.activity.MoimInfoActivity"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".page_tab1_info.ProfileActivity"
+            android:name=".ui.activity.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".page_tab3_gallery.ChoicePictureActivity"
+            android:name=".ui.activity.ChoicePictureActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".page_tab1_info.ChoiceMoimActivity"
+            android:name=".ui.activity.ChoiceMoimActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".page_tab1_info.CreateMoimActivity"
+            android:name=".ui.activity.CreateMoimActivity"
             android:screenOrientation="portrait" />
 
         <meta-data
@@ -55,19 +55,19 @@
             android:value="csit8ak1h9" />
 
         <activity
-            android:name=".page_tab1_info.OptionModifyActivity"
+            android:name=".ui.activity.OptionModifyActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".page.PageActivity"
+            android:name=".ui.activity.PageActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".account.AccountActivity"
+            android:name=".ui.activity.AccountActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".login.LoginActivity"
+            android:name=".ui.activity.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".login.IntroActivity"
+            android:name=".ui.activity.IntroActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
@@ -92,45 +92,45 @@
         </activity>
 
         <activity
-            android:name=".mypages.MyPageSettingActivity"
-            android:parentActivityName=".main.MainActivity"
+            android:name=".ui.activity.MyPageSettingActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mypages.MyPageMKChargeActivity"
+            android:name=".ui.activity.MyPageMKChargeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mypages.MyPagePremiumActivity"
+            android:name=".ui.activity.MyPagePremiumActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mypages.MyPageRecentActivity"
+            android:name=".ui.activity.MyPageRecentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mypages.MyPageFavoriteActivity"
+            android:name=".ui.activity.MyPageFavoriteActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".profileset.ProfileSetActivity"
+            android:name=".ui.activity.ProfileSetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".account.LocationChoiceActivity"
+            android:name=".ui.activity.LocationChoiceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".account.InterestActivity"
+            android:name=".ui.activity.InterestActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".createmeet.CreateActivity"
+            android:name=".ui.activity.CreateActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".option02notification.NotificationActivity"
+            android:name=".ui.activity.NotificationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".option01search.SearchActivity"
+            android:name=".ui.activity.SearchActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable_search_activity" />
         </activity>
         <activity
-            android:name=".main.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true">
 
@@ -165,7 +165,7 @@
 
         <!-- Google FCM Background Service -->
         <service
-            android:name=".main.MyFirebaseMessagingService"
+            android:name=".service.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
