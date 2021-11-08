@@ -53,7 +53,6 @@ public class AccountActivity extends BaseActivity {
     private boolean idChecked = false;
 
     private UserBaseVO userBaseVO;
-    private ProgressDialog progressDialog;
 
     private ActivityAccountBinding layout;
 
@@ -305,7 +304,6 @@ public class AccountActivity extends BaseActivity {
                                 intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.LOGIN_ACTIVITY);
                                 startActivity(intent);
                                 setResult(RESULT_OK, null);
-                                progressDialog.dismiss();
                                 finish();
                                 break;
                             }
