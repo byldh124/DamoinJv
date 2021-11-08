@@ -2,7 +2,6 @@ package com.moondroid.project01_meetingapp.ui.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.AlertDialog;
@@ -24,11 +23,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
 
@@ -223,7 +221,9 @@ public class AccountActivity extends BaseActivity {
         startActivityForResult(intent, REQUEST_CODE_FOR_INTEREST_SELECT);
     }
 
-    //아이디 중복 확인 작업
+    /**
+     * 아이디 중복 확인 작업
+     **/
     public void clickAccountCheck(View view) {
         try {
             Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
@@ -234,81 +234,103 @@ public class AccountActivity extends BaseActivity {
                 public void onResponse(Call<String> call, Response<String> response) {
                     try {
                         JSONObject responseJson = new JSONObject(response.body());
-                        int code = responseJson.getInt("code");
+                        int code = responseJson.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
                         switch (code) {
-                            case 1000: {
+                            case GlobalKey.NTWRK_RTN_TYPE.SUCCESS: {
                                 boolean isUsable = responseJson.getBoolean("result");
                                 if (isUsable) {
-                                    new AlertDialog.Builder(AccountActivity.this).setMessage("사용할 수 있는 아이디 입니다.\n이 아이디를 사용하시겠습니까?").setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    new AlertDialog.Builder(AccountActivity.this).setMessage(getString(R.string.usabe_id)).setPositiveButton(getString(R.string.agree), new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             idChecked = true;
                                         }
                                     }).create().show();
                                 } else {
-                                    new AlertDialog.Builder(AccountActivity.this).setMessage("존재하는 아이디 입니다.").setPositiveButton("확인", null).create().show();
+                                    new AlertDialog.Builder(AccountActivity.this).setMessage(getString(R.string.aready_exist_id)).setPositiveButton(getString(R.string.agree), null).create().show();
                                 }
                                 break;
                             }
-                            case 2000:
-                                Toast.makeText(AccountActivity.this, "서버와의 연결에 실패 했습니다.", Toast.LENGTH_SHORT).show();
+                            case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                Toast.makeText(AccountActivity.this, getString(R.string.fail_connect_server), Toast.LENGTH_SHORT).show();
                                 break;
                             default:
-                                Toast.makeText(AccountActivity.this, "네크워크가 원할하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AccountActivity.this, String.format(getString(R.string.network_error), "1"), Toast.LENGTH_SHORT).show();
                                 break;
 
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, "[clickAccountCheck::onResponse] error => " + e.toString());
+                        Toast.makeText(AccountActivity.this, String.format(getString(R.string.network_error), "2"), Toast.LENGTH_SHORT).show();
+                        logException(e);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                    Toast.makeText(AccountActivity.this, "네크워크가 원할하지 않습니다.", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "[clickAccountCheck::onFailure] msg => " + t.getMessage());
+                    Toast.makeText(AccountActivity.this, String.format(getString(R.string.network_error), "3"), Toast.LENGTH_SHORT).show();
                 }
             });
 
         } catch (Exception e) {
-            Log.e(TAG, "[clickAccountCheck] error = > " + e.toString());
+            Toast.makeText(AccountActivity.this, String.format(getString(R.string.network_error), "4"), Toast.LENGTH_SHORT).show();
+            logException(e);
         }
     }
 
-    //유저가 기입한 정보를 DB에 저장
+    /**
+     * 유저 회원 가입
+     */
     public void saveDataToRetrofit() {
+        try {
+            showProgress();
 
-        progressDialog = new ProgressDialog(this);
+            userBaseVO = new UserBaseVO(userId, userName, userBirthDate, userGender, userAddress, userInterest, "./userProfileImg/IMG_20210302153242unnamed.jpg", "만나서 반갑습니다.", null);
+            Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
+            RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+            Call<String> call = retrofitService.saveUserBaseDataToAccountActivity(userBaseVO);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    try {
+                        hideProgress();
+                        JSONObject jsonRes = new JSONObject(response.body());
+                        int code = jsonRes.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                        switch (code) {
+                            case GlobalKey.NTWRK_RTN_TYPE.SUCCESS: {
+                                SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("userId", userId).commit();
+                                GlobalInfo.myProfile = userBaseVO;
+                                Intent intent = new Intent(AccountActivity.this, MainActivity.class);
+                                intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.LOGIN_ACTIVITY);
+                                startActivity(intent);
+                                setResult(RESULT_OK, null);
+                                progressDialog.dismiss();
+                                finish();
+                                break;
+                            }
+                            case GlobalKey.NTWRK_RTN_TYPE.FAIL: {
+                                Toast.makeText(getBaseContext(), String.format(getString(R.string.fail_sign_up), "1"), Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            default:
+                                Toast.makeText(getBaseContext(), String.format(getString(R.string.fail_sign_up), "2"), Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    } catch (Exception e) {
+                        logException(e);
+                        Toast.makeText(getBaseContext(), String.format(getString(R.string.fail_sign_up), "3"), Toast.LENGTH_SHORT).show();
+                    }
+                }
 
-        progressDialog.setMessage("잠시만 기다려주십시오.");
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
-        progressDialog.show();
-
-        userBaseVO = new UserBaseVO(userId, userName, userBirthDate, userGender, userAddress, userInterest, "./userProfileImg/IMG_20210302153242unnamed.jpg", "만나서 반갑습니다.", null);
-        Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
-        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-        Call<UserBaseVO> call = retrofitService.saveUserBaseDataToAccountActivity(userBaseVO);
-        call.enqueue(new Callback<UserBaseVO>() {
-            @Override
-            public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
-                SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("userId", userId).commit();
-                GlobalInfo.myProfile = userBaseVO;
-                Intent intent = new Intent(AccountActivity.this, MainActivity.class);
-                intent.putExtra("sendActivity", "loginActivity");
-                startActivity(intent);
-                setResult(RESULT_OK, null);
-                progressDialog.dismiss();
-                finish();
-            }
-
-            @Override
-            public void onFailure(Call<UserBaseVO> call, Throwable t) {
-                progressDialog.dismiss();
-                Toast.makeText(AccountActivity.this, "서버에 연결할 수 없습니다.", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    hideProgress();
+                    Toast.makeText(getBaseContext(), String.format(getString(R.string.fail_sign_up), "4"), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
+            logException(e);
+            Toast.makeText(getBaseContext(), String.format(getString(R.string.fail_sign_up), "5"), Toast.LENGTH_SHORT).show();
+        }
     }
 }

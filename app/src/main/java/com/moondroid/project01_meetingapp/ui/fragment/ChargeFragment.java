@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.moondroid.project01_meetingapp.R;
 
-public class ChargeFragmentBottomTab2 extends Fragment {
+public class ChargeFragment extends BaseFragment {
 
     @Nullable
     @Override

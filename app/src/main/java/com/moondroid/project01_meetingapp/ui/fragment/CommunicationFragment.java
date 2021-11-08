@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.moondroid.project01_meetingapp.R;
 
-public class CommunicationFragment extends Fragment {
+public class CommunicationFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

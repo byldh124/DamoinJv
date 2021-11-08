@@ -19,6 +19,7 @@ import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.LinearLayoutManagerWrapper;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
+import com.moondroid.project01_meetingapp.network.URLMngr;
 import com.moondroid.project01_meetingapp.presenter.adapter.ProfileMeetItemAdapter;
 
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
             if (userBaseVO.getUserProfileImgUrl().contains("http")) {
                 Glide.with(this).load(userBaseVO.getUserProfileImgUrl()).into(ivProfile);
             } else {
-                Glide.with(this).load(RetrofitHelper.getUrlForImg() + userBaseVO.getUserProfileImgUrl()).into(ivProfile);
+                Glide.with(this).load(URLMngr.BASE_URL_DEFAULT + userBaseVO.getUserProfileImgUrl()).into(ivProfile);
             }
         }
         if (userBaseVO.getUserInterest() != null) {

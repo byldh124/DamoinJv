@@ -1,4 +1,4 @@
-package com.moondroid.project01_meetingapp.ui.widget;
+package com.moondroid.project01_meetingapp.ui.dialog;
 
 import android.app.ProgressDialog;
 import android.content.Context;

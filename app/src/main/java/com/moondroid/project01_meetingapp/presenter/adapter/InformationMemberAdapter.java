@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
-import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.network.URLMngr;
 import com.moondroid.project01_meetingapp.ui.activity.ProfileActivity;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class InformationMemberAdapter extends RecyclerView.Adapter<InformationMe
             if (memberVOS.get(position).getUserProfileImgUrl().contains("http")) {
                 Glide.with(context).load(memberVOS.get(position).getUserProfileImgUrl()).into(holder.ivProfile);
             } else {
-                Glide.with(context).load(RetrofitHelper.getUrlForImg() + memberVOS.get(position).getUserProfileImgUrl()).into(holder.ivProfile);
+                Glide.with(context).load(URLMngr.BASE_URL_DEFAULT + memberVOS.get(position).getUserProfileImgUrl()).into(holder.ivProfile);
             }
         }
 

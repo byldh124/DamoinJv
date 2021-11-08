@@ -33,7 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCallback {
+public class LocationFragment extends BaseFragment implements OnMapReadyCallback {
 
     private MapView mapView;
     private FusedLocationSource locationSource;
@@ -42,11 +42,11 @@ public class LocationFragmentBottomTab4 extends Fragment implements OnMapReadyCa
     private int i = 0;
     private final int PERMISSION_REQUEST_CODE = 10;
 
-    public LocationFragmentBottomTab4() {
+    public LocationFragment() {
     }
 
-    public static LocationFragmentBottomTab4 newInstance() {
-        LocationFragmentBottomTab4 fragment = new LocationFragmentBottomTab4();
+    public static LocationFragment newInstance() {
+        LocationFragment fragment = new LocationFragment();
         return fragment;
     }
 

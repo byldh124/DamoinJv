@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.global.G;
-import com.moondroid.project01_meetingapp.library.RetrofitHelper;
-import com.moondroid.project01_meetingapp.library.RetrofitService;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
+import com.moondroid.project01_meetingapp.network.RetrofitHelper;
+import com.moondroid.project01_meetingapp.network.RetrofitService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -86,9 +86,9 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                     switch (sendClass){
                         case "Main":
                             //개인 설정 화면(메인)에서 설정시 DB 업데이트
-                            G.myProfile.setUserInterest(interest);
+                            GlobalInfo.myProfile.setUserInterest(interest);
                             Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
-                            retrofit.create(RetrofitService.class).updateUserInterest(G.myProfile.getUserId(), interest).enqueue(new Callback<String>() {
+                            retrofit.create(RetrofitService.class).updateUserInterest(GlobalInfo.myProfile.getUserId(), interest).enqueue(new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
                                     if (response.body().equals("changed")){

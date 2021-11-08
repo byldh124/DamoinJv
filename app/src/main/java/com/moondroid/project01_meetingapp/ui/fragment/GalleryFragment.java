@@ -25,7 +25,7 @@ import com.moondroid.project01_meetingapp.ui.activity.ChoicePictureActivity;
 
 import java.util.ArrayList;
 
-public class GalleryFragment extends Fragment {
+public class GalleryFragment extends BaseFragment {
     private RecyclerView recyclerView;
     private ArrayList<String> imgs;
     private GalleryAdapter adapter;

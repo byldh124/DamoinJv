@@ -9,7 +9,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.moondroid.project01_meetingapp.ui.widget.DMProgressDialog;
+import com.moondroid.project01_meetingapp.ui.dialog.DMProgressDialog;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -27,12 +27,25 @@ public class BaseActivity extends AppCompatActivity {
         //CMFBCrshl.logException(e);
     }
 
-    public void showProgress(){
-        dmProgressDialog = DMProgressDialog.getInstance();
+    public void showProgress() {
+        try {
+            if (dmProgressDialog == null) {
+                dmProgressDialog = DMProgressDialog.getInstance();
+            }
+            dmProgressDialog.show();
+        } catch (Exception e) {
+            logException(e);
+        }
 
     }
 
-    public void hideProgress(){
-
+    public void hideProgress() {
+        try {
+            if (dmProgressDialog != null) {
+                dmProgressDialog.hide();
+            }
+        } catch (Exception e) {
+            logException(e);
+        }
     }
 }

@@ -11,7 +11,8 @@ import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.ChatItemVO;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
-import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.network.RetrofitHelper;
+import com.moondroid.project01_meetingapp.network.URLMngr;
 
 import java.util.ArrayList;
 
@@ -67,7 +68,7 @@ public class ChatAdapter extends BaseAdapter {
             if (chatItem.getProfileImgUrl().contains("http")) {
                 Glide.with(context).load(chatItem.getProfileImgUrl()).into(civ);
             } else {
-                Glide.with(context).load(RetrofitHelper.getUrlForImg() + chatItem.getProfileImgUrl()).into(civ);
+                Glide.with(context).load(URLMngr.BASE_URL_DEFAULT + chatItem.getProfileImgUrl()).into(civ);
             }
         }
 

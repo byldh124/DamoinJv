@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.ui.fragment.MeetFragmentBottomTab1;
+import com.moondroid.project01_meetingapp.ui.fragment.MeetFragment;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
 
@@ -53,9 +53,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
                     int pos = getAdapterPosition();
                     String interest = categories[pos];
                     if (pos == 0) {
-                        ((MeetFragmentBottomTab1) fragment).loadData();
+                        ((MeetFragment) fragment).loadData();
                     } else {
-                        ((MeetFragmentBottomTab1) fragment).loadData(interest);
+                        ((MeetFragment) fragment).loadData(interest);
                     }
                 }
             });

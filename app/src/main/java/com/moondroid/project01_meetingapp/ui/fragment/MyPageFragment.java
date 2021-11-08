@@ -25,7 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyPageFragmentBottomTab3 extends Fragment {
+public class MyPageFragment extends BaseFragment {
     private RecyclerView recyclerView;
     private ArrayList<ItemBaseVO> itemBaseVOS;
     private MeetItemAdapter adapter;

@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.ItemBaseVO;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
-import com.moondroid.project01_meetingapp.library.RetrofitHelper;
+import com.moondroid.project01_meetingapp.network.URLMngr;
 import com.moondroid.project01_meetingapp.ui.activity.PageActivity;
 import com.moondroid.project01_meetingapp.ui.activity.ProfileActivity;
 import com.squareup.picasso.Picasso;
@@ -54,7 +54,7 @@ public class ProfileMeetItemAdapter extends RecyclerView.Adapter<ProfileMeetItem
     public void onBindViewHolder(@NonNull VH holder, int position) {
         ItemBaseVO item = itemList.get(position);
 
-        Picasso.get().load(RetrofitHelper.getUrlForImg() + item.getTitleImgUrl()).into(holder.ivProfile);
+        Picasso.get().load(URLMngr.BASE_URL_DEFAULT + item.getTitleImgUrl()).into(holder.ivProfile);
 
         int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.getMeetInterest());
         if (interestNum < 0) interestNum = 1;

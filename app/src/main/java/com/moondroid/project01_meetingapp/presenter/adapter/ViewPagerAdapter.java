@@ -6,10 +6,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.moondroid.project01_meetingapp.page_tab1_info.InformationFragment;
-import com.moondroid.project01_meetingapp.page_tab2_communication.CommunicationFragment;
-import com.moondroid.project01_meetingapp.page_tab3_gallery.GalleryFragment;
-import com.moondroid.project01_meetingapp.page_tab4_chatting.ChattingFragment;
+import com.moondroid.project01_meetingapp.ui.fragment.ChattingFragment;
+import com.moondroid.project01_meetingapp.ui.fragment.CommunicationFragment;
+import com.moondroid.project01_meetingapp.ui.fragment.GalleryFragment;
+import com.moondroid.project01_meetingapp.ui.fragment.InformationFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 

@@ -46,12 +46,14 @@ import com.kakao.message.template.FeedTemplate;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.ItemBaseVO;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
-import com.moondroid.project01_meetingapp.ui.fragment.ChargeFragmentBottomTab2;
-import com.moondroid.project01_meetingapp.ui.fragment.LocationFragmentBottomTab4;
-import com.moondroid.project01_meetingapp.ui.fragment.MeetFragmentBottomTab1;
-import com.moondroid.project01_meetingapp.ui.fragment.MyPageFragmentBottomTab3;
+import com.moondroid.project01_meetingapp.network.URLMngr;
+import com.moondroid.project01_meetingapp.ui.fragment.ChargeFragment;
+import com.moondroid.project01_meetingapp.ui.fragment.LocationFragment;
+import com.moondroid.project01_meetingapp.ui.fragment.MeetFragment;
+import com.moondroid.project01_meetingapp.ui.fragment.MyPageFragment;
 
 import java.util.ArrayList;
 
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         //BottomNavigation
         fragments = new Fragment[4];
         fragmentManager = getSupportFragmentManager();
-        fragments[0] = new MeetFragmentBottomTab1();
+        fragments[0] = new MeetFragment();
         fragmentManager.beginTransaction().add(R.id.container_fragment_main, fragments[0]).commit();
 
         //BottomNavigation fragment 전환시 화면 깨짐을 방지하기 위해 .hide, .show 메소드 사용
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.bnv_tab1:
                         if (fragments[0] == null) {
-                            fragments[0] = new MeetFragmentBottomTab1();
+                            fragments[0] = new MeetFragment();
                             transaction.add(R.id.container_fragment_main, fragments[0]);
                         }
                         transaction.show(fragments[0]);
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.bnv_tab2:
                         if (fragments[1] == null) {
-                            fragments[1] = new ChargeFragmentBottomTab2();
+                            fragments[1] = new ChargeFragment();
                             transaction.add(R.id.container_fragment_main, fragments[1]);
                         }
                         transaction.show(fragments[1]);
@@ -157,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.bnv_tab3:
                         if (fragments[2] == null) {
-                            fragments[2] = new MyPageFragmentBottomTab3();
+                            fragments[2] = new MyPageFragment();
                             transaction.add(R.id.container_fragment_main, fragments[2]);
                         }
                         transaction.show(fragments[2]);
@@ -166,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.bnv_tab4:
                         if (fragments[3] == null) {
-                            fragments[3] = new LocationFragmentBottomTab4();
+                            fragments[3] = new LocationFragment();
                             transaction.add(R.id.container_fragment_main, fragments[3]);
                         }
                         transaction.show(fragments[3]);
@@ -252,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<PendingDynamicLinkData>() {
                     @Override
                     public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                        if (pendingDynamicLinkData != null){
+                        if (pendingDynamicLinkData != null) {
 //                            //TODO control Deep Link from Dynamic Link get uri
 //                            Uri deepLinkUri = pendingDynamicLinkData.getLink();
 ////                            switch (deepLinkUri.toString){}
@@ -262,14 +264,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        if (getIntent().getStringExtra("meetName") != null){
+        if (getIntent().getStringExtra("meetName") != null) {
             final String meetName = getIntent().getStringExtra("meetName");
-            if (!meetName.equals("data")){
+            if (!meetName.equals("data")) {
                 RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
                     @Override
                     public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
                         for (int j = 0; j < response.body().size(); j++) {
-                            if (response.body().get(j).getMeetName().equals(meetName)){
+                            if (response.body().get(j).getMeetName().equals(meetName)) {
                                 GlobalInfo.currentMoim = response.body().get(j);
                                 startActivity(new Intent(MainActivity.this, PageActivity.class));
                             }
@@ -289,9 +291,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_FOR_PERMISSION){
-            if (getIntent().getStringExtra("sendActivity") != null && getIntent().getStringExtra("sendActivity").equals("loginActivity")){
-                startActivity(new Intent(this, ProfileSetActivity.class).putExtra("sendActivity", "loginActivity"));
+        if (requestCode == REQUEST_CODE_FOR_PERMISSION) {
+            if (getIntent().getIntExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, 0) == GlobalKey.ACTIVITY_CODE.LOGIN_ACTIVITY) {
+                startActivity(new Intent(this, ProfileSetActivity.class).putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.LOGIN_ACTIVITY));
             }
         }
     }
@@ -327,13 +329,13 @@ public class MainActivity extends AppCompatActivity {
                 //카카오 개발자 사이트에서 기본 템블릿 메세지를 만들어서 보낼 수 도 있다.
                 FeedTemplate params = FeedTemplate
                         .newBuilder(
-                        ContentObject.newBuilder(
-                                "우리들의 모임 앱 다모임",
-                                "https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/logo.png?alt=media&token=029dbc61-ab40-4c21-8da9-7dd8f56fd117",
-                                LinkObject.newBuilder()
-                                        .setWebUrl("https://moondroid.page.link/Zi7X")
-                                        .setMobileWebUrl("https://moondroid.page.link/Zi7X").build())
-                                .setDescrption("다모임에서 다양한 사람들과 새로운 취미를 시작해보세요").build())
+                                ContentObject.newBuilder(
+                                        "우리들의 모임 앱 다모임",
+                                        "https://firebasestorage.googleapis.com/v0/b/project01meetingapp.appspot.com/o/logo.png?alt=media&token=029dbc61-ab40-4c21-8da9-7dd8f56fd117",
+                                        LinkObject.newBuilder()
+                                                .setWebUrl("https://moondroid.page.link/Zi7X")
+                                                .setMobileWebUrl("https://moondroid.page.link/Zi7X").build())
+                                        .setDescrption("다모임에서 다양한 사람들과 새로운 취미를 시작해보세요").build())
                         .addButton(new ButtonObject("바로가기", LinkObject.newBuilder()
                                 .setWebUrl("https://moondroid.page.link/Zi7X")
                                 .setMobileWebUrl("https://moondroid.page.link/Zi7X").build())).build();
@@ -382,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
             if (GlobalInfo.myProfile.getUserProfileImgUrl().contains("http")) {
                 Glide.with(MainActivity.this).load(GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivNavigationUserProfileImg);
             } else {
-                Glide.with(MainActivity.this).load(RetrofitHelper.getUrlForImg() + GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivNavigationUserProfileImg);
+                Glide.with(MainActivity.this).load(URLMngr.BASE_URL_DEFAULT + GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivNavigationUserProfileImg);
             }
         }
         if (GlobalInfo.myProfile.getUserName() != null) {
@@ -400,6 +402,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<String> call, Response<String> response) {
 
             }
+
             @Override
             public void onFailure(Call<String> call, Throwable t) {
 
@@ -412,14 +415,14 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         // 바텀 네비게이션 또는 네비게이션 레이아웃이 활성화 되어 있을 경우
         // 네이게이션을 비활성화 시킨 후 앱 종료 요청
-        if (clickedBnvPage != 0){
+        if (clickedBnvPage != 0) {
             bottomNavigationView.setSelectedItemId(R.id.bnv_tab1);
-            if(navigationView.getVisibility() == View.VISIBLE) {
+            if (navigationView.getVisibility() == View.VISIBLE) {
                 drawerLayout.closeDrawers();
             }
             return;
         }
-        if(navigationView.getVisibility() == View.VISIBLE){
+        if (navigationView.getVisibility() == View.VISIBLE) {
             drawerLayout.closeDrawers();
             return;
         }

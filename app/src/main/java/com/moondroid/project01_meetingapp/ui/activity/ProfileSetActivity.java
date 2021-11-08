@@ -32,6 +32,7 @@ import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
+import com.moondroid.project01_meetingapp.network.URLMngr;
 
 import java.io.File;
 import java.util.HashMap;
@@ -257,7 +258,7 @@ public class ProfileSetActivity extends AppCompatActivity {
             if (GlobalInfo.myProfile.getUserProfileImgUrl().contains("http")) {
                 Glide.with(this).load(GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivProfileImg);
             } else {
-                Glide.with(this).load(RetrofitHelper.getUrlForImg() + GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivProfileImg);
+                Glide.with(this).load(URLMngr.BASE_URL_DEFAULT + GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivProfileImg);
             }
         } else {
             Glide.with(this).load(R.mipmap.ic_launcher).into(ivProfileImg);

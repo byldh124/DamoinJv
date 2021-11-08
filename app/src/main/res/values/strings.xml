@@ -8,4 +8,10 @@
 
     <string name="app_name_release">다모임</string>
     <string name="default_notification_channel_id">ch01</string>
+    <string name="fail_sign_up">회원가입이 실패했습니다. [Code : %s]</string>
+    <string name="usabe_id">사용할 수 있는 아이디 입니다.\n이 아이디를 사용하시겠습니까?</string>
+    <string name="aready_exist_id">존재하는 아이디 입니다.</string>
+    <string name="agree">확인</string>
+    <string name="fail_connect_server">서버와의 연결에 실패 했습니다.</string>
+    <string name="network_error">네크워크가 원할하지 않습니다. [Code : %s]</string>
 </resources>

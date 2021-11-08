@@ -26,6 +26,7 @@ import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.LinearLayoutManagerWrapper;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
+import com.moondroid.project01_meetingapp.network.URLMngr;
 import com.moondroid.project01_meetingapp.presenter.adapter.InformationMemberAdapter;
 import com.moondroid.project01_meetingapp.presenter.adapter.InformationMoimAdapter;
 import com.squareup.picasso.Picasso;
@@ -39,7 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class InformationFragment extends Fragment {
+public class InformationFragment extends BaseFragment {
 
     private ImageView ivIntroImg, ivInterestIcon;
     private TextView tvMessage, tvMeetName;
@@ -110,7 +111,7 @@ public class InformationFragment extends Fragment {
 
         //기존에 저장되어있던 모임정보들을 기입하는 작업 (모임명, 이미지, 설명 등등)
         if (GlobalInfo.currentMoim.getIntroImgUrl() != null) {
-            Picasso.get().load(RetrofitHelper.getUrlForImg() + GlobalInfo.currentMoim.getIntroImgUrl()).into(ivIntroImg);
+            Picasso.get().load(URLMngr.BASE_URL_DEFAULT + GlobalInfo.currentMoim.getIntroImgUrl()).into(ivIntroImg);
         }
 
         interestList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.interest_list)));

@@ -4,6 +4,7 @@ import com.moondroid.project01_meetingapp.data.model.ItemBaseVO;
 import com.moondroid.project01_meetingapp.data.model.MoimVO;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -19,103 +20,103 @@ import retrofit2.http.Query;
 
 public interface RetrofitService {
 
-    @POST("/damoim/saveUserBaseDB.php")
-    Call<UserBaseVO> saveUserBaseDataToAccountActivity(@Body UserBaseVO userBaseData);
+    @POST(URLMngr.SAVE_USER)
+    Call<String> saveUserBaseDataToAccountActivity(@Body UserBaseVO userBaseData);  //**
 
     @Multipart
-    @POST("/damoim/updateUserBaseDB.php")
+    @POST(URLMngr.UPDATE_USER)
     Call<String> updateUserProfileImg(@PartMap Map<String, String> dataPart, @Part MultipartBody.Part filePart);
 
-    @GET("/damoim/checkUserId.php")
-    Call<String> checkUserId(@Query("userId") String userId);
+    @GET(URLMngr.CHECK_ID)
+    Call<String> checkUserId(@Query("userId") String userId);                       //**
 
-    @GET("/damoim/checkMeetName.php")
+    @GET(URLMngr.CHECK_MEET_NAME)
     Call<String> checkMeetName(@Query("meetName") String meetName);
 
-    @GET("/damoim/updateUserInterest.php")
+    @GET(URLMngr.UPDATE_INTEREST)
     Call<String> updateUserInterest(@Query("userId") String userId, @Query("userInterest") String userInterest);
 
-    @GET("/damoim/loadUserBaseDBOnIntro.php")
+    @GET(URLMngr.USER_INFO)
     Call<UserBaseVO> loadUserBaseDBToIntroActivity(@Query("userId") String userId);
 
-    @GET("/damoim/saveUserMeetItem.php")
+    @GET(URLMngr.SAVE_USERS_MEET)
     Call<String> saveUserMeetItem(@Query("userId") String userId, @Query("meetName") String meetName);
 
     @Multipart
-    @POST("/damoim/saveItemBaseDB.php")
+    @POST(URLMngr.SAVE_MEET)
     Call<String> saveItemBaseDataToCreateActivity(@PartMap Map<String, String> dataPart, @Part MultipartBody.Part filePart);
 
-    @GET("/damoim/getItemBaseData.php")
+    @GET(URLMngr.GET_MEET)
     Call<ArrayList<ItemBaseVO>> getItemBaseDataOnMain();
 
     @Multipart
-    @POST("/damoim/updateItemBaseDB.php")
+    @POST(URLMngr.UPDATE_MEET)
     Call<String> updateItemBaseDataToModifyActivity(@PartMap Map<String, String> dataPart, @Part MultipartBody.Part titlePart, @Part MultipartBody.Part introPart);
 
-    @GET("/damoim/saveUserMeetData.php")
+    @GET(URLMngr.SAVE_USER_MEET_DT)
     Call<String> saveUserMeetData(@Query("userId") String userId, @Query("meetName") String meetName);
 
-    @GET("/damoim/checkUserMeetData.php")
+    @GET(URLMngr.CHECK_USER_MEET_DT)
     Call<String> checkUserMeetData(@Query("userId") String userId, @Query("meetName") String meetName);
 
-    @GET("/damoim/loadMembers.php")
+    @GET(URLMngr.LOAD_MEMBERS)
     Call<ArrayList<UserBaseVO>> loadMembers(@Query("meetName") String meetName);
 
-    @GET("/damoim/loadUserMeetItem.php")
+    @GET(URLMngr.LOAD_USERS_MEET)
     Call<ArrayList<ItemBaseVO>> loadUserMeetItem(@Query("userId") String userId);
 
 
-    @GET("/damoim/saveUserBaseDataToKakako.php")
+    @GET(URLMngr.SAVE_USER_KAKAO)
     Call<String> saveUserBaseDataToKakao(@Query("userId") String userId, @Query("userName") String userName, @Query("userProfileImgUrl") String profileImgUrl);
 
-    @GET("/damoim/saveFCMToken.php")
+    @GET(URLMngr.SAVE_FCM)
     Call<String> saveFCMToken(@Query("userId") String userId, @Query("FCMToken") String FCMToken);
 
-    @GET("/damoim/sendFCMMessage.php")
+    @GET(URLMngr.SEND_FCM)
     Call<String> sendFCMMessage(@Query("meetName") String meetName, @Query("userId") String userId);
 
-    @POST("/damoim/saveMoimInfo.php")
+    @POST(URLMngr.SAVE_MOIM)
     Call<MoimVO> saveMoimInfo(@Body MoimVO moimVO);
 
-    @GET("/damoim/loadMoims.php")
+    @GET(URLMngr.LOAD_MOIM)
     Call<ArrayList<MoimVO>> loadMoims(@Query("meetName") String meetName);
 
-    @GET("/damoim/loadChatInfo.php")
+    @GET(URLMngr.LOAD_CHAT)
     Call<String> loadChatInfo (@Query("userId") String userId);
 
-    @GET("/damoim/sendFCMMessageMoim.php")
+    @GET(URLMngr.SEND_FCM_MOIM)
     Call<String> sendFCMMessageMoim(@Query("meetName") String meetName);
 
-    @GET("/damoim/loadMoimsAll.php")
+    @GET(URLMngr.LOAD_MOIM_ALL)
     Call<ArrayList<MoimVO>> loadMoimsAll();
 
-    @GET("/damoim/insertFavor.php")
+    @GET(URLMngr.INSERT_FAVOR)
     Call<String> insertFavor(@Query("userId") String userId, @Query("meetName") String meetName);
 
-    @GET("/damoim/deleteFavor.php")
+    @GET(URLMngr.DELETE_FAVOR)
     Call<String> deleteFavor(@Query("userId") String userId, @Query("meetName") String meetName);
 
-    @GET("/damoim/loadUserFavoriteItem.php")
+    @GET(URLMngr.LOAD_USER_FAVOR)
     Call<ArrayList<ItemBaseVO>> loadUserFavoriteItem(@Query("userId") String userId);
 
-    @GET("/damoim/checkUserFavorite.php")
+    @GET(URLMngr.CHECK_USER_FAVOR)
     Call<String> checkFavorite(@Query("userId") String userId, @Query("meetName") String meetName);
 
-    @GET("/damoim/uploadRecentMoim.php")
+    @GET(URLMngr.SAVE_RECENT)
     Call<String> uploadRecentMoim(@Query("userId") String userId, @Query("meetName") String meetName, @Query("lastTime")String lastTime);
 
-    @GET("/damoim/loadRecentMoim.php")
+    @GET(URLMngr.LOAD_RECENT)
     Call<ArrayList<ItemBaseVO>> loadUserRecentViewItem(@Query("userId") String userId);
 
-    @GET("/damoim/loadJoinMembers.php")
+    @GET(URLMngr.LOAD_JOIN)
     Call<ArrayList<UserBaseVO>> loadJoinMembers(@Query("joinMembers") String joinMembers);
 
-    @GET("/damoim/addJoinMember.php")
+    @GET(URLMngr.ADD_JOIN)
     Call<String> addJoinMember(@Query("meetName") String meetName, @Query("date") String date, @Query("joinMember") String joinMember);
 
-    @GET("/damoim/updateFCMSetting.php")
+    @GET(URLMngr.UPDATE_SETTING)
     Call<String> updateFCMSetting(@Query("userId") String userId, @Query("target") String target, @Query("value") String Value);
 
-    @GET("/damoim/loadFCMSetting.php")
+    @GET(URLMngr.LOAD_SETTING)
     Call<String> loadFCMSetting(@Query("userId") String userId);
 }

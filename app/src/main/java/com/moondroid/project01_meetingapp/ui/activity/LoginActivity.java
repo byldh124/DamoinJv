@@ -21,6 +21,7 @@ import com.kakao.util.helper.Utility;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
 
@@ -186,7 +187,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void moveToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("sendActivity", "loginActivity");
+        intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.LOGIN_ACTIVITY);
         startActivity(intent);
         finish();
     }
