@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_menu_interest:
                         intent = new Intent(MainActivity.this, InterestActivity.class);
-                        intent.putExtra("sendClass", "Main");
+                        intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.MAIN_ACTIVITY);
                         startActivity(intent);
                         break;
                     case R.id.navigation_menu_favorite_meet:

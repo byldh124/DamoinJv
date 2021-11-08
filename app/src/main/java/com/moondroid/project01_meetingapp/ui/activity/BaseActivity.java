@@ -1,6 +1,7 @@
 package com.moondroid.project01_meetingapp.ui.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -9,6 +10,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.ui.dialog.DMProgressDialog;
 
 public class BaseActivity extends AppCompatActivity {
@@ -22,9 +25,9 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    public static void logException(Exception e) {
+    public void logException(Exception e) {
         Log.e(TAG, "[BaseActivity::logException] E : " + e);
-        //CMFBCrshl.logException(e);
+        DMFBCrash.logException(e);
     }
 
     public void showProgress() {
@@ -45,6 +48,17 @@ public class BaseActivity extends AppCompatActivity {
                 dmProgressDialog.hide();
             }
         } catch (Exception e) {
+            logException(e);
+        }
+    }
+
+    public void goInterestActivity(int ActivityCode){
+        try {
+            Intent intent = new Intent(this, InterestActivity.class);
+            intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, ActivityCode);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        } catch (Exception e){
             logException(e);
         }
     }

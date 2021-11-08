@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
 
@@ -75,7 +76,7 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
-                    String sendClass = intent.getStringExtra("sendClass");
+                    int sendClass = intent.getIntExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY,0);
                     interest = itemTitles[pos];
                     iconUrl = imgUrls[pos];
 
@@ -84,7 +85,7 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                     // 받는 쪽에서 그 정보를 해석하는 방법으로 동일 액티비티에서 여러가지 역할을 할 수 있다.
                     // (사실 이러면 안되지... 액티비티에서 다양한 역할을 하면 안되지....만 아직 초보니깐)
                     switch (sendClass){
-                        case "Main":
+                        case GlobalKey.ACTIVITY_CODE.MAIN_ACTIVITY:
                             //개인 설정 화면(메인)에서 설정시 DB 업데이트
                             GlobalInfo.myProfile.setUserInterest(interest);
                             Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
@@ -106,15 +107,15 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                             });
                             break;
                             //모임 관심사 설정시 값 전달
-                        case "Create":
-                        case "Modify":
+                        case GlobalKey.ACTIVITY_CODE.CREATE_ACTIVITY:
+                        case GlobalKey.ACTIVITY_CODE.OPTION_MODIFY_ACTIVITY:
                             intent.putExtra("interest", interest);
                             intent.putExtra("iconUrl", iconUrl);
                             context.setResult(Activity.RESULT_OK, intent);
                             context.finish();
                             break;
                             //회원가입에서 관심사 설정시 값 전달
-                        case "Account":
+                        case GlobalKey.ACTIVITY_CODE.ACCOUNT_ACTIVITY:
                             intent.putExtra("interest", interest);
                             context.setResult(Activity.RESULT_OK, intent);
                             context.finish();

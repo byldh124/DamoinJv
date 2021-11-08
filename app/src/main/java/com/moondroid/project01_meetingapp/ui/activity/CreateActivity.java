@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
 
@@ -84,7 +85,7 @@ public class CreateActivity extends AppCompatActivity {
     //관심사 선택화면으로 전환
     public void moveToInterestActivity() {
         Intent intent = new Intent(this, InterestActivity.class);
-        intent.putExtra("sendClass", "Create");
+        intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.CREATE_ACTIVITY);
         startActivityForResult(intent, REQUEST_CODE_FOR_INTEREST);
     }
 

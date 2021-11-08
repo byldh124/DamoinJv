@@ -1,173 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".account.AccountActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar_account_activity"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/ToolbarTheme_white"
-        android:background="@color/main_002">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="회원가입"
-            android:textSize="18sp"
-            android:textColor="@color/white"
-            android:fontFamily="@font/jalnanche"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="저장"
-            android:fontFamily="@font/jalnanche"
-            android:layout_gravity="right"
-            android:layout_marginRight="16dp"
-            android:clickable="true"
-            android:onClick="clickSave"
-            android:textColor="@color/white"/>
-    </com.google.android.material.appbar.MaterialToolbar>
-
-    <LinearLayout
+    <data>
+        <variable
+            name="AccountActivity"
+            type="com.moondroid.project01_meetingapp.ui.activity.AccountActivity"/>
+    </data>
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_below="@id/toolbar_account_activity"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <RelativeLayout
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/tbAccount"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/btn_account_check"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ToolbarTheme_white"
+            android:background="@color/main_002">
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_alignBottom="@id/et_id_add_account"
-                android:layout_marginLeft="8dp"
-                android:text="중복확인"
-                android:onClick="clickAccountCheck"
-                android:layout_alignParentRight="true"/>
+                android:text="회원가입"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/jalnanche"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="저장"
+                android:fontFamily="@font/jalnanche"
+                android:layout_gravity="right"
+                android:layout_marginRight="16dp"
+                android:clickable="true"
+                android:onClick="@{AccountActivity::clickSave}"
+                android:textColor="@color/white"/>
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_below="@id/tbAccount"
+            android:padding="16dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/btnAccountCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_alignBottom="@id/etId"
+                    android:layout_marginLeft="8dp"
+                    android:text="중복확인"
+                    android:onClick="@{AccountActivity::clickAccountCheck}"
+                    android:layout_alignParentRight="true"/>
+                <EditText
+                    android:id="@+id/etId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_edit_text_basic"
+                    android:privateImeOptions="defaultInputmode=english"
+                    android:layout_toLeftOf="@id/btnAccountCheck"
+                    android:padding="8dp"
+                    android:hint="아이디"
+                    android:inputType="text"
+                    android:layout_marginBottom="16dp"/>
+
+            </RelativeLayout>
+
+
+
+            <!--        <EditText-->
+            <!--            android:id="@+id/et_password_add_account"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:background="@drawable/bg_edit_text_basic"-->
+            <!--            android:privateImeOptions="defaultInputmode=english"-->
+            <!--            android:padding="8dp"-->
+            <!--            android:hint="비밀번호"-->
+            <!--            android:inputType="textPassword"-->
+            <!--            android:layout_marginBottom="16dp"/>-->
+
+            <!--        <EditText-->
+            <!--            android:id="@+id/et_password_check_add_account"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:background="@drawable/bg_edit_text_basic"-->
+            <!--            android:privateImeOptions="defaultInputmode=english"-->
+            <!--            android:padding="8dp"-->
+            <!--            android:hint="비밀번호 확인"-->
+            <!--            android:inputType="textPassword"-->
+            <!--            android:layout_marginBottom="16dp"/>-->
+
             <EditText
-                android:id="@+id/et_id_add_account"
+                android:id="@+id/etName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_edit_text_basic"
-                android:privateImeOptions="defaultInputmode=english"
-                android:layout_toLeftOf="@id/btn_account_check"
                 android:padding="8dp"
-                android:hint="아이디"
+                android:hint="이름"
                 android:inputType="text"
+                android:privateImeOptions="defaultInputmode=korean"
                 android:layout_marginBottom="16dp"/>
 
-        </RelativeLayout>
-
-
-
-<!--        <EditText-->
-<!--            android:id="@+id/et_password_add_account"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:background="@drawable/bg_edit_text_basic"-->
-<!--            android:privateImeOptions="defaultInputmode=english"-->
-<!--            android:padding="8dp"-->
-<!--            android:hint="비밀번호"-->
-<!--            android:inputType="textPassword"-->
-<!--            android:layout_marginBottom="16dp"/>-->
-
-<!--        <EditText-->
-<!--            android:id="@+id/et_password_check_add_account"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:background="@drawable/bg_edit_text_basic"-->
-<!--            android:privateImeOptions="defaultInputmode=english"-->
-<!--            android:padding="8dp"-->
-<!--            android:hint="비밀번호 확인"-->
-<!--            android:inputType="textPassword"-->
-<!--            android:layout_marginBottom="16dp"/>-->
-
-        <EditText
-            android:id="@+id/et_name_add_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_edit_text_basic"
-            android:padding="8dp"
-            android:hint="이름"
-            android:inputType="text"
-            android:privateImeOptions="defaultInputmode=korean"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:id="@+id/tv_birth_date_add_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_edit_text_basic"
-            android:padding="8dp"
-            android:textSize="18sp"
-            android:hint="생년월일"
-            android:clickable="true"
-            android:onClick="clickBirth"
-            android:layout_marginBottom="16dp"/>
-
-        <RadioGroup
-            android:id="@+id/radio_group_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
-            <RadioButton
-                android:id="@+id/radio_button_account_male"
-                android:button="@android:color/transparent"
-                android:background="@drawable/radionbutton_male"
-                android:gravity="center"
-                android:checked="true"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tvBirth"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/selector_text_color_radiobutton"
-                android:text="남자"/>
-            <RadioButton
-                android:id="@+id/radio_button_account_female"
-                android:button="@android:color/transparent"
-                android:layout_width="wrap_content"
+                android:background="@drawable/bg_edit_text_basic"
+                android:padding="8dp"
+                android:textSize="18sp"
+                android:hint="생년월일"
+                android:clickable="true"
+                android:onClick="clickBirth"
+                android:layout_marginBottom="16dp"/>
+
+            <RadioGroup
+                android:id="@+id/rgAccount"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:backgroundTint="@null"
-                android:background="@drawable/radionbutton_female"
-                android:textColor="@color/selector_text_color_radiobutton"
-                android:gravity="center"
-                android:text="여자"/>
-        </RadioGroup>
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <RadioButton
+                    android:id="@+id/rbAccountMale"
+                    android:button="@android:color/transparent"
+                    android:background="@drawable/radionbutton_male"
+                    android:gravity="center"
+                    android:checked="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/selector_text_color_radiobutton"
+                    android:text="남자"/>
+                <RadioButton
+                    android:id="@+id/rbAccountFemale"
+                    android:button="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:backgroundTint="@null"
+                    android:background="@drawable/radionbutton_female"
+                    android:textColor="@color/selector_text_color_radiobutton"
+                    android:gravity="center"
+                    android:text="여자"/>
+            </RadioGroup>
 
-        <TextView
-            android:id="@+id/tv_location_add_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_edit_text_basic"
-            android:padding="8dp"
-            android:hint="지역 선택"
-            android:textSize="18sp"
-            android:inputType="text"
-            android:clickable="true"
-            android:onClick="clickLocationAccount"
-            android:layout_marginBottom="16dp"/>
+            <TextView
+                android:id="@+id/tvLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edit_text_basic"
+                android:padding="8dp"
+                android:hint="지역 선택"
+                android:textSize="18sp"
+                android:inputType="text"
+                android:clickable="true"
+                android:onClick="@{AccountActivity::clickLocationAccount}"
+                android:layout_marginBottom="16dp"/>
 
-        <TextView
-            android:id="@+id/tv_interest_add_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_edit_text_basic"
-            android:padding="8dp"
-            android:hint="관심사 선택"
-            android:textSize="18sp"
-            android:inputType="text"
-            android:clickable="true"
-            android:onClick="clickInterest"
-            android:layout_marginBottom="16dp"/>
+            <TextView
+                android:id="@+id/tvInterest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edit_text_basic"
+                android:padding="8dp"
+                android:hint="관심사 선택"
+                android:textSize="18sp"
+                android:inputType="text"
+                android:clickable="true"
+                android:onClick="@{AccountActivity::clickInterest}"
+                android:layout_marginBottom="16dp"/>
 
-    </LinearLayout>
+        </LinearLayout>
 
-</RelativeLayout>
+    </RelativeLayout>
+</layout>

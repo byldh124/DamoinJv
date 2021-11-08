@@ -14,4 +14,6 @@
     <string name="agree">확인</string>
     <string name="fail_connect_server">서버와의 연결에 실패 했습니다.</string>
     <string name="network_error">네크워크가 원할하지 않습니다. [Code : %s]</string>
+    <string name="please_input_id">아이디를 입력해주세요</string>
+    <string name="string_type_date">%d.%d.%d</string>
 </resources>

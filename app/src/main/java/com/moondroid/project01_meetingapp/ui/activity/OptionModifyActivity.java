@@ -14,7 +14,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -24,11 +23,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.account.InterestActivity;
-import com.moondroid.project01_meetingapp.createmeet.CreateActivity;
-import com.moondroid.project01_meetingapp.global.G;
-import com.moondroid.project01_meetingapp.library.RetrofitHelper;
-import com.moondroid.project01_meetingapp.library.RetrofitService;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
+import com.moondroid.project01_meetingapp.network.RetrofitHelper;
+import com.moondroid.project01_meetingapp.network.RetrofitService;
+import com.moondroid.project01_meetingapp.network.URLMngr;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -85,10 +84,10 @@ public class OptionModifyActivity extends AppCompatActivity {
         ivTitleImg = findViewById(R.id.iv_page_modify_title_img);
         tvPurpose = findViewById(R.id.tv_page_modify_purpose);
 
-        meetName = G.currentItemBase.getMeetName();
-        meetInterest = G.currentItemBase.getMeetInterest();
-        purposeMessage = G.currentItemBase.getPurposeMessage();
-        message = G.currentItemBase.getMessage();
+        meetName = GlobalInfo.currentMoim.getMeetName();
+        meetInterest = GlobalInfo.currentMoim.getMeetInterest();
+        purposeMessage = GlobalInfo.currentMoim.getPurposeMessage();
+        message = GlobalInfo.currentMoim.getMessage();
 
         //Action bar Setting
         setSupportActionBar(toolbar);
@@ -96,16 +95,16 @@ public class OptionModifyActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //기존 정보 load
-        if (G.currentItemBase.getIntroImgUrl() != null)
-            Picasso.get().load(RetrofitHelper.getUrlForImg() + G.currentItemBase.getIntroImgUrl()).into(ivIntro);
+        if (GlobalInfo.currentMoim.getIntroImgUrl() != null)
+            Picasso.get().load(URLMngr.BASE_URL_DEFAULT + GlobalInfo.currentMoim.getIntroImgUrl()).into(ivIntro);
 
         ArrayList<String> interests = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.interest_list)));
         Glide.with(this).load(getResources().getStringArray(R.array.interest_icon_img_url)[interests.indexOf(meetInterest)]).into(ivIcon);
 
         tvTitle.setText(meetName);
 
-        if (G.currentItemBase.getTitleImgUrl() != null)
-            Picasso.get().load(RetrofitHelper.getUrlForImg() + G.currentItemBase.getTitleImgUrl()).into(ivTitleImg);
+        if (GlobalInfo.currentMoim.getTitleImgUrl() != null)
+            Picasso.get().load(URLMngr.BASE_URL_DEFAULT + GlobalInfo.currentMoim.getTitleImgUrl()).into(ivTitleImg);
         if (purposeMessage != null) tvPurpose.setText(purposeMessage);
         if (message == null || message.equals("")) {
             tvMessage.setText("모임 설명을 작성해주세요");
@@ -129,7 +128,7 @@ public class OptionModifyActivity extends AppCompatActivity {
 
     public void clickInterestIcon(View view) {
         Intent intent = new Intent(this, InterestActivity.class);
-        intent.putExtra("sendClass", "Modify");
+        intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.OPTION_MODIFY_ACTIVITY);
         startActivityForResult(intent, REQUEST_CODE_FOR_INTEREST_ICON);
     }
 
@@ -143,7 +142,7 @@ public class OptionModifyActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 meetName = editText.getText().toString();
                 tvTitle.setText(meetName);
-                if (!meetName.equals(G.currentItemBase.getMeetName())) {
+                if (!meetName.equals(GlobalInfo.currentMoim.getMeetName())) {
                     meetNameIsChanged = true;
                 } else {
                     meetNameIsChanged = false;
@@ -250,7 +249,7 @@ public class OptionModifyActivity extends AppCompatActivity {
         progressDialog.show();
 
         dataPart = new HashMap<>();
-        dataPart.put("originMeetName", G.currentItemBase.getMeetName());
+        dataPart.put("originMeetName", GlobalInfo.currentMoim.getMeetName());
         dataPart.put("meetName", meetName);
         dataPart.put("meetInterest", meetInterest);
         dataPart.put("purposeMessage", purposeMessage);
@@ -278,19 +277,19 @@ public class OptionModifyActivity extends AppCompatActivity {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.body() != null) {
                     dstName = response.body().split("&&");
-                    G.currentItemBase.setMeetName(meetName);
-                    G.currentItemBase.setMeetInterest(meetInterest);
-                    G.currentItemBase.setPurposeMessage(purposeMessage);
-                    G.currentItemBase.setMessage(message);
+                    GlobalInfo.currentMoim.setMeetName(meetName);
+                    GlobalInfo.currentMoim.setMeetInterest(meetInterest);
+                    GlobalInfo.currentMoim.setPurposeMessage(purposeMessage);
+                    GlobalInfo.currentMoim.setMessage(message);
                     if (dstName[0] != null) {
-                        G.currentItemBase.setTitleImgUrl(dstName[0]);
+                        GlobalInfo.currentMoim.setTitleImgUrl(dstName[0]);
                     }
                     try {
-                        G.currentItemBase.setIntroImgUrl(dstName[1]);
+                        GlobalInfo.currentMoim.setIntroImgUrl(dstName[1]);
                         progressDialog.dismiss();
                         onBackPressed();
                     } catch (Exception e) {
-                        G.currentItemBase.setIntroImgUrl(null);
+                        GlobalInfo.currentMoim.setIntroImgUrl(null);
                         progressDialog.dismiss();
                         onBackPressed();
                     }

@@ -3,6 +3,7 @@ package com.moondroid.project01_meetingapp.ui.activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -13,7 +14,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.databinding.ActivityAccountBinding;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
@@ -44,10 +45,7 @@ public class AccountActivity extends BaseActivity {
     private final int REQUEST_CODE_FOR_LOCATION_CHOICE = 0;
     private final int REQUEST_CODE_FOR_INTEREST_SELECT = 1;
 
-    private Toolbar toolbarAccountActivity;
-    private TextView tvLocation, tvBirthDate, tvUserInterest;
-    private EditText etId, etPassword, etPasswordCheck, etName;
-    private RadioGroup radioGroup;
+
     private String userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest;
 
     private int y = 0, m = 0, d = 0;
@@ -57,30 +55,21 @@ public class AccountActivity extends BaseActivity {
     private UserBaseVO userBaseVO;
     private ProgressDialog progressDialog;
 
+    private ActivityAccountBinding layout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         try {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_account);
-
-            //xml Reference
-            tvLocation = findViewById(R.id.tv_location_add_account);
-            tvBirthDate = findViewById(R.id.tv_birth_date_add_account);
-            tvUserInterest = findViewById(R.id.tv_interest_add_account);
-            etId = findViewById(R.id.et_id_add_account);
-//        etPassword = findViewById(R.id.et_password_add_account);
-//        etPasswordCheck = findViewById(R.id.et_password_check_add_account);
-            etName = findViewById(R.id.et_name_add_account);
-            radioGroup = findViewById(R.id.radio_group_account);
-            toolbarAccountActivity = findViewById(R.id.toolbar_account_activity);
+            layout = DataBindingUtil.setContentView(this, R.layout.activity_account);
 
             //액션바 세팅
-            setSupportActionBar(toolbarAccountActivity);
+            setSupportActionBar(layout.tbAccount);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             userGender = "남자";
-            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            layout.rgAccount.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     RadioButton radioButton = group.findViewById(checkedId);
@@ -89,7 +78,7 @@ public class AccountActivity extends BaseActivity {
             });
 
             //중복확인 후 아이디 기입을 다시 할시 중복확인 제거
-            etId.addTextChangedListener(new TextWatcher() {
+            layout.etId.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
@@ -103,6 +92,8 @@ public class AccountActivity extends BaseActivity {
                 public void afterTextChanged(Editable s) {
                 }
             });
+
+            layout.setAccountActivity(this);
 
         } catch (Exception e) {
             logException(e);
@@ -143,13 +134,14 @@ public class AccountActivity extends BaseActivity {
             switch (requestCode) {
                 case REQUEST_CODE_FOR_LOCATION_CHOICE:
                     userAddress = data.getStringExtra("location");
-                    tvLocation.setText(userAddress);
+                    layout.tvLocation.setText(userAddress);
                     break;
                 case REQUEST_CODE_FOR_INTEREST_SELECT:
                     userInterest = data.getStringExtra("interest");
-                    tvUserInterest.setText(userInterest);
+                    layout.tvInterest.setText(userInterest);
                     break;
             }
+            layout.setAccountActivity(this);
         } catch (Exception e) {
             logException(e);
         }
@@ -158,29 +150,25 @@ public class AccountActivity extends BaseActivity {
 
     public void clickSave(View view) {
         try {
-            userId = etId.getText().toString();
-//        userPassword = etPassword.getText().toString();
-            userName = etName.getText().toString();
-            userBirthDate = tvBirthDate.getText().toString();
-            userAddress = tvLocation.getText().toString();
+            userId = layout.etId.getText().toString();
+            userName = layout.etName.getText().toString();
+            userBirthDate = layout.tvBirth.getText().toString();
+            userAddress = layout.tvLocation.getText().toString();
 
             //유저가 기입한 정보 확인
-            if (idChecked == false) {
+            if (!idChecked) {
                 Toast.makeText(this, "아이디 중복을 확인해주세요", Toast.LENGTH_SHORT).show();
                 return;
             } else if (userId == null || userId.equals("")) {
                 Toast.makeText(this, "아이디를 입력해주세요", Toast.LENGTH_SHORT).show();
                 return;
-//        } else if (userPassword == null || userPassword.equals("") || !(userPassword.equals(etPasswordCheck.getText().toString()))) {
-//            Toast.makeText(this, "비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show();
-//            return;
             } else if (userName == null || userName.equals("")) {
                 Toast.makeText(this, "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
                 return;
             } else if (userBirthDate == null || userBirthDate.equals("")) {
                 Toast.makeText(this, "생년월일을 입력해주세요", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (userAddress == null || userAddress.equals("")) {
+            } else if (userAddress.equals("")) {
                 Toast.makeText(this, "주소를 입력해주세요", Toast.LENGTH_SHORT).show();
                 return;
             } else if (userInterest == null || userInterest.equals("")) {
@@ -197,27 +185,32 @@ public class AccountActivity extends BaseActivity {
 
     //생년월일 기입에 대한 다이얼로그
     public void clickBirth(View view) {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                y = year;
-                m = month + 1;
-                d = dayOfMonth;
+        try {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    y = year;
+                    m = month + 1;
+                    d = dayOfMonth;
 
-                tvBirthDate.setText("" + y + "." + m + "." + d);
+                    layout.tvBirth.setText(String.format(getString(R.string.string_type_date), y, m, d));
+                    layout.setAccountActivity(AccountActivity.this);
 
-            }
-        }, 1990, 0, 1);
-        datePickerDialog.getDatePicker().setCalendarViewShown(false);
-        datePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        datePickerDialog.show();
+                }
+            }, 1990, 0, 1);
+            datePickerDialog.getDatePicker().setCalendarViewShown(false);
+            datePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            datePickerDialog.show();
 
+        } catch (Exception e) {
+            logException(e);
+        }
     }
 
     //관심사 선택 화면으로 전환
     public void clickInterest(View view) {
         Intent intent = new Intent(this, InterestActivity.class);
-        intent.putExtra("sendClass", "Account");
+        intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.ACCOUNT_ACTIVITY);
         startActivityForResult(intent, REQUEST_CODE_FOR_INTEREST_SELECT);
     }
 
@@ -226,9 +219,17 @@ public class AccountActivity extends BaseActivity {
      **/
     public void clickAccountCheck(View view) {
         try {
+
+            String userId = layout.etId.getText().toString();
+
+            if (userId.equals("")) {
+                Toast.makeText(getBaseContext(), getString(R.string.please_input_id), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
             RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-            Call<String> call = retrofitService.checkUserId(etId.getText().toString());
+            Call<String> call = retrofitService.checkUserId(layout.etId.getText().toString());
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {

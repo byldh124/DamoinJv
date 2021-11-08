@@ -15,9 +15,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.library.LinearLayoutManagerWrapper;
-import com.moondroid.project01_meetingapp.page_tab1_info.ChoiceMoimLocationAdapter;
-import com.moondroid.project01_meetingapp.variableobject.LocationVO;
+import com.moondroid.project01_meetingapp.data.model.LocationVO;
+import com.moondroid.project01_meetingapp.helpers.utils.LinearLayoutManagerWrapper;
+import com.moondroid.project01_meetingapp.presenter.adapter.ChoiceMoimLocationAdapter;
 import com.naver.maps.geometry.LatLng;
 
 import java.io.IOException;

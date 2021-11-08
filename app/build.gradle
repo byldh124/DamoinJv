@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -22,6 +23,10 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+
+        dataBinding {
+            enabled = true
+        }
 
     }
 
