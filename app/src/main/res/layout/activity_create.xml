@@ -1,125 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".createmeet.CreateActivity">
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_create_activity"
-        android:layout_width="match_parent"
-        android:theme="@style/ToolbarTheme_Red"
-        android:layout_height="?attr/actionBarSize">
-        <TextView
-            android:id="@+id/tv_create_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/jalnanche"
-            android:textColor="@color/main_001"
-            android:textSize="16sp"
-            android:text="모임 개설"/>
-    </androidx.appcompat.widget.Toolbar>
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="CreateActivity"
+            type="com.moondroid.project01_meetingapp.ui.activity.CreateActivity" />
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:onClick="clickSearchLocation">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_bottom_tab4_location"
-            android:layout_marginLeft="16dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="지역"
-            android:padding="4dp"
-            android:gravity="center_vertical"
-            android:ems="4"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.activity.CreateActivity">
 
-        <TextView
-            android:id="@+id/tv_create_location"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ToolbarTheme_Red">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/jalnanche"
+                android:text="모임 개설"
+                android:textColor="@color/main_001"
+                android:textSize="16sp" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="동, 읍, 면 찾기"
-            android:background="@drawable/bg_edit_text_create_activity"
-            android:padding="8dp"
-            android:textSize="18sp"
-            android:textColor="#ff999999"
-            android:layout_marginRight="16dp"/>
-    </LinearLayout>
+            android:onClick="@{CreateActivity::clickLocation}">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:clickable="true"
-        android:onClick="clickSearchLocation">
-        <ImageView
-            android:id="@+id/iv_choose_interest"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_bottom_tab1_meet"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/ic_bottom_tab4_location" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:ems="4"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+                android:text="지역" />
+
+            <TextView
+                android:id="@+id/txtVwLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/bg_edit_text_create_activity"
+                android:padding="8dp"
+                android:text="동, 읍, 면 찾기"
+                android:textColor="#ff999999"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:clickable="true"
-            android:onClick="clickInterestIcon"
-            android:layout_marginLeft="16dp"/>
+            android:onClick="clickSearchLocation">
+
+            <ImageView
+                android:id="@+id/iv_choose_interest"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                android:clickable="true"
+                android:onClick="clickInterestIcon"
+                android:src="@drawable/ic_bottom_tab1_meet" />
+
+            <EditText
+                android:id="@+id/et_meet_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/bg_edit_text_create_activity"
+                android:hint="모임이름"
+                android:inputType="text"
+                android:padding="8dp"
+                android:privateImeOptions="defaultInputmode=korean" />
+        </LinearLayout>
 
         <EditText
-            android:id="@+id/et_meet_name"
+            android:id="@+id/et_purpose_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_edit_text_create_activity"
-            android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
-            android:hint="모임이름"
-            android:privateImeOptions="defaultInputmode=korean"
-            android:inputType="text"
-            android:padding="8dp"/>
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/bg_edit_text_create_activity"
+            android:gravity="top"
+            android:hint="모임 목표"
+            android:inputType="textMultiLine"
+            android:lines="7"
+            android:maxLength="40"
+            android:padding="8dp"
+            android:privateImeOptions="defaultInputmode=korean" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:text="대표 이미지 설정" />
+
+        <ImageView
+            android:id="@+id/iv_title_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="clickImageInput"
+            android:src="@drawable/bg_image_search" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:onClick="clickCreateMeet"
+            android:text="모임 만들기" />
+
+
     </LinearLayout>
-
-    <EditText
-        android:id="@+id/et_purpose_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_edit_text_create_activity"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:hint="모임 목표"
-        android:privateImeOptions="defaultInputmode=korean"
-        android:inputType="textMultiLine"
-        android:maxLength="40"
-        android:layout_marginTop="16dp"
-        android:lines="7"
-        android:gravity="top"
-        android:padding="8dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="대표 이미지 설정"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"/>
-    <ImageView
-        android:id="@+id/iv_title_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_weight="1"
-        android:src="@drawable/bg_image_search"
-        android:clickable="true"
-        android:onClick="clickImageInput"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="모임 만들기"
-        android:onClick="clickCreateMeet"/>
-
-
-</LinearLayout>
+</layout>

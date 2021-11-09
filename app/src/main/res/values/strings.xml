@@ -16,4 +16,11 @@
     <string name="network_error">네크워크가 원할하지 않습니다. [Code : %s]</string>
     <string name="please_input_id">아이디를 입력해주세요</string>
     <string name="string_type_date">%d.%d.%d</string>
+    <string name="cmn_account_id_check">아이디 중복을 확인해주세요</string>
+    <string name="cmn_account_id_input">아이디를 입력해주세요</string>
+    <string name="cmn_account_name_input">이름을 입력해주세요</string>
+    <string name="cmn_account_birth_input">생년월일을 입력해주세요</string>
+    <string name="cmn_account_address_input">주소를 입력해주세요</string>
+    <string name="cmn_account_interest_input">관심사를 선택해주세요</string>
+    <string name="male">남자</string>
 </resources>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".page_tab1_info.ChoiceMoimActivity">
+    tools:context=".ui.activity.ChoiceMoimActivity">
     
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_choice_moim"

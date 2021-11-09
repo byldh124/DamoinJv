@@ -52,13 +52,34 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void goInterestActivity(int ActivityCode){
+    public void goToInterest(int activityCode, int requestCode){
         try {
             Intent intent = new Intent(this, InterestActivity.class);
-            intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, ActivityCode);
-            startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, activityCode);
+            startActivityForResult(intent, requestCode);
+            overridePendingTransition(0 , android.R.anim.fade_out);
         } catch (Exception e){
+            logException(e);
+        }
+    }
+
+    public void goToLocation(int activityCode, int requestCode){
+        try {
+            Intent intent = new Intent(this, LocationChoiceActivity.class);
+            intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, activityCode);
+            startActivityForResult(intent, requestCode);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        } catch (Exception e) {
+            logException(e);
+        }
+    }
+
+    public void goToGallery(int requestCode){
+        try {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent, requestCode);
+        } catch (Exception e) {
             logException(e);
         }
     }

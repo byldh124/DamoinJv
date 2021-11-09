@@ -12,7 +12,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context=".ui.activity.AccountActivity">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tbAccount"

@@ -23,4 +23,12 @@ public class GlobalKey {
         int OPTION_MODIFY_ACTIVITY = 14;
     }
 
+    public static interface REQUEST_CODE{
+        int ACCOUNT01 = 51;
+        int ACCOUNT02 = 52;
+        int CREATE01 = 41;
+        int CREATE02 = 42;
+        int CREATE03 = 43;
+    }
+
 }

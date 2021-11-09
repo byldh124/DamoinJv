@@ -2,12 +2,10 @@ package com.moondroid.project01_meetingapp.ui.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,10 +15,8 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.moondroid.project01_meetingapp.R;
@@ -67,7 +63,7 @@ public class AccountActivity extends BaseActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-            userGender = "남자";
+            userGender = getString(R.string.male);
             layout.rgAccount.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -114,16 +110,6 @@ public class AccountActivity extends BaseActivity {
         }
     }
 
-    //지역 설정 화면으로 전환
-    public void clickLocationAccount(View view) {
-        try {
-            Intent intent = new Intent(this, LocationChoiceActivity.class);
-            startActivityForResult(intent, REQUEST_CODE_FOR_LOCATION_CHOICE);
-        } catch (Exception e) {
-            logException(e);
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         try {
@@ -131,11 +117,11 @@ public class AccountActivity extends BaseActivity {
             if (resultCode != RESULT_OK) return;
 
             switch (requestCode) {
-                case REQUEST_CODE_FOR_LOCATION_CHOICE:
+                case GlobalKey.REQUEST_CODE.ACCOUNT01:
                     userAddress = data.getStringExtra("location");
                     layout.tvLocation.setText(userAddress);
                     break;
-                case REQUEST_CODE_FOR_INTEREST_SELECT:
+                case GlobalKey.REQUEST_CODE.ACCOUNT02:
                     userInterest = data.getStringExtra("interest");
                     layout.tvInterest.setText(userInterest);
                     break;
@@ -147,6 +133,9 @@ public class AccountActivity extends BaseActivity {
 
     }
 
+    /**
+     * 회원가입 정보 유효성 체크 작업
+     **/
     public void clickSave(View view) {
         try {
             userId = layout.etId.getText().toString();
@@ -156,22 +145,22 @@ public class AccountActivity extends BaseActivity {
 
             //유저가 기입한 정보 확인
             if (!idChecked) {
-                Toast.makeText(this, "아이디 중복을 확인해주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cmn_account_id_check, Toast.LENGTH_SHORT).show();
                 return;
             } else if (userId == null || userId.equals("")) {
-                Toast.makeText(this, "아이디를 입력해주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cmn_account_id_input, Toast.LENGTH_SHORT).show();
                 return;
             } else if (userName == null || userName.equals("")) {
-                Toast.makeText(this, "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cmn_account_name_input, Toast.LENGTH_SHORT).show();
                 return;
             } else if (userBirthDate == null || userBirthDate.equals("")) {
-                Toast.makeText(this, "생년월일을 입력해주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cmn_account_birth_input, Toast.LENGTH_SHORT).show();
                 return;
             } else if (userAddress.equals("")) {
-                Toast.makeText(this, "주소를 입력해주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cmn_account_address_input, Toast.LENGTH_SHORT).show();
                 return;
             } else if (userInterest == null || userInterest.equals("")) {
-                Toast.makeText(this, "관심사를 선택해주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cmn_account_interest_input, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -182,7 +171,9 @@ public class AccountActivity extends BaseActivity {
         }
     }
 
-    //생년월일 기입에 대한 다이얼로그
+    /**
+     * 생년월일 기입에 대한 다이얼로그
+     **/
     public void clickBirth(View view) {
         try {
             DatePickerDialog datePickerDialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, new DatePickerDialog.OnDateSetListener() {
@@ -206,11 +197,26 @@ public class AccountActivity extends BaseActivity {
         }
     }
 
-    //관심사 선택 화면으로 전환
+    /**
+     * 지역 설정 화면으로 전환
+     **/
+    public void clickLocationAccount(View view) {
+        try {
+            super.goToLocation(GlobalKey.ACTIVITY_CODE.ACCOUNT_ACTIVITY, GlobalKey.REQUEST_CODE.ACCOUNT01);
+        } catch (Exception e) {
+            logException(e);
+        }
+    }
+
+    /**
+     * 관심사 선택 화면으로 전환
+     **/
     public void clickInterest(View view) {
-        Intent intent = new Intent(this, InterestActivity.class);
-        intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.ACCOUNT_ACTIVITY);
-        startActivityForResult(intent, REQUEST_CODE_FOR_INTEREST_SELECT);
+        try {
+            super.goToInterest(GlobalKey.ACTIVITY_CODE.ACCOUNT_ACTIVITY, GlobalKey.REQUEST_CODE.ACCOUNT02);
+        } catch (Exception e) {
+            logException(e);
+        }
     }
 
     /**
