@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".profileset.ProfileSetActivity">
+    android:layout_height="match_parent">
 
 
     <com.google.android.material.appbar.MaterialToolbar
@@ -128,7 +127,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:clickable="true"
-        android:onClick="clickLocation"
+        android:onClick="goToLocation"
         android:layout_marginTop="16dp"
         android:hint="지역"
         android:gravity="center_vertical"

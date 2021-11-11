@@ -6,10 +6,12 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.ui.dialog.DMProgressDialog;
@@ -57,7 +59,7 @@ public class BaseActivity extends AppCompatActivity {
             Intent intent = new Intent(this, InterestActivity.class);
             intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, activityCode);
             startActivityForResult(intent, requestCode);
-            overridePendingTransition(0 , android.R.anim.fade_out);
+            overridePendingTransition(0 , R.anim.fade_out);
         } catch (Exception e){
             logException(e);
         }
@@ -68,7 +70,7 @@ public class BaseActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LocationChoiceActivity.class);
             intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, activityCode);
             startActivityForResult(intent, requestCode);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         } catch (Exception e) {
             logException(e);
         }
@@ -79,7 +81,24 @@ public class BaseActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             startActivityForResult(intent, requestCode);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         } catch (Exception e) {
+            logException(e);
+        }
+    }
+
+    public void showNtwrkFailToast(){
+        try{
+            Toast.makeText(getBaseContext(), getString(R.string.fail_connect_server), Toast.LENGTH_SHORT).show();
+        } catch (Exception e){
+            logException(e);
+        }
+    }
+
+    public void showNtwrkFailToast(String eCode){
+        try {
+            Toast.makeText(getBaseContext(), getString(R.string.network_error, eCode), Toast.LENGTH_SHORT).show();
+        } catch (Exception e){
             logException(e);
         }
     }

@@ -23,4 +23,17 @@
     <string name="cmn_account_address_input">주소를 입력해주세요</string>
     <string name="cmn_account_interest_input">관심사를 선택해주세요</string>
     <string name="male">남자</string>
+    <string name="location">지역</string>
+    <string name="hint_location">동, 읍, 면 찾기</string>
+    <string name="group_name">모임이름</string>
+    <string name="group_object">모임 목표</string>
+    <string name="group_image_setting">대표 이미지 설정</string>
+    <string name="group_create">모임 만들기</string>
+    <string name="title_create_activity">모임 개설</string>
+    <string name="cmn_group_name_exist">동일한 모임명이 존재합니다.\n다른 이름을 생성해주세요</string>
+    <string name="cmn_group_name_set">모임 이름을 설정해주세요</string>
+    <string name="cmn_group_location_set">모임 지역을 설정해주세요</string>
+    <string name="cmn_group_object_set">모임 목표를 작성해주세요</string>
+    <string name="cmn_group_interest_set">관심사를 선택해주세요</string>
+    <string name="cmn_group_title_img_set">사진을 선택해주세요</string>
 </resources>

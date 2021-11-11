@@ -243,7 +243,7 @@ public class AccountActivity extends BaseActivity {
                         int code = responseJson.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
                         switch (code) {
                             case GlobalKey.NTWRK_RTN_TYPE.SUCCESS: {
-                                boolean isUsable = responseJson.getBoolean("result");
+                                boolean isUsable = responseJson.getBoolean(GlobalKey.NTWRK_RTN_TYPE.RESULT);
                                 if (isUsable) {
                                     new AlertDialog.Builder(AccountActivity.this).setMessage(getString(R.string.usabe_id)).setPositiveButton(getString(R.string.agree), new DialogInterface.OnClickListener() {
                                         @Override
@@ -260,24 +260,24 @@ public class AccountActivity extends BaseActivity {
                                 Toast.makeText(AccountActivity.this, getString(R.string.fail_connect_server), Toast.LENGTH_SHORT).show();
                                 break;
                             default:
-                                Toast.makeText(AccountActivity.this, String.format(getString(R.string.network_error), "1"), Toast.LENGTH_SHORT).show();
+                                showNtwrkFailToast("1");
                                 break;
 
                         }
                     } catch (Exception e) {
-                        Toast.makeText(AccountActivity.this, String.format(getString(R.string.network_error), "2"), Toast.LENGTH_SHORT).show();
+                        showNtwrkFailToast("2");
                         logException(e);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                    Toast.makeText(AccountActivity.this, String.format(getString(R.string.network_error), "3"), Toast.LENGTH_SHORT).show();
+                    showNtwrkFailToast("3");
                 }
             });
 
         } catch (Exception e) {
-            Toast.makeText(AccountActivity.this, String.format(getString(R.string.network_error), "4"), Toast.LENGTH_SHORT).show();
+            showNtwrkFailToast("4");
             logException(e);
         }
     }

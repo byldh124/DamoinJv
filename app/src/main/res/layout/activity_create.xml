@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/jalnanche"
-                android:text="모임 개설"
+                android:text="@string/title_create_activity"
                 android:textColor="@color/main_001"
                 android:textSize="16sp" />
         </androidx.appcompat.widget.Toolbar>
@@ -34,7 +34,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{CreateActivity::clickLocation}">
+            android:onClick="@{CreateActivity::goToLocation}">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
                 android:ems="4"
                 android:gravity="center_vertical"
                 android:padding="4dp"
-                android:text="지역" />
+                android:text="@string/location" />
 
             <TextView
                 android:id="@+id/txtVwLocation"
@@ -57,7 +57,7 @@
                 android:layout_marginRight="16dp"
                 android:background="@drawable/bg_edit_text_create_activity"
                 android:padding="8dp"
-                android:text="동, 읍, 면 찾기"
+                android:text="@string/hint_location"
                 android:textColor="#ff999999"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -65,35 +65,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:clickable="true"
-            android:onClick="clickSearchLocation">
+            android:layout_marginTop="16dp">
 
             <ImageView
-                android:id="@+id/iv_choose_interest"
+                android:id="@+id/imgVwInterest"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="16dp"
-                android:clickable="true"
-                android:onClick="clickInterestIcon"
+                android:onClick="@{CreateActivity::goToInterest}"
                 android:src="@drawable/ic_bottom_tab1_meet" />
 
             <EditText
-                android:id="@+id/et_meet_name"
+                android:id="@+id/edtVwGroupName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/bg_edit_text_create_activity"
-                android:hint="모임이름"
+                android:hint="@string/group_name"
                 android:inputType="text"
                 android:padding="8dp"
                 android:privateImeOptions="defaultInputmode=korean" />
         </LinearLayout>
 
         <EditText
-            android:id="@+id/et_purpose_message"
+            android:id="@+id/edtVwObjectMsg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -101,7 +98,7 @@
             android:layout_marginRight="16dp"
             android:background="@drawable/bg_edit_text_create_activity"
             android:gravity="top"
-            android:hint="모임 목표"
+            android:hint="@string/group_object"
             android:inputType="textMultiLine"
             android:lines="7"
             android:maxLength="40"
@@ -114,25 +111,24 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
-            android:text="대표 이미지 설정" />
+            android:text="@string/group_image_setting" />
 
         <ImageView
-            android:id="@+id/iv_title_image"
+            android:id="@+id/imgVwTitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_weight="1"
-            android:clickable="true"
-            android:onClick="clickImageInput"
+            android:onClick="@{CreateActivity::goToGallery}"
             android:src="@drawable/bg_image_search" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:onClick="clickCreateMeet"
-            android:text="모임 만들기" />
+            android:onClick="@{CreateActivity::checkGroupInfo}"
+            android:text="@string/group_create" />
 
 
     </LinearLayout>
