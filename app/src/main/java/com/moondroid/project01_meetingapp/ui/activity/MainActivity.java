@@ -62,7 +62,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private final int REQUEST_CODE_FOR_PROFILE_SET = -1;
     private final int REQUEST_CODE_FOR_INTEREST_SET = -2;
@@ -201,9 +201,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = null;
                 switch (item.getItemId()) {
                     case R.id.navigation_menu_interest:
-                        intent = new Intent(MainActivity.this, InterestActivity.class);
-                        intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.MAIN_ACTIVITY);
-                        startActivity(intent);
+                        goToInterest(GlobalKey.ACTIVITY_CODE.MAIN_ACTIVITY, GlobalKey.REQUEST_CODE.MAIN01);
                         break;
                     case R.id.navigation_menu_favorite_meet:
                         intent = new Intent(MainActivity.this, MyPageFavoriteActivity.class);
@@ -370,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_CODE_FOR_PROFILE_SET:
                 break;
             case REQUEST_CODE_FOR_INTEREST_SET:
-                String interest = data.getStringExtra("interest");
+                String interest = data.getStringExtra(GlobalKey.INTENT_PARAM_TYPE.INTEREST);
                 break;
             case REQUEST_EXIT:
                 finish();

@@ -37,7 +37,7 @@ public interface RetrofitService {
     Call<String> updateUserInterest(@Query("userId") String userId, @Query("userInterest") String userInterest);
 
     @GET(URLMngr.USER_INFO)
-    Call<UserBaseVO> loadUserBaseDBToIntroActivity(@Query("userId") String userId);
+    Call<String> loadUserBaseDBToIntroActivity(@Query("userId") String userId);
 
     @GET(URLMngr.SAVE_USERS_MEET)
     Call<String> saveUserMeetItem(@Query("userId") String userId, @Query("meetName") String meetName);

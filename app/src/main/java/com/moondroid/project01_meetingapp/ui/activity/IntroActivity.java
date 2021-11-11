@@ -1,6 +1,7 @@
 package com.moondroid.project01_meetingapp.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,19 +12,29 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.igaworks.v2.core.AdBrixRm;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.databinding.ActivityIntroBinding;
+import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
+
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class IntroActivity extends AppCompatActivity {
+public class IntroActivity extends BaseActivity {
+
+    private static final String TAG = IntroActivity.class.getSimpleName();
+
+    private ActivityIntroBinding layout;
 
     private Animation logoAnim;
     private ImageView logoImg;
@@ -34,16 +45,14 @@ public class IntroActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try{
+        try {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_intro);
+            layout = DataBindingUtil.setContentView(this, R.layout.activity_intro);
 
             //로고 애니메이션 작업
             logoAnim = AnimationUtils.loadAnimation(this, R.anim.logo_anim);
-            logoImg = findViewById(R.id.intro_logo);
-            campaignImg = findViewById(R.id.intro_campaign);
-            logoImg.startAnimation(logoAnim);
-            campaignImg.startAnimation(logoAnim);
+            layout.imgVwLogo.startAnimation(logoAnim);
+            layout.imgVwCampaign.startAnimation(logoAnim);
 
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -61,43 +70,66 @@ public class IntroActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        AdBrixRm.login(userId);
                         startApp();
                     }
                 }
             }, 1000);
-        } catch (Exception e){
-
+        } catch (Exception e) {
+            logException(e);
         }
 
     }
 
     //SharedPreferences 에 저장된 유저 ID에 따라 DB에 저장된 유저의 정보들을 가져오는 작업
     public void startApp() {
-        Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
-        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-        Call<UserBaseVO> call = retrofitService.loadUserBaseDBToIntroActivity(userId);
-        call.enqueue(new Callback<UserBaseVO>() {
-            @Override
-            public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
-                GlobalInfo.myProfile = response.body();
-                intent = new Intent(IntroActivity.this, MainActivity.class);
+        try {
+            Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
+            RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+            Call<String> call = retrofitService.loadUserBaseDBToIntroActivity(userId);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    try {
+                        JSONObject jsonRes = new JSONObject(response.body());
+                        int code = jsonRes.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                        switch (code) {
+                            case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                JSONObject result = jsonRes.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT);
+                                Gson gson = new Gson();
+                                GlobalInfo.myProfile = gson.fromJson(String.valueOf(result), UserBaseVO.class);
+                                intent = new Intent(IntroActivity.this, MainActivity.class);
+                                if (getIntent().getStringExtra("meetName") != null) {
+                                    String meetName = getIntent().getStringExtra("meetName");
+                                    if (!meetName.isEmpty()) {
+                                        intent.putExtra("meetName", meetName);
+                                    }
+                                }
+                                startActivity(intent);
+                                finish();
+                                break;
+                            case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                Toast.makeText(IntroActivity.this, String.format(getString(R.string.cmn_fail_load_user_info), "1"), Toast.LENGTH_SHORT).show();
+                            case GlobalKey.NTWRK_RTN_TYPE.NOT_EXIST:
+                                Toast.makeText(IntroActivity.this, String.format(getString(R.string.cmn_fail_load_user_info), "2"), Toast.LENGTH_SHORT).show();
+                                break;
+                        }
 
-                if (getIntent().getStringExtra("meetName") != null) {
-                    String meetName = getIntent().getStringExtra("meetName");
-                    if (!meetName.isEmpty()) {
-                        intent.putExtra("meetName", meetName);
+                    } catch (Exception e) {
+                        logException(e);
+                        showNtwrkFailToast("1");
                     }
                 }
-                startActivity(intent);
-                finish();
-            }
 
-            @Override
-            public void onFailure(Call<UserBaseVO> call, Throwable t) {
-                Toast.makeText(IntroActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                startApp();
-            }
-        });
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    DMFBCrash.logException(t);
+                    showNtwrkFailToast("2");
+                }
+            });
+
+        } catch (Exception e) {
+            logException(e);
+            showNtwrkFailToast("3");
+        }
     }
 }

@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
 import com.moondroid.project01_meetingapp.network.URLMngr;
@@ -226,7 +227,7 @@ public class ProfileSetActivity extends AppCompatActivity {
 
         switch (requestCode) {
             case REQUEST_CODE_FOR_LOCATION_CHOICE:
-                location = data.getStringExtra("location");
+                location = data.getStringExtra(GlobalKey.INTENT_PARAM_TYPE.LOCATION);
                 GlobalInfo.myProfile.setUserLocation(location);
                 String[] locations = location.split(" ");
                 tvLocation.setText(locations[0]);

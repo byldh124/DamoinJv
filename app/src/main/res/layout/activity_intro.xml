@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".login.IntroActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/intro_logo"
-        android:layout_width="240dp"
-        android:layout_height="120dp"
-        android:src="@drawable/logo_damoim"
-        android:scaleType="fitXY"
-        android:padding="16dp"
-        android:layout_alignBottom="@id/intro_campaign"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"/>
+    <data>
+        <variable
+            name="IntroActivity"
+            type="com.moondroid.project01_meetingapp.ui.activity.IntroActivity" />
+    </data>
 
-    <ImageView
-        android:id="@+id/intro_campaign"
-        android:layout_width="240dp"
-        android:layout_height="60dp"
-        android:src="@drawable/campaign"
-        android:scaleType="fitXY"
-        android:padding="16dp"
-        android:layout_centerInParent="true"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/imgVwLogo"
+            android:layout_width="240dp"
+            android:layout_height="120dp"
+            android:layout_alignBottom="@id/imgVwCampaign"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="32dp"
+            android:padding="16dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/logo_damoim" />
+
+        <ImageView
+            android:id="@+id/imgVwCampaign"
+            android:layout_width="240dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:padding="16dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/campaign" />
+
+    </RelativeLayout>
+
+</layout>

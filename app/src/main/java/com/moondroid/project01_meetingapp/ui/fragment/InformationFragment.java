@@ -18,18 +18,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.ChatItemVO;
 import com.moondroid.project01_meetingapp.data.model.MoimVO;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.helpers.utils.LinearLayoutManagerWrapper;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
 import com.moondroid.project01_meetingapp.network.URLMngr;
 import com.moondroid.project01_meetingapp.presenter.adapter.InformationMemberAdapter;
 import com.moondroid.project01_meetingapp.presenter.adapter.InformationMoimAdapter;
+import com.moondroid.project01_meetingapp.ui.activity.BaseActivity;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,7 +56,6 @@ public class InformationFragment extends BaseFragment {
     private InformationMemberAdapter memberAdapter;
     private ArrayList<MoimVO> moimVOS;
     private InformationMoimAdapter moimAdapter;
-
 
 
     @Nullable
@@ -131,35 +135,55 @@ public class InformationFragment extends BaseFragment {
         memberAdapter.notifyDataSetChanged();
         GlobalInfo.currentMoimMembers.clear();
         GlobalInfo.currentChatItems.clear();
-        RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserBaseDBToIntroActivity(GlobalInfo.currentMoim.getMasterId()).enqueue(new Callback<UserBaseVO>() {
+        RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserBaseDBToIntroActivity(GlobalInfo.currentMoim.getMasterId()).enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
-                memberVOS.add(0, response.body());
-                GlobalInfo.currentMoimMembers.add(GlobalInfo.currentMoim.getMasterId());
-                GlobalInfo.currentChatItems.add(new ChatItemVO(response.body().getUserId(), response.body().getUserName(), null, response.body().getUserProfileImgUrl(), null));
-                memberAdapter.notifyItemInserted(0);
-                RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMembers(GlobalInfo.currentMoim.getMeetName()).enqueue(new Callback<ArrayList<UserBaseVO>>() {
-                    @Override
-                    public void onResponse(Call<ArrayList<UserBaseVO>> call, Response<ArrayList<UserBaseVO>> response) {
-                        for (int i = 0; i < response.body().size(); i++) {
-                            UserBaseVO userBaseVO = response.body().get(i);
-                            if (userBaseVO.getUserId().equals(GlobalInfo.currentMoim.getMasterId())) continue;
-                            memberVOS.add(userBaseVO);
-                            GlobalInfo.currentMoimMembers.add(userBaseVO.getUserId());
+            public void onResponse(Call<String> call, Response<String> response) {
+                try {
+                    JSONObject res = new JSONObject(response.body());
+                    int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                    switch (code) {
+                        case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                            JSONObject result = res.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT);
+                            Gson gson = new Gson();
+                            UserBaseVO userBaseVO = gson.fromJson(String.valueOf(result), UserBaseVO.class);
+                            memberVOS.add(0, userBaseVO);
+                            GlobalInfo.currentMoimMembers.add(GlobalInfo.currentMoim.getMasterId());
                             GlobalInfo.currentChatItems.add(new ChatItemVO(userBaseVO.getUserId(), userBaseVO.getUserName(), null, userBaseVO.getUserProfileImgUrl(), null));
-                            memberAdapter.notifyItemInserted(memberVOS.size() - 1);
-                        }
+                            memberAdapter.notifyItemInserted(0);
+                            RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMembers(GlobalInfo.currentMoim.getMeetName()).enqueue(new Callback<ArrayList<UserBaseVO>>() {
+                                @Override
+                                public void onResponse(Call<ArrayList<UserBaseVO>> call, Response<ArrayList<UserBaseVO>> response) {
+                                    for (int i = 0; i < response.body().size(); i++) {
+                                        UserBaseVO userBaseVO = response.body().get(i);
+                                        if (userBaseVO.getUserId().equals(GlobalInfo.currentMoim.getMasterId()))
+                                            continue;
+                                        memberVOS.add(userBaseVO);
+                                        GlobalInfo.currentMoimMembers.add(userBaseVO.getUserId());
+                                        GlobalInfo.currentChatItems.add(new ChatItemVO(userBaseVO.getUserId(), userBaseVO.getUserName(), null, userBaseVO.getUserProfileImgUrl(), null));
+                                        memberAdapter.notifyItemInserted(memberVOS.size() - 1);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ArrayList<UserBaseVO>> call, Throwable t) {
+
+                                }
+                            });
+
+                            break;
+                        case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                        case GlobalKey.NTWRK_RTN_TYPE.NOT_EXIST:
+                            ((BaseActivity) getActivity()).showNtwrkFailToast("1");
+                            break;
                     }
 
-                    @Override
-                    public void onFailure(Call<ArrayList<UserBaseVO>> call, Throwable t) {
-                        loadMembers();
-                    }
-                });
+                } catch (Exception e) {
+
+                }
             }
 
             @Override
-            public void onFailure(Call<UserBaseVO> call, Throwable t) {
+            public void onFailure(Call<String> call, Throwable t) {
                 loadMembers();
             }
         });
@@ -208,7 +232,7 @@ public class InformationFragment extends BaseFragment {
             public void onResponse(Call<ArrayList<MoimVO>> call, Response<ArrayList<MoimVO>> response) {
                 for (int i = 0; i < response.body().size(); i++) {
                     MoimVO moimVO = response.body().get(i);
-                    if (Integer.parseInt(moimVO.getDate().replace(".","")) >= Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
+                    if (Integer.parseInt(moimVO.getDate().replace(".", "")) >= Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
                         moimVOS.add(response.body().get(i));
                         moimAdapter.notifyItemInserted(moimVOS.size() - 1);
                     }

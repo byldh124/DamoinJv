@@ -38,11 +38,8 @@ public class AccountActivity extends BaseActivity {
 
     private final String TAG = AccountActivity.class.getSimpleName();
 
-    private final int REQUEST_CODE_FOR_LOCATION_CHOICE = 0;
-    private final int REQUEST_CODE_FOR_INTEREST_SELECT = 1;
 
-
-    private String userId, userPassword, userName, userBirthDate, userGender, userAddress, userInterest;
+    private String userId, userName, userBirthDate, userGender, userAddress, userInterest;
 
     private int y = 0, m = 0, d = 0;
 
@@ -118,11 +115,11 @@ public class AccountActivity extends BaseActivity {
 
             switch (requestCode) {
                 case GlobalKey.REQUEST_CODE.ACCOUNT01:
-                    userAddress = data.getStringExtra("location");
+                    userAddress = data.getStringExtra(GlobalKey.INTENT_PARAM_TYPE.LOCATION);
                     layout.tvLocation.setText(userAddress);
                     break;
                 case GlobalKey.REQUEST_CODE.ACCOUNT02:
-                    userInterest = data.getStringExtra("interest");
+                    userInterest = data.getStringExtra(GlobalKey.INTENT_PARAM_TYPE.INTEREST);
                     layout.tvInterest.setText(userInterest);
                     break;
             }

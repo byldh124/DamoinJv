@@ -1,7 +1,6 @@
 package com.moondroid.project01_meetingapp.ui.activity;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -14,16 +13,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
 import com.kakao.util.helper.Utility;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
+
+import org.json.JSONObject;
+
+import java.util.jar.JarOutputStream;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
@@ -32,7 +37,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private final int REQUEST_EXIT = 0;
     private long id;
@@ -77,62 +82,62 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void clickLogIn(View view) {
-        inputId = etInputId.getText().toString();
+        try {
+            inputId = etInputId.getText().toString();
 //        inputPassword = etInputPassword.getText().toString();
 
-        //기입된 값 확인 작업
-        if (inputId == null || inputId.equals(""))
-            return;
+            //기입된 값 확인 작업
+            if (inputId == null || inputId.equals(""))
+                return;
 
-        progressDialog = new ProgressDialog(this);
+            showProgress();
 
-        progressDialog.setMessage("잠시만 기다려주십시오.");
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
-        progressDialog.show();
-
-        //기입된 ID로 DB에 저장된 값을 불러오는 작업
-        Retrofit retrofit = RetrofitHelper.getRetrofitInstanceGson();
-        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-        Call<UserBaseVO> call = retrofitService.loadUserBaseDBToIntroActivity(inputId);
-        call.enqueue(new Callback<UserBaseVO>() {
-            @Override
-            public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
-                //DB에 아이디가 저장되어 있는지 확인하는 작업
-                if (response.body() == null) {
-                    Toast.makeText(LoginActivity.this, "아이디를 확인해 주십시오", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                    return;
-                } else{
-                    UserBaseVO userBaseVO = response.body();
-                    GlobalInfo.myProfile = userBaseVO;
-                    saveSharedPreference(inputId);
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    progressDialog.dismiss();
-                    finish();
+            //기입된 ID로 DB에 저장된 값을 불러오는 작업
+            Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
+            RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+            Call<String> call = retrofitService.loadUserBaseDBToIntroActivity(inputId);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    try {
+                        JSONObject jsonRes = new JSONObject(response.body());
+                        int code = jsonRes.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                        switch (code) {
+                            case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                JSONObject result = jsonRes.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT);
+                                Gson gson = new Gson();
+                                GlobalInfo.myProfile = gson.fromJson(String.valueOf(result), UserBaseVO.class);
+                                saveSharedPreference(inputId);
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                                break;
+                            case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                showNtwrkFailToast("1");
+                                break;
+                            case GlobalKey.NTWRK_RTN_TYPE.NOT_EXIST:
+                                Toast.makeText(LoginActivity.this, R.string.cmn_id_not_exist, Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    } catch (Exception e) {
+                        logException(e);
+                        showNtwrkFailToast("2");
+                    }
                 }
 
-                //저장되어 있는 패스워드와 기입된 패스워드를 확인
-//                if (userBaseVO.getUserPassword().equals(inputPassword)) {
-//                    //아이디가 저장된 값이 있고 비밀번호가 일치하면 sharedPreferences에 아이디 저장후 메인 화면으로 전환
-//                    GlobalInfo.myProfile = userBaseVO;
-//                    saveSharedPreference(inputId);
-//                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                } else {
-//                    //기입된 패스워드와 저장된 패스워드가 틀릴시 발동
-//                    Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 확인해 주십시오", Toast.LENGTH_SHORT).show();
-//                }
-            }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    DMFBCrash.logException(t);
+                    showNtwrkFailToast("3");
+                }
+            });
+        } catch (Exception e) {
+            logException(e);
+            showNtwrkFailToast("4");
+        } finally {
+            hideProgress();
+        }
 
-            @Override
-            public void onFailure(Call<UserBaseVO> call, Throwable t) {
-                progressDialog.dismiss();
-                Toast.makeText(LoginActivity.this, "서버에 연결할 수 없습니다.", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     //회원가입 버튼 클릭시 회원가입 화면으로 전환
@@ -193,50 +198,73 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void saveUserBaseDataOfKakao() {
-        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkUserId(inputId).enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                //기존에 카카오아이디로 로그인 한 적이 있는지 확인
-                String str = response.body();
-                if (str.equals("isExist")) {
-                    RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserBaseDBToIntroActivity(inputId).enqueue(new Callback<UserBaseVO>() {
-                        @Override
-                        public void onResponse(Call<UserBaseVO> call, Response<UserBaseVO> response) {
-                            //로그인 기록이 있을 시 DB에서 불러온 유저 정보를 전역으로 세팅하고 sharedPreferences에 아이디 저장
-                            GlobalInfo.myProfile = response.body();
-                            saveSharedPreference(inputId);
-                            moveToMainActivity();
+        try {
+            RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadUserBaseDBToIntroActivity(inputId).enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    try {
+                        JSONObject res = new JSONObject(response.body());
+                        int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                        switch (code) {
+                            case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                JSONObject result = res.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT);
+                                Gson gson = new Gson();
+                                GlobalInfo.myProfile = gson.fromJson(String.valueOf(result), UserBaseVO.class);
+                                saveSharedPreference(inputId);
+                                moveToMainActivity();
+                                break;
+                            case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                showNtwrkFailToast("1");
+                            case GlobalKey.NTWRK_RTN_TYPE.NOT_EXIST:
+                                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveUserBaseDataToKakao(inputId, name, profileImgUrl).enqueue(new Callback<String>() {
+                                    @Override
+                                    public void onResponse(Call<String> call, Response<String> response) {
+                                        try {
+                                            JSONObject res = new JSONObject(response.body());
+                                            int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                                            switch (code) {
+                                                case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                                    GlobalInfo.myProfile.setUserId(inputId);
+                                                    GlobalInfo.myProfile.setUserName(name);
+                                                    GlobalInfo.myProfile.setUserProfileImgUrl(profileImgUrl);
+                                                    saveSharedPreference(inputId);
+                                                    moveToMainActivity();
+                                                    break;
+                                                case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                                    showNtwrkFailToast("2");
+                                                    break;
+                                            }
+
+                                        } catch (Exception e) {
+                                            logException(e);
+                                            showNtwrkFailToast("3");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<String> call, Throwable t) {
+                                        DMFBCrash.logException(t);
+                                        showNtwrkFailToast("4");
+                                    }
+                                });
+                                break;
                         }
 
-                        @Override
-                        public void onFailure(Call<UserBaseVO> call, Throwable t) {
-
-                        }
-                    });
-                } else {
-                    //기존에 카카오 아이디로 로그인 한 기록 없을 시 DB에 정보 저장하고 현재 유저 정보를 전역으로 세팅하고 sharedPreferences에 아이디 저장
-                    RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveUserBaseDataToKakao(inputId, name, profileImgUrl).enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            GlobalInfo.myProfile.setUserId(inputId);
-                            GlobalInfo.myProfile.setUserName(name);
-                            GlobalInfo.myProfile.setUserProfileImgUrl(profileImgUrl);
-                            saveSharedPreference(inputId);
-                            moveToMainActivity();
-                        }
-
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-
-                        }
-                    });
+                    } catch (Exception e) {
+                        logException(e);
+                        showNtwrkFailToast("5");
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                saveUserBaseDataOfKakao();
-            }
-        });
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    DMFBCrash.logException(t);
+                    showNtwrkFailToast("6");
+                }
+            });
+        } catch (Exception e) {
+            logException(e);
+            showNtwrkFailToast("7");
+        }
     }
 }

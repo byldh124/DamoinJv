@@ -8,10 +8,14 @@ public class GlobalKey {
 
         int SUCCESS = 1000;
         int FAIL = 2000;
+        int NOT_EXIST = 2001;
     }
 
     public static interface INTENT_PARAM_TYPE{
         String SEND_ACTIVITY = "sendActivity";
+        String INTEREST = "interest";
+        String ICON_URL = "iconUrl";
+        String LOCATION = "location";
     }
 
     public static interface ACTIVITY_CODE{
@@ -24,6 +28,7 @@ public class GlobalKey {
     }
 
     public static interface REQUEST_CODE{
+        int MAIN01 = 31;
         int ACCOUNT01 = 51;
         int ACCOUNT02 = 52;
         int CREATE01 = 41;

@@ -31,7 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PageActivity extends AppCompatActivity {
+public class PageActivity extends BaseActivity {
     public static Activity activity;
 
     private Toolbar toolbar;

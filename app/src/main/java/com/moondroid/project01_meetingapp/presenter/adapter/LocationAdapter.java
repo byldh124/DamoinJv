@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moondroid.project01_meetingapp.R;
+import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 
 import java.util.ArrayList;
 
@@ -54,14 +56,13 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.VH> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos = getAdapterPosition();
                     try {
-                        intent.putExtra("location", locations.get(pos));
-                    } catch (Exception e) {
-                        intent.putExtra("location", locations.get(getLayoutPosition()));
-                    } finally {
+                        int pos = getAdapterPosition();
+                        intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.LOCATION, locations.get(pos));
                         context.setResult(Activity.RESULT_OK, intent);
                         context.finish();
+                    } catch (Exception e) {
+                        DMFBCrash.logException(e);
                     }
                 }
             });

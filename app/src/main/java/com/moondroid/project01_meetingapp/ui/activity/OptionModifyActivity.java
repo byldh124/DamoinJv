@@ -199,8 +199,8 @@ public class OptionModifyActivity extends AppCompatActivity {
                 introImgPath = getRealPathFromUri(introImgUri);
                 break;
             case REQUEST_CODE_FOR_INTEREST_ICON:
-                meetInterest = data.getStringExtra("interest");
-                iconUrl = data.getStringExtra("iconUrl");
+                meetInterest = data.getStringExtra(GlobalKey.INTENT_PARAM_TYPE.INTEREST);
+                iconUrl = data.getStringExtra(GlobalKey.INTENT_PARAM_TYPE.ICON_URL);
                 Glide.with(this).load(iconUrl).into(ivIcon);
                 break;
             case REQUEST_CODE_FOR_TITLE_IMG_SELECT:

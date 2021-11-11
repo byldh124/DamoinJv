@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.util.ExceptionPassthroughInputStream;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.databinding.ActivityCreateBinding;
+import com.moondroid.project01_meetingapp.helpers.utils.DMUtil;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
@@ -73,16 +74,6 @@ public class CreateActivity extends BaseActivity {
 
     }
 
-    /**
-     * 관심사 선택화면으로 전환
-     **/
-    public void goToInterest(View view) {
-        try {
-            goToInterest(GlobalKey.ACTIVITY_CODE.CREATE_ACTIVITY, GlobalKey.REQUEST_CODE.CREATE01);
-        } catch (Exception e) {
-            logException(e);
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -92,14 +83,14 @@ public class CreateActivity extends BaseActivity {
                 switch (requestCode) {
                     // 관심사 선택
                     case GlobalKey.REQUEST_CODE.CREATE01: {
-                        meetInterest = data.getStringExtra("interest");
-                        iconUrl = data.getStringExtra("iconUrl");
+                        meetInterest = data.getStringExtra(GlobalKey.INTENT_PARAM_TYPE.INTEREST);
+                        iconUrl = data.getStringExtra(GlobalKey.INTENT_PARAM_TYPE.ICON_URL);
                         Glide.with(this).load(iconUrl).into(layout.imgVwInterest);
                         break;
                     }
                     // 지역 선택
                     case GlobalKey.REQUEST_CODE.CREATE02: {
-                        meetLocation = data.getStringExtra("location");
+                        meetLocation = data.getStringExtra(GlobalKey.INTENT_PARAM_TYPE.LOCATION);
                         layout.txtVwLocation.setText(meetLocation);
                         break;
                     }
@@ -108,7 +99,7 @@ public class CreateActivity extends BaseActivity {
                         imgUri = data.getData();
                         if (imgUri != null) {
                             Glide.with(this).load(imgUri).into(layout.imgVwTitle);
-                            imgPath = getRealPathFromUri(imgUri);
+                            imgPath = DMUtil.getRealPathFromUri(this, imgUri);
                         }
                         break;
                     }
@@ -119,16 +110,7 @@ public class CreateActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 활동지역 설정 화면으로 전환
-     **/
-    public void goToLocation(View view) {
-        try {
-            super.goToLocation(GlobalKey.ACTIVITY_CODE.CREATE_ACTIVITY, GlobalKey.REQUEST_CODE.CREATE02);
-        } catch (Exception e) {
-            logException(e);
-        }
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -268,6 +250,29 @@ public class CreateActivity extends BaseActivity {
         }
     }
 
+
+    /**
+     * 관심사 선택화면으로 전환
+     **/
+    public void goToInterest(View view) {
+        try {
+            goToInterest(GlobalKey.ACTIVITY_CODE.CREATE_ACTIVITY, GlobalKey.REQUEST_CODE.CREATE01);
+        } catch (Exception e) {
+            logException(e);
+        }
+    }
+
+    /**
+     * 활동지역 설정 화면으로 전환
+     **/
+    public void goToLocation(View view) {
+        try {
+            super.goToLocation(GlobalKey.ACTIVITY_CODE.CREATE_ACTIVITY, GlobalKey.REQUEST_CODE.CREATE02);
+        } catch (Exception e) {
+            logException(e);
+        }
+    }
+
     /**
      * 갤러리에서 이미지 불러오는 작업
      **/
@@ -277,19 +282,5 @@ public class CreateActivity extends BaseActivity {
         } catch (Exception e) {
             logException(e);
         }
-    }
-
-    /**
-     * DB에 저장하기 위해 이미지의 절대 경로를 String 값으로 변환
-     **/
-    String getRealPathFromUri(Uri uri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        CursorLoader loader = new CursorLoader(this, uri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String result = cursor.getString(column_index);
-        cursor.close();
-        return result;
     }
 }

@@ -36,4 +36,6 @@
     <string name="cmn_group_object_set">모임 목표를 작성해주세요</string>
     <string name="cmn_group_interest_set">관심사를 선택해주세요</string>
     <string name="cmn_group_title_img_set">사진을 선택해주세요</string>
+    <string name="cmn_fail_load_user_info">사용자 정보를 불러오는데 실패했습니다. [%s]</string>
+    <string name="cmn_id_not_exist">해당 아이디로 가입된 정보가 없습니다.</string>
 </resources>
