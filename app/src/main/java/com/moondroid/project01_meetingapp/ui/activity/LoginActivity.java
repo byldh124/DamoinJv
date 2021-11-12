@@ -1,15 +1,12 @@
 package com.moondroid.project01_meetingapp.ui.activity;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,18 +14,17 @@ import com.google.gson.Gson;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
-import com.kakao.util.helper.Utility;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.databinding.ActivityLoginBinding;
 import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
+import com.moondroid.project01_meetingapp.helpers.utils.DMShrdPref;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
 
 import org.json.JSONObject;
-
-import java.util.jar.JarOutputStream;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
@@ -42,53 +38,41 @@ public class LoginActivity extends BaseActivity {
     private final int REQUEST_EXIT = 0;
     private long id;
     private String inputId;
-    private String inputPassword;
     private String name;
     private String profileImgUrl;
-    private EditText etInputId;
-    private EditText etInputPassword;
-    private ProgressDialog progressDialog;
+
+    private ActivityLoginBinding layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        try {
+            layout = DataBindingUtil.setContentView(this, R.layout.activity_login);
 
-        //xml 참조영역
-        etInputId = findViewById(R.id.log_in_edit_id);
+            //EditText 입력 완료 후 키보드 Enter 이벤트 처리
+            layout.edtVwId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    signIn(null);
+                    return true;
+                }
+            });
 
-        //EditText 입력 완료 후 키보드 Enter 이벤트 처리
-        etInputId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                clickLogIn(etInputId);
-                return true;
-            }
-        });
-//        etInputPassword = findViewById(R.id.log_in_edit_pass);
-
-//        //EditText 입력 완료 후 Enter 이벤트 처리
-//        etInputPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                clickLogIn(etInputPassword);
-//                return true;
-//            }
-//        });
-
-        String keyHash = Utility.getKeyHash(this);
-        Log.i("kakao Key Hash", keyHash);
-
+            layout.setLoginActivity(this);
+        } catch (Exception e) {
+            DMFBCrash.logException(e);
+        }
     }
 
-    public void clickLogIn(View view) {
+    /**
+     * 로그인
+     **/
+    public void signIn(View view) {
         try {
-            inputId = etInputId.getText().toString();
-//        inputPassword = etInputPassword.getText().toString();
+            inputId = layout.edtVwId.getText().toString();
 
             //기입된 값 확인 작업
-            if (inputId == null || inputId.equals(""))
-                return;
+            if (inputId.equals("")) return;
 
             showProgress();
 
@@ -140,10 +124,16 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    //회원가입 버튼 클릭시 회원가입 화면으로 전환
+    /**
+     * 회원가입 화면으로 전환
+     **/
     public void clickAddAccount(View view) {
-        Intent intent = new Intent(this, AccountActivity.class);
-        startActivityForResult(intent, REQUEST_EXIT);
+        try {
+            Intent intent = new Intent(this, AccountActivity.class);
+            startActivityForResult(intent, REQUEST_EXIT);
+        } catch (Exception e) {
+            logException(e);
+        }
     }
 
     @Override
@@ -157,47 +147,43 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    //카카오 로그인 버튼 클릭시 카카오 서버에서 유저 정보를 가져온 후 DB에 저장
-    //기존에 DB에 저장된 값이 있으면 DB에서 유저 정보를 가져옴
-    public void clickKakaoLogin(View view) {
-        UserApiClient.getInstance().loginWithKakaoAccount(this, new Function2<OAuthToken, Throwable, Unit>() {
-            @Override
-            public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
-                if (oAuthToken != null) {
-                    UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
-                        @Override
-                        public Unit invoke(User user, Throwable throwable) {
-                            if (user != null) {
-
-                                id = user.getId();
-                                inputId = String.valueOf(id);
-                                name = user.getKakaoAccount().getProfile().getNickname();
-                                profileImgUrl = user.getKakaoAccount().getProfile().getProfileImageUrl();
-                                saveUserBaseDataOfKakao();
+    /**
+     * 카카오 로그인 버튼 클릭시 카카오 서버에서 유저 정보를 가져온 후 DB에 저장
+     * 기존에 DB에 저장된 값이 있으면 DB에서 유저 정보를 가져옴
+     **/
+    public void checkKakao(View view) {
+        try {
+            UserApiClient.getInstance().loginWithKakaoAccount(this, new Function2<OAuthToken, Throwable, Unit>() {
+                @Override
+                public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
+                    if (oAuthToken != null) {
+                        UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+                            @Override
+                            public Unit invoke(User user, Throwable throwable) {
+                                if (user != null) {
+                                    id = user.getId();
+                                    inputId = String.valueOf(id);
+                                    name = user.getKakaoAccount().getProfile().getNickname();
+                                    profileImgUrl = user.getKakaoAccount().getProfile().getProfileImageUrl();
+                                    signInKakao();
+                                }
+                                return null;
                             }
-                            return null;
-                        }
-                    });
+                        });
+                    }
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
+        } catch (Exception e) {
+            DMFBCrash.logException(e);
+        }
     }
 
-    public void saveSharedPreference(String inputId) {
-        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("userId", inputId).commit();
-    }
-
-    public void moveToMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.LOGIN_ACTIVITY);
-        startActivity(intent);
-        finish();
-    }
-
-    public void saveUserBaseDataOfKakao() {
+    /**
+     * 카카오 아이디 접속 이력 확인
+     * 이력 o : signIn, 이력 x : signUp
+     **/
+    public void signInKakao() {
         try {
             RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadUserBaseDBToIntroActivity(inputId).enqueue(new Callback<String>() {
                 @Override
@@ -211,45 +197,14 @@ public class LoginActivity extends BaseActivity {
                                 Gson gson = new Gson();
                                 GlobalInfo.myProfile = gson.fromJson(String.valueOf(result), UserBaseVO.class);
                                 saveSharedPreference(inputId);
-                                moveToMainActivity();
+                                goToMain();
                                 break;
                             case GlobalKey.NTWRK_RTN_TYPE.FAIL:
                                 showNtwrkFailToast("1");
                             case GlobalKey.NTWRK_RTN_TYPE.NOT_EXIST:
-                                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveUserBaseDataToKakao(inputId, name, profileImgUrl).enqueue(new Callback<String>() {
-                                    @Override
-                                    public void onResponse(Call<String> call, Response<String> response) {
-                                        try {
-                                            JSONObject res = new JSONObject(response.body());
-                                            int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
-                                            switch (code) {
-                                                case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
-                                                    GlobalInfo.myProfile.setUserId(inputId);
-                                                    GlobalInfo.myProfile.setUserName(name);
-                                                    GlobalInfo.myProfile.setUserProfileImgUrl(profileImgUrl);
-                                                    saveSharedPreference(inputId);
-                                                    moveToMainActivity();
-                                                    break;
-                                                case GlobalKey.NTWRK_RTN_TYPE.FAIL:
-                                                    showNtwrkFailToast("2");
-                                                    break;
-                                            }
-
-                                        } catch (Exception e) {
-                                            logException(e);
-                                            showNtwrkFailToast("3");
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<String> call, Throwable t) {
-                                        DMFBCrash.logException(t);
-                                        showNtwrkFailToast("4");
-                                    }
-                                });
+                                signUpKakao();
                                 break;
                         }
-
                     } catch (Exception e) {
                         logException(e);
                         showNtwrkFailToast("5");
@@ -267,4 +222,62 @@ public class LoginActivity extends BaseActivity {
             showNtwrkFailToast("7");
         }
     }
+
+    /**
+     * 기존에 카카오 아이디록 접속한 이력이 없는 경우 카카오 아이디로 회원가입
+     **/
+    public void signUpKakao() {
+        try {
+            RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveUserBaseDataToKakao(inputId, name, profileImgUrl).enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    try {
+                        JSONObject res = new JSONObject(response.body());
+                        int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                        switch (code) {
+                            case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                GlobalInfo.myProfile.setUserId(inputId);
+                                GlobalInfo.myProfile.setUserName(name);
+                                GlobalInfo.myProfile.setUserProfileImgUrl(profileImgUrl);
+                                saveSharedPreference(inputId);
+                                goToMain();
+                                break;
+                            case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                showNtwrkFailToast("2");
+                                break;
+                        }
+                    } catch (Exception e) {
+                        logException(e);
+                        showNtwrkFailToast("3");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    DMFBCrash.logException(t);
+                    showNtwrkFailToast("4");
+                }
+            });
+        } catch (Exception e) {
+            logException(e);
+        }
+    }
+
+
+    public void saveSharedPreference(String inputId) {
+        try {
+            DMShrdPref.getInstance(this).setString(GlobalKey.SHRD_PREF_KEY.USER_ID, inputId);
+        } catch (Exception e) {
+            logException(e);
+        }
+    }
+
+    public void goToMain() {
+        try {
+            goToMain(GlobalKey.ACTIVITY_CODE.LOGIN_ACTIVITY);
+        } catch (Exception e) {
+            logException(e);
+        }
+    }
+
 }

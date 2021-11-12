@@ -10,6 +10,7 @@ import com.igaworks.v2.core.application.AbxActivityHelper;
 import com.igaworks.v2.core.application.AbxActivityLifecycleCallbacks;
 import com.kakao.sdk.common.KakaoSdk;
 import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
+import com.moondroid.project01_meetingapp.helpers.utils.DMShrdPref;
 
 public class MyApplication extends Application {
     @Override
@@ -26,6 +27,8 @@ public class MyApplication extends Application {
             }
 
             DMFBCrash.initInstance(getApplicationContext());
+
+            DMShrdPref.initializeInstance(getApplicationContext());
 
         } catch (Exception e) {
             FirebaseCrashlytics.getInstance().recordException(e);

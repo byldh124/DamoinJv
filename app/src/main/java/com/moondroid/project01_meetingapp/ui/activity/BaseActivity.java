@@ -54,6 +54,18 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void goToMain(int activityCode){
+        try {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, activityCode);
+            finishAffinity();
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        } catch (Exception e) {
+            logException(e);
+        }
+    }
+
     public void goToInterest(int activityCode, int requestCode){
         try {
             Intent intent = new Intent(this, InterestActivity.class);

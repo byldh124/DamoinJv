@@ -36,4 +36,10 @@ public class GlobalKey {
         int CREATE03 = 43;
     }
 
+    public static interface SHRD_PREF_KEY{
+        String USER_ID = "userId";
+        String CHAT = "chat";
+        String MEET = "meet";
+    }
+
 }

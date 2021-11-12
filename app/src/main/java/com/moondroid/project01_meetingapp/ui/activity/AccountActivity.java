@@ -8,7 +8,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +21,7 @@ import android.widget.Toast;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
 import com.moondroid.project01_meetingapp.databinding.ActivityAccountBinding;
+import com.moondroid.project01_meetingapp.helpers.utils.DMShrdPref;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
@@ -161,7 +161,7 @@ public class AccountActivity extends BaseActivity {
                 return;
             }
 
-            saveDataToRetrofit();
+            signUp();
 
         } catch (Exception e) {
             logException(e);
@@ -282,7 +282,7 @@ public class AccountActivity extends BaseActivity {
     /**
      * 유저 회원 가입
      */
-    public void saveDataToRetrofit() {
+    public void signUp() {
         try {
             showProgress();
 
@@ -299,9 +299,7 @@ public class AccountActivity extends BaseActivity {
                         int code = jsonRes.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
                         switch (code) {
                             case GlobalKey.NTWRK_RTN_TYPE.SUCCESS: {
-                                SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("userId", userId).commit();
+                                DMShrdPref.getInstance(getBaseContext()).setString(GlobalKey.SHRD_PREF_KEY.USER_ID, userId);
                                 GlobalInfo.myProfile = userBaseVO;
                                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                                 intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.LOGIN_ACTIVITY);

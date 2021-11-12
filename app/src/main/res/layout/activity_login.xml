@@ -1,94 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".login.LoginActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:layout_width="128dp"
-        android:layout_height="64dp"
-        android:src="@drawable/logo_damoim"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@id/log_in_edit_id"
-        android:layout_marginBottom="16dp"/>
+    <data>
+        <variable
+            name="LoginActivity"
+            type="com.moondroid.project01_meetingapp.ui.activity.LoginActivity" />
+    </data>
 
-    <EditText
-        android:id="@+id/log_in_edit_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_edit_text_basic"
-        android:ems="10"
-        android:privateImeOptions="defaultInputmode=english"
-        android:padding="8dp"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="16dp"
-        android:inputType="text"
-        android:layout_centerHorizontal="true"
-        android:hint="id"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-<!--    <EditText-->
-<!--        android:id="@+id/log_in_edit_pass"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="@drawable/bg_edit_text_basic"-->
-<!--        android:ems="10"-->
-<!--        android:padding="8dp"-->
-<!--        android:layout_centerInParent="true"-->
-<!--        android:inputType="textPassword"-->
-<!--        android:imeOptions="actionDone"-->
-<!--        android:hint="password"/>-->
+        <ImageView
+            android:layout_width="128dp"
+            android:layout_height="64dp"
+            android:src="@drawable/logo_damoim"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/edtVwId"
+            android:layout_marginBottom="16dp"/>
 
-    <TextView
-        android:id="@+id/log_in_text_log"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="로그인"
-        android:layout_below="@id/log_in_edit_id"
-        android:layout_centerHorizontal="true"
-        android:clickable="true"
-        android:onClick="clickLogIn"
-        android:textColor="#ff333333"
-        android:layout_marginTop="16dp"/>
+        <EditText
+            android:id="@+id/edtVwId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edit_text_basic"
+            android:ems="10"
+            android:privateImeOptions="defaultInputmode=english"
+            android:padding="8dp"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="16dp"
+            android:inputType="text"
+            android:layout_centerHorizontal="true"
+            android:hint="id"/>
 
-    <TextView
-        android:id="@+id/log_in_text_add_account"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="회원가입"
-        android:layout_below="@id/log_in_text_log"
-        android:layout_alignLeft="@id/log_in_edit_id"
-        android:clickable="true"
-        android:onClick="clickAddAccount"
-        android:gravity="center"
-        android:textColor="#ff333333"
-        android:layout_marginTop="16dp"/>
+        <!--    <EditText-->
+        <!--        android:id="@+id/log_in_edit_pass"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:background="@drawable/bg_edit_text_basic"-->
+        <!--        android:ems="10"-->
+        <!--        android:padding="8dp"-->
+        <!--        android:layout_centerInParent="true"-->
+        <!--        android:inputType="textPassword"-->
+        <!--        android:imeOptions="actionDone"-->
+        <!--        android:hint="password"/>-->
 
+        <TextView
+            android:id="@+id/txtVwLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sgin_in"
+            android:layout_below="@id/edtVwId"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:onClick="signIn"
+            android:textColor="#ff333333"
+            android:layout_marginTop="16dp"/>
 
-
-    <TextView
-        android:id="@+id/log_in_text_search_account"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="아이디, 비밀번호 찾기"
-        android:layout_below="@id/log_in_text_log"
-        android:layout_toRightOf="@id/log_in_text_add_account"
-        android:layout_alignRight="@id/log_in_edit_id"
-        android:gravity="center"
-        android:textColor="#ff333333"
-        android:layout_marginTop="16dp"/>
+        <TextView
+            android:id="@+id/txtVwSgnp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_up"
+            android:layout_below="@id/txtVwLogin"
+            android:layout_alignLeft="@id/edtVwId"
+            android:clickable="true"
+            android:onClick="clickAddAccount"
+            android:gravity="center"
+            android:textColor="#ff333333"
+            android:layout_marginTop="16dp"/>
 
 
 
-    <ImageView
-        android:id="@+id/log_in_add_account_by_kakao"
-        android:layout_width="210dp"
-        android:layout_height="37dp"
-        android:src="@drawable/btn_kakao_login"
-        android:layout_below="@id/log_in_text_search_account"
-        android:layout_centerHorizontal="true"
-        android:onClick="clickKakaoLogin"
-        android:layout_marginTop="32dp"/>
+        <!--<TextView
+            android:id="@+id/log_in_text_search_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="아이디, 비밀번호 찾기"
+            android:layout_below="@id/txtVwLogin"
+            android:layout_toRightOf="@id/log_in_text_add_account"
+            android:layout_alignRight="@id/edtVwId"
+            android:gravity="center"
+            android:textColor="#ff333333"
+            android:layout_marginTop="16dp"/>-->
 
-</RelativeLayout>
+
+
+        <ImageView
+            android:id="@+id/log_in_add_account_by_kakao"
+            android:layout_width="210dp"
+            android:layout_height="37dp"
+            android:src="@drawable/btn_kakao_login"
+            android:layout_below="@id/txtVwLogin"
+            android:layout_centerHorizontal="true"
+            android:onClick="checkKakao"
+            android:layout_marginTop="32dp"/>
+
+    </RelativeLayout>
+</layout>

@@ -1,23 +1,20 @@
 package com.moondroid.project01_meetingapp.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.igaworks.v2.core.AdBrixRm;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
 import com.moondroid.project01_meetingapp.databinding.ActivityIntroBinding;
 import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
+import com.moondroid.project01_meetingapp.helpers.utils.DMShrdPref;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
@@ -37,16 +34,14 @@ public class IntroActivity extends BaseActivity {
     private ActivityIntroBinding layout;
 
     private Animation logoAnim;
-    private ImageView logoImg;
-    private ImageView campaignImg;
 
     private String userId;
     private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         try {
-            super.onCreate(savedInstanceState);
             layout = DataBindingUtil.setContentView(this, R.layout.activity_intro);
 
             //로고 애니메이션 작업
@@ -58,13 +53,12 @@ public class IntroActivity extends BaseActivity {
                 @Override
                 public void run() {
 
-                    SharedPreferences sharedPreferences2 = getSharedPreferences("setting", MODE_PRIVATE);
-                    String chatSetting = sharedPreferences2.getString("chat", "true");
-                    String meetSetting = sharedPreferences2.getString("meet", "true");
+                    DMShrdPref shrdPref = DMShrdPref.getInstance(getBaseContext());
+                    String chatSetting = shrdPref.getString(GlobalKey.SHRD_PREF_KEY.CHAT);
+                    String meetSetting = shrdPref.getString(GlobalKey.SHRD_PREF_KEY.MEET);
                     //SharedPreferences 에 저장된 값 확인 후 Login, Main 액티비티로 화면 전환
-                    SharedPreferences sharedPreferences = getSharedPreferences("userInfo", MODE_PRIVATE);
 
-                    userId = sharedPreferences.getString("userId", null);
+                    userId = shrdPref.getString(GlobalKey.SHRD_PREF_KEY.USER_ID);
                     if (userId == null) {
                         intent = new Intent(IntroActivity.this, LoginActivity.class);
                         startActivity(intent);
@@ -80,7 +74,9 @@ public class IntroActivity extends BaseActivity {
 
     }
 
-    //SharedPreferences 에 저장된 유저 ID에 따라 DB에 저장된 유저의 정보들을 가져오는 작업
+    /**
+     * SharedPreferences 에 저장된 유저 ID에 따라 DB에 저장된 유저의 정보들을 가져오는 작업
+     **/
     public void startApp() {
         try {
             Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
