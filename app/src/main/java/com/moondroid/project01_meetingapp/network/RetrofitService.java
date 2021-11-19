@@ -1,10 +1,9 @@
 package com.moondroid.project01_meetingapp.network;
 
-import com.moondroid.project01_meetingapp.data.model.ItemBaseVO;
+import com.moondroid.project01_meetingapp.data.model.GroupInfo;
 import com.moondroid.project01_meetingapp.data.model.MoimVO;
-import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.data.model.UserInfo;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -21,33 +20,30 @@ import retrofit2.http.Query;
 public interface RetrofitService {
 
     @POST(URLMngr.SAVE_USER)
-    Call<String> saveUserBaseDataToAccountActivity(@Body UserBaseVO userBaseData);  //**
+    Call<String> saveUserBaseDataToAccountActivity(@Body UserInfo userBaseData);  //**
 
     @Multipart
-    @POST(URLMngr.UPDATE_USER)
+    @POST(URLMngr.UPDATE_USER)                                                      //**
     Call<String> updateUserProfileImg(@PartMap Map<String, String> dataPart, @Part MultipartBody.Part filePart);
 
     @GET(URLMngr.CHECK_ID)
     Call<String> checkUserId(@Query("userId") String userId);                       //**
 
-    @GET(URLMngr.CHECK_MEET_NAME)
-    Call<String> checkMeetName(@Query("meetName") String meetName);
+    @GET(URLMngr.CHECK_GROUP_NAME)
+    Call<String> checkGroupName(@Query("meetName") String meetName);                 //**
 
-    @GET(URLMngr.UPDATE_INTEREST)
+    @GET(URLMngr.UPDATE_INTEREST)                                                   //**
     Call<String> updateUserInterest(@Query("userId") String userId, @Query("userInterest") String userInterest);
 
     @GET(URLMngr.USER_INFO)
-    Call<String> loadUserBaseDBToIntroActivity(@Query("userId") String userId);
-
-    @GET(URLMngr.SAVE_USERS_MEET)
-    Call<String> saveUserMeetItem(@Query("userId") String userId, @Query("meetName") String meetName);
+    Call<String> getUserInfo(@Query("userId") String userId);     //**
 
     @Multipart
-    @POST(URLMngr.SAVE_MEET)
-    Call<String> saveItemBaseDataToCreateActivity(@PartMap Map<String, String> dataPart, @Part MultipartBody.Part filePart);
+    @POST(URLMngr.SAVE_GROUP)                                                        //**
+    Call<String> createGroup(@PartMap Map<String, String> dataPart, @Part MultipartBody.Part filePart);
 
-    @GET(URLMngr.GET_MEET)
-    Call<ArrayList<ItemBaseVO>> getItemBaseDataOnMain();
+    @GET(URLMngr.GET_GROUP)                                                           //**
+    Call<String> getGroupList();
 
     @Multipart
     @POST(URLMngr.UPDATE_MEET)
@@ -60,10 +56,10 @@ public interface RetrofitService {
     Call<String> checkUserMeetData(@Query("userId") String userId, @Query("meetName") String meetName);
 
     @GET(URLMngr.LOAD_MEMBERS)
-    Call<ArrayList<UserBaseVO>> loadMembers(@Query("meetName") String meetName);
+    Call<ArrayList<UserInfo>> loadMembers(@Query("meetName") String meetName);
 
     @GET(URLMngr.LOAD_USERS_MEET)
-    Call<ArrayList<ItemBaseVO>> loadUserMeetItem(@Query("userId") String userId);
+    Call<ArrayList<GroupInfo>> loadUserMeetItem(@Query("userId") String userId);
 
 
     @GET(URLMngr.SAVE_USER_KAKAO)
@@ -97,7 +93,7 @@ public interface RetrofitService {
     Call<String> deleteFavor(@Query("userId") String userId, @Query("meetName") String meetName);
 
     @GET(URLMngr.LOAD_USER_FAVOR)
-    Call<ArrayList<ItemBaseVO>> loadUserFavoriteItem(@Query("userId") String userId);
+    Call<ArrayList<GroupInfo>> loadUserFavoriteItem(@Query("userId") String userId);
 
     @GET(URLMngr.CHECK_USER_FAVOR)
     Call<String> checkFavorite(@Query("userId") String userId, @Query("meetName") String meetName);
@@ -106,10 +102,10 @@ public interface RetrofitService {
     Call<String> uploadRecentMoim(@Query("userId") String userId, @Query("meetName") String meetName, @Query("lastTime")String lastTime);
 
     @GET(URLMngr.LOAD_RECENT)
-    Call<ArrayList<ItemBaseVO>> loadUserRecentViewItem(@Query("userId") String userId);
+    Call<ArrayList<GroupInfo>> loadUserRecentViewItem(@Query("userId") String userId);
 
     @GET(URLMngr.LOAD_JOIN)
-    Call<ArrayList<UserBaseVO>> loadJoinMembers(@Query("joinMembers") String joinMembers);
+    Call<ArrayList<UserInfo>> loadJoinMembers(@Query("joinMembers") String joinMembers);
 
     @GET(URLMngr.ADD_JOIN)
     Call<String> addJoinMember(@Query("meetName") String meetName, @Query("date") String date, @Query("joinMember") String joinMember);

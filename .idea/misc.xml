@@ -9,10 +9,12 @@
         <entry key="..\:/D/2021mrhi/Android/Projects/Project01_MeetingApp/app/src/main/res/layout/activity_login.xml" value="0.37135416666666665" />
         <entry key="..\:/D/2021mrhi/Android/Projects/Project01_MeetingApp/app/src/main/res/layout/activity_profile_set.xml" value="0.37135416666666665" />
         <entry key="..\:/D/2021mrhi/Android/Projects/Project01_MeetingApp/app/src/main/res/xml/preferences.xml" value="0.37135416666666665" />
+        <entry key="..\:/Develop/Projects/Project01_MeetingApp/app/src/main/res/layout/fragment_bottom_tab1_meet.xml" value="0.2046875" />
+        <entry key="..\:/Develop/Projects/Project01_MeetingApp/app/src/main/res/layout/fragment_bottom_tab3_my_page.xml" value="0.25" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

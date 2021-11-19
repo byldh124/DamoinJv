@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.moondroid.project01_meetingapp"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 31
 
         /** develop branch 에서 항상 고정
@@ -31,6 +31,13 @@ android {
     }
 
     buildTypes {
+        debug{
+            splits.abi.enable = false
+            splits.density.enable = false
+            aaptOptions.cruncherEnabled = false
+            ext.alwaysUpdateBuildId = false
+        }
+
         release {
             minifyEnabled true
             shrinkResources true

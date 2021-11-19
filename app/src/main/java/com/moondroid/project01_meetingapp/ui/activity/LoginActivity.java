@@ -15,7 +15,7 @@ import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.data.model.UserInfo;
 import com.moondroid.project01_meetingapp.databinding.ActivityLoginBinding;
 import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
 import com.moondroid.project01_meetingapp.helpers.utils.DMShrdPref;
@@ -77,9 +77,9 @@ public class LoginActivity extends BaseActivity {
             showProgress();
 
             //기입된 ID로 DB에 저장된 값을 불러오는 작업
-            Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
+            Retrofit retrofit = RetrofitHelper.getRetrofit();
             RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-            Call<String> call = retrofitService.loadUserBaseDBToIntroActivity(inputId);
+            Call<String> call = retrofitService.getUserInfo(inputId);
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -90,7 +90,7 @@ public class LoginActivity extends BaseActivity {
                             case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
                                 JSONObject result = jsonRes.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT);
                                 Gson gson = new Gson();
-                                GlobalInfo.myProfile = gson.fromJson(String.valueOf(result), UserBaseVO.class);
+                                GlobalInfo.myProfile = gson.fromJson(String.valueOf(result), UserInfo.class);
                                 saveSharedPreference(inputId);
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
@@ -185,7 +185,7 @@ public class LoginActivity extends BaseActivity {
      **/
     public void signInKakao() {
         try {
-            RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadUserBaseDBToIntroActivity(inputId).enqueue(new Callback<String>() {
+            RetrofitHelper.getRetrofit().create(RetrofitService.class).getUserInfo(inputId).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     try {
@@ -195,7 +195,7 @@ public class LoginActivity extends BaseActivity {
                             case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
                                 JSONObject result = res.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT);
                                 Gson gson = new Gson();
-                                GlobalInfo.myProfile = gson.fromJson(String.valueOf(result), UserBaseVO.class);
+                                GlobalInfo.myProfile = gson.fromJson(String.valueOf(result), UserInfo.class);
                                 saveSharedPreference(inputId);
                                 goToMain();
                                 break;
@@ -228,7 +228,7 @@ public class LoginActivity extends BaseActivity {
      **/
     public void signUpKakao() {
         try {
-            RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveUserBaseDataToKakao(inputId, name, profileImgUrl).enqueue(new Callback<String>() {
+            RetrofitHelper.getRetrofit().create(RetrofitService.class).saveUserBaseDataToKakao(inputId, name, profileImgUrl).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     try {

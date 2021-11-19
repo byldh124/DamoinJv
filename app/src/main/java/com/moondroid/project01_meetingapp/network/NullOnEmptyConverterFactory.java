@@ -9,6 +9,20 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 
 public class NullOnEmptyConverterFactory extends Converter.Factory {
+
+    private static NullOnEmptyConverterFactory mInstance;
+
+    private NullOnEmptyConverterFactory() {
+        super();
+    }
+
+    public static synchronized NullOnEmptyConverterFactory getInstance(){
+        if (mInstance == null){
+            mInstance = new NullOnEmptyConverterFactory();
+        }
+        return mInstance;
+    }
+
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit)
     {

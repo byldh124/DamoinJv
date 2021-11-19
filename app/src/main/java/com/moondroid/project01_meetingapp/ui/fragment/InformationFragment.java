@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +21,7 @@ import com.google.gson.Gson;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.ChatItemVO;
 import com.moondroid.project01_meetingapp.data.model.MoimVO;
-import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.data.model.UserInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.helpers.utils.LinearLayoutManagerWrapper;
@@ -52,7 +51,7 @@ public class InformationFragment extends BaseFragment {
     private RecyclerView recyclerViewJungMo, recyclerViewMembers;
     private ArrayList<String> interestList;
     private Button btnJoin;
-    private ArrayList<UserBaseVO> memberVOS;
+    private ArrayList<UserInfo> memberVOS;
     private InformationMemberAdapter memberAdapter;
     private ArrayList<MoimVO> moimVOS;
     private InformationMoimAdapter moimAdapter;
@@ -96,7 +95,7 @@ public class InformationFragment extends BaseFragment {
                 new AlertDialog.Builder(getActivity()).setMessage("가입하시겠습니까?").setPositiveButton("예", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (GlobalInfo.myProfile.getUserId().equals(GlobalInfo.currentMoim.getMasterId())) {
+                        if (GlobalInfo.myProfile.getUserId().equals(GlobalInfo.currentGroup.getMasterId())) {
                             Toast.makeText(getContext(), "you're master", Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -114,20 +113,20 @@ public class InformationFragment extends BaseFragment {
         loadMoims();
 
         //기존에 저장되어있던 모임정보들을 기입하는 작업 (모임명, 이미지, 설명 등등)
-        if (GlobalInfo.currentMoim.getIntroImgUrl() != null) {
-            Picasso.get().load(URLMngr.BASE_URL_DEFAULT + GlobalInfo.currentMoim.getIntroImgUrl()).into(ivIntroImg);
+        if (GlobalInfo.currentGroup.getIntroImgUrl() != null) {
+            Picasso.get().load(URLMngr.IMG_URL + GlobalInfo.currentGroup.getIntroImgUrl()).into(ivIntroImg);
         }
 
         interestList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.interest_list)));
-        int interestNum = interestList.indexOf(GlobalInfo.currentMoim.getMeetInterest());
+        int interestNum = interestList.indexOf(GlobalInfo.currentGroup.getMeetInterest());
         if (interestNum < 0) interestNum = 0;
         Glide.with(getContext()).load(getResources().getStringArray(R.array.interest_icon_img_url)[interestNum]).into(ivInterestIcon);
-        tvMeetName.setText(GlobalInfo.currentMoim.getMeetName());
+        tvMeetName.setText(GlobalInfo.currentGroup.getMeetName());
 
-        if (GlobalInfo.currentMoim.getMessage() == null || GlobalInfo.currentMoim.getMessage().equals("")) {
-            GlobalInfo.currentMoim.setMessage("모임 설명을 작성해 주십시오");
+        if (GlobalInfo.currentGroup.getMessage() == null || GlobalInfo.currentGroup.getMessage().equals("")) {
+            GlobalInfo.currentGroup.setMessage("모임 설명을 작성해 주십시오");
         }
-        tvMessage.setText(GlobalInfo.currentMoim.getMessage());
+        tvMessage.setText(GlobalInfo.currentGroup.getMessage());
     }
 
     public void loadMembers() {
@@ -135,7 +134,7 @@ public class InformationFragment extends BaseFragment {
         memberAdapter.notifyDataSetChanged();
         GlobalInfo.currentMoimMembers.clear();
         GlobalInfo.currentChatItems.clear();
-        RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadUserBaseDBToIntroActivity(GlobalInfo.currentMoim.getMasterId()).enqueue(new Callback<String>() {
+        RetrofitHelper.getRetrofit().create(RetrofitService.class).getUserInfo(GlobalInfo.currentGroup.getMasterId()).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 try {
@@ -145,27 +144,28 @@ public class InformationFragment extends BaseFragment {
                         case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
                             JSONObject result = res.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT);
                             Gson gson = new Gson();
-                            UserBaseVO userBaseVO = gson.fromJson(String.valueOf(result), UserBaseVO.class);
-                            memberVOS.add(0, userBaseVO);
-                            GlobalInfo.currentMoimMembers.add(GlobalInfo.currentMoim.getMasterId());
-                            GlobalInfo.currentChatItems.add(new ChatItemVO(userBaseVO.getUserId(), userBaseVO.getUserName(), null, userBaseVO.getUserProfileImgUrl(), null));
+                            UserInfo userInfo = gson.fromJson(String.valueOf(result), UserInfo.class);
+                            memberVOS.add(0, userInfo);
+                            GlobalInfo.currentMoimMembers.add(GlobalInfo.currentGroup.getMasterId());
+                            GlobalInfo.currentChatItems.add(new ChatItemVO(userInfo.getUserId(), userInfo.getUserName(), null, userInfo.getUserProfileImgUrl(), null));
                             memberAdapter.notifyItemInserted(0);
-                            RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMembers(GlobalInfo.currentMoim.getMeetName()).enqueue(new Callback<ArrayList<UserBaseVO>>() {
+
+                            RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMembers(GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<ArrayList<UserInfo>>() {
                                 @Override
-                                public void onResponse(Call<ArrayList<UserBaseVO>> call, Response<ArrayList<UserBaseVO>> response) {
+                                public void onResponse(Call<ArrayList<UserInfo>> call, Response<ArrayList<UserInfo>> response) {
                                     for (int i = 0; i < response.body().size(); i++) {
-                                        UserBaseVO userBaseVO = response.body().get(i);
-                                        if (userBaseVO.getUserId().equals(GlobalInfo.currentMoim.getMasterId()))
+                                        UserInfo userInfo = response.body().get(i);
+                                        if (userInfo.getUserId().equals(GlobalInfo.currentGroup.getMasterId()))
                                             continue;
-                                        memberVOS.add(userBaseVO);
-                                        GlobalInfo.currentMoimMembers.add(userBaseVO.getUserId());
-                                        GlobalInfo.currentChatItems.add(new ChatItemVO(userBaseVO.getUserId(), userBaseVO.getUserName(), null, userBaseVO.getUserProfileImgUrl(), null));
+                                        memberVOS.add(userInfo);
+                                        GlobalInfo.currentMoimMembers.add(userInfo.getUserId());
+                                        GlobalInfo.currentChatItems.add(new ChatItemVO(userInfo.getUserId(), userInfo.getUserName(), null, userInfo.getUserProfileImgUrl(), null));
                                         memberAdapter.notifyItemInserted(memberVOS.size() - 1);
                                     }
                                 }
 
                                 @Override
-                                public void onFailure(Call<ArrayList<UserBaseVO>> call, Throwable t) {
+                                public void onFailure(Call<ArrayList<UserInfo>> call, Throwable t) {
 
                                 }
                             });
@@ -190,7 +190,7 @@ public class InformationFragment extends BaseFragment {
     }
 
     public void saveUserMeet() {
-        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkUserMeetData(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentMoim.getMeetName()).enqueue(new Callback<String>() {
+        RetrofitHelper.getRetrofit().create(RetrofitService.class).checkUserMeetData(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 try {
@@ -199,7 +199,7 @@ public class InformationFragment extends BaseFragment {
                     if (checkNum > 0) {
                         Toast.makeText(getContext(), "이미 가입된 모임입니다.", Toast.LENGTH_SHORT).show();
                     } else {
-                        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveUserMeetData(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentMoim.getMeetName()).enqueue(new Callback<String>() {
+                        RetrofitHelper.getRetrofit().create(RetrofitService.class).saveUserMeetData(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
                                 Toast.makeText(getContext(), "" + response.body(), Toast.LENGTH_SHORT).show();
@@ -227,7 +227,7 @@ public class InformationFragment extends BaseFragment {
     public void loadMoims() {
         moimVOS.clear();
         moimAdapter.notifyDataSetChanged();
-        RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMoims(GlobalInfo.currentMoim.getMeetName()).enqueue(new Callback<ArrayList<MoimVO>>() {
+        RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadMoims(GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<ArrayList<MoimVO>>() {
             @Override
             public void onResponse(Call<ArrayList<MoimVO>> call, Response<ArrayList<MoimVO>> response) {
                 for (int i = 0; i < response.body().size(); i++) {

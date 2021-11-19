@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,7 +70,7 @@ public class GalleryFragment extends BaseFragment {
         imgs.clear();
         adapter.notifyDataSetChanged();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/").child(GlobalInfo.currentMoim.getMeetName());
+        DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/").child(GlobalInfo.currentGroup.getMeetName());
         databaseReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {

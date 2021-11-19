@@ -68,7 +68,7 @@ public class ChatAdapter extends BaseAdapter {
             if (chatItem.getProfileImgUrl().contains("http")) {
                 Glide.with(context).load(chatItem.getProfileImgUrl()).into(civ);
             } else {
-                Glide.with(context).load(URLMngr.BASE_URL_DEFAULT + chatItem.getProfileImgUrl()).into(civ);
+                Glide.with(context).load(URLMngr.IMG_URL + chatItem.getProfileImgUrl()).into(civ);
             }
         }
 

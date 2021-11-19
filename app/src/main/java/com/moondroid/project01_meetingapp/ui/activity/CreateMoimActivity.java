@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -13,8 +12,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -32,13 +29,11 @@ import com.moondroid.project01_meetingapp.network.RetrofitService;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.LocationTrackingMode;
-import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import org.jetbrains.annotations.NotNull;
@@ -130,12 +125,12 @@ public class CreateMoimActivity extends AppCompatActivity implements OnMapReadyC
         ArrayList<String> joinMembersForJson = new ArrayList<>();
         joinMembersForJson.add(GlobalInfo.myProfile.getUserId());
         String joinMembers = new Gson().toJson(joinMembersForJson);
-        MoimVO moimVO = new MoimVO(GlobalInfo.currentMoim.getMeetName(), moimAddress, moimDate, moimTime, moimPay, lat, lng, joinMembers);
+        MoimVO moimVO = new MoimVO(GlobalInfo.currentGroup.getMeetName(), moimAddress, moimDate, moimTime, moimPay, lat, lng, joinMembers);
         RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).saveMoimInfo(moimVO).enqueue(new Callback<MoimVO>() {
             @Override
             public void onResponse(Call<MoimVO> call, Response<MoimVO> response) {
                 Toast.makeText(CreateMoimActivity.this, "모임내용이 저장되었습니다.", Toast.LENGTH_SHORT).show();
-                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).sendFCMMessageMoim(GlobalInfo.currentMoim.getMeetName()).enqueue(new Callback<String>() {
+                RetrofitHelper.getRetrofit().create(RetrofitService.class).sendFCMMessageMoim(GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         progressDialog.dismiss();

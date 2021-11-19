@@ -2,14 +2,14 @@ package com.moondroid.project01_meetingapp.data.model;
 
 import java.util.ArrayList;
 
-public class ItemMemberVO {
+public class GroupMembers {
     private String master;
     private ArrayList<String> member;
 
-    public ItemMemberVO() {
+    public GroupMembers() {
         member = new ArrayList<>();
     }
-    public ItemMemberVO(String master, ArrayList<String> member) {
+    public GroupMembers(String master, ArrayList<String> member) {
         this.master = master;
         this.member = member;
     }

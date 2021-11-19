@@ -21,7 +21,7 @@
             android:id="@+id/recycler_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager=".library.LinearLayoutManagerWrapper"
+            app:layoutManager=".helpers.utils.LinearLayoutManagerWrapper"
             android:orientation="vertical"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

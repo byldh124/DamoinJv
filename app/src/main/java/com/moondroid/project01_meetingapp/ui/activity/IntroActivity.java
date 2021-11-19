@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.data.model.UserInfo;
 import com.moondroid.project01_meetingapp.databinding.ActivityIntroBinding;
 import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
 import com.moondroid.project01_meetingapp.helpers.utils.DMShrdPref;
@@ -79,9 +79,9 @@ public class IntroActivity extends BaseActivity {
      **/
     public void startApp() {
         try {
-            Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
+            Retrofit retrofit = RetrofitHelper.getRetrofit();
             RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-            Call<String> call = retrofitService.loadUserBaseDBToIntroActivity(userId);
+            Call<String> call = retrofitService.getUserInfo(userId);
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -92,7 +92,7 @@ public class IntroActivity extends BaseActivity {
                             case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
                                 JSONObject result = jsonRes.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT);
                                 Gson gson = new Gson();
-                                GlobalInfo.myProfile = gson.fromJson(String.valueOf(result), UserBaseVO.class);
+                                GlobalInfo.myProfile = gson.fromJson(String.valueOf(result), UserInfo.class);
                                 intent = new Intent(IntroActivity.this, MainActivity.class);
                                 if (getIntent().getStringExtra("meetName") != null) {
                                     String meetName = getIntent().getStringExtra("meetName");

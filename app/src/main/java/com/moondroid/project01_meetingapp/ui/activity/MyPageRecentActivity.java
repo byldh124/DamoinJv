@@ -11,7 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.data.model.ItemBaseVO;
+import com.moondroid.project01_meetingapp.data.model.GroupInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.LinearLayoutManagerWrapper;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
@@ -27,7 +27,7 @@ import retrofit2.Response;
 public class MyPageRecentActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private ArrayList<ItemBaseVO> items;
+    private ArrayList<GroupInfo> items;
     private MeetItemAdapter meetItemAdapter;
     private Toolbar toolbar;
 
@@ -66,9 +66,9 @@ public class MyPageRecentActivity extends AppCompatActivity {
     public void loadData(){
         items.clear();
         meetItemAdapter.notifyDataSetChanged();
-        RetrofitHelper.getRetrofitInstanceGsonSetLenient().create(RetrofitService.class).loadUserRecentViewItem(GlobalInfo.myProfile.getUserId()).enqueue(new Callback<ArrayList<ItemBaseVO>>() {
+        RetrofitHelper.getRetrofitInstanceGsonSetLenient().create(RetrofitService.class).loadUserRecentViewItem(GlobalInfo.myProfile.getUserId()).enqueue(new Callback<ArrayList<GroupInfo>>() {
             @Override
-            public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
+            public void onResponse(Call<ArrayList<GroupInfo>> call, Response<ArrayList<GroupInfo>> response) {
                 for (int i = 0; i < response.body().size(); i++) {
                     items.add(response.body().get(i));
                     meetItemAdapter.notifyItemInserted(items.size() - 1);
@@ -76,7 +76,7 @@ public class MyPageRecentActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ArrayList<ItemBaseVO>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<GroupInfo>> call, Throwable t) {
                 Log.i("tttt", t.getMessage());
             }
         });

@@ -1,7 +1,6 @@
 package com.moondroid.project01_meetingapp.ui.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,14 +12,18 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.data.model.ItemBaseVO;
+import com.moondroid.project01_meetingapp.data.model.GroupInfo;
+import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
+import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.helpers.utils.LinearLayoutManagerWrapper;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
 import com.moondroid.project01_meetingapp.presenter.adapter.MeetItemAdapter;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -28,9 +31,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SearchActivity extends AppCompatActivity implements MenuItem.OnActionExpandListener {
+public class SearchActivity extends BaseActivity implements MenuItem.OnActionExpandListener {
     private Toolbar toolbar;
-    private ArrayList<ItemBaseVO> itemVOData;
+    private ArrayList<GroupInfo> itemVOData;
     private RecyclerView recyclerViewSearchActivity;
     private MeetItemAdapter meetItemAdapter;
     private SearchView searchView;
@@ -74,22 +77,40 @@ public class SearchActivity extends AppCompatActivity implements MenuItem.OnActi
                 meetItemAdapter.notifyDataSetChanged();
                 
                 //검색한 입력어에 따라 보여줄 아이템 선정
-                RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
+                RetrofitHelper.getRetrofit().create(RetrofitService.class).getGroupList().enqueue(new Callback<String>() {
                     @Override
-                    public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
-                        for (int i = 0; i < response.body().size(); i++) {
-                            ItemBaseVO itemBaseVO = response.body().get(i);
-                            if (itemBaseVO.getMeetName().contains(searchTarget) || itemBaseVO.getPurposeMessage().contains(searchTarget)) {
-                                itemVOData.add(0, itemBaseVO);
-                                meetItemAdapter.notifyItemInserted(itemVOData.size() - 1);
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        try {
+                            JSONObject res = new JSONObject(response.body());
+                            int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                            switch (code) {
+                                case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                    Gson gson = new Gson();
+                                    ArrayList<GroupInfo> groupList = gson.fromJson(res.optString(GlobalKey.NTWRK_RTN_TYPE.RESULT), new TypeToken<ArrayList<GroupInfo>>() {
+                                    }.getType());
+                                    for (int i = 0; i < groupList.size(); i++) {
+                                        GroupInfo groupInfo = groupList.get(i);
+                                        if (groupInfo.getMeetName().contains(searchTarget) || groupInfo.getPurposeMessage().contains(searchTarget)) {
+                                            itemVOData.add(0, groupInfo);
+                                            meetItemAdapter.notifyItemInserted(itemVOData.size() - 1);
+                                        }
+                                    }
+                                    searchView.clearFocus();
+                                    break;
+                                case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                    showNtwrkFailToast("1");
+                                    break;
                             }
+                        } catch (Exception e) {
+                            logException(e);
+                            showNtwrkFailToast("2");
                         }
-                        searchView.clearFocus();
                     }
 
                     @Override
-                    public void onFailure(Call<ArrayList<ItemBaseVO>> call, Throwable t) {
-
+                    public void onFailure(Call<String> call, Throwable t) {
+                        DMFBCrash.logException(t);
+                        showNtwrkFailToast("3");
                     }
                 });
                 return true;

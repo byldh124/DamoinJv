@@ -3,19 +3,16 @@ package com.moondroid.project01_meetingapp.presenter.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
@@ -93,7 +90,7 @@ public class InterestItemAdapter extends RecyclerView.Adapter<InterestItemAdapte
                             case GlobalKey.ACTIVITY_CODE.MAIN_ACTIVITY:
                                 //개인 설정 화면(메인)에서 설정시 DB 업데이트
                                 GlobalInfo.myProfile.setUserInterest(interest);
-                                Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
+                                Retrofit retrofit = RetrofitHelper.getRetrofit();
                                 retrofit.create(RetrofitService.class).updateUserInterest(GlobalInfo.myProfile.getUserId(), interest).enqueue(new Callback<String>() {
                                     @Override
                                     public void onResponse(Call<String> call, Response<String> response) {

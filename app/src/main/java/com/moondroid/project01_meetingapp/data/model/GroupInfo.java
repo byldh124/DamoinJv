@@ -1,6 +1,6 @@
 package com.moondroid.project01_meetingapp.data.model;
 
-public class ItemBaseVO {
+public class GroupInfo {
     private String meetName;
     private String meetLocation;
     private String purposeMessage;
@@ -10,10 +10,10 @@ public class ItemBaseVO {
     private String message;
     private String masterId;
 
-    public ItemBaseVO() {
+    public GroupInfo() {
     }
 
-    public ItemBaseVO(String meetName, String meetLocation, String purposeMessage, String titleImgUrl, String meetInterest) {
+    public GroupInfo(String meetName, String meetLocation, String purposeMessage, String titleImgUrl, String meetInterest) {
         this.meetName = meetName;
         this.meetLocation = meetLocation;
         this.purposeMessage = purposeMessage;
@@ -21,7 +21,7 @@ public class ItemBaseVO {
         this.meetInterest = meetInterest;
     }
 
-    public ItemBaseVO(String meetName, String meetLocation, String purposeMessage, String titleImgUrl, String meetInterest, String introImgUrl, String message, String masterId) {
+    public GroupInfo(String meetName, String meetLocation, String purposeMessage, String titleImgUrl, String meetInterest, String introImgUrl, String message, String masterId) {
         this.meetName = meetName;
         this.meetLocation = meetLocation;
         this.purposeMessage = purposeMessage;

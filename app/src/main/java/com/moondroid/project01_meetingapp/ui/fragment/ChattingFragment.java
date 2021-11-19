@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
@@ -73,7 +72,7 @@ public class ChattingFragment extends BaseFragment {
         listView.setAdapter(chatAdapter);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        chatRef = firebaseDatabase.getReference("chat/" + GlobalInfo.currentMoim.getMeetName());
+        chatRef = firebaseDatabase.getReference("chat/" + GlobalInfo.currentGroup.getMeetName());
         chatRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -128,7 +127,7 @@ public class ChattingFragment extends BaseFragment {
                 @Override
                 public void onSuccess(Void aVoid) {
                     etMessage.setText("");
-                    RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).sendFCMMessage(GlobalInfo.currentMoim.getMeetName(), GlobalInfo.myProfile.getUserId()).enqueue(new Callback<String>() {
+                    RetrofitHelper.getRetrofit().create(RetrofitService.class).sendFCMMessage(GlobalInfo.currentGroup.getMeetName(), GlobalInfo.myProfile.getUserId()).enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
 

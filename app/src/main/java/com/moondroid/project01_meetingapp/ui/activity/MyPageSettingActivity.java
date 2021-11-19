@@ -55,7 +55,7 @@ public class MyPageSettingActivity extends AppCompatActivity implements Compound
     }
 
     public void settingSwitch(){
-        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).loadFCMSetting(GlobalInfo.myProfile.getUserId()).enqueue(new Callback<String>() {
+        RetrofitHelper.getRetrofit().create(RetrofitService.class).loadFCMSetting(GlobalInfo.myProfile.getUserId()).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 String body = response.body();
@@ -110,7 +110,7 @@ public class MyPageSettingActivity extends AppCompatActivity implements Compound
                 break;
         }
 
-        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).updateFCMSetting(GlobalInfo.myProfile.getUserId(), target, value).enqueue(new Callback<String>() {
+        RetrofitHelper.getRetrofit().create(RetrofitService.class).updateFCMSetting(GlobalInfo.myProfile.getUserId(), target, value).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 dialog.dismiss();

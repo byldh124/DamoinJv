@@ -19,7 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.data.model.UserInfo;
 import com.moondroid.project01_meetingapp.databinding.ActivityAccountBinding;
 import com.moondroid.project01_meetingapp.helpers.utils.DMShrdPref;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
@@ -45,7 +45,7 @@ public class AccountActivity extends BaseActivity {
 
     private boolean idChecked = false;
 
-    private UserBaseVO userBaseVO;
+    private UserInfo userInfo;
 
     private ActivityAccountBinding layout;
 
@@ -229,7 +229,7 @@ public class AccountActivity extends BaseActivity {
                 return;
             }
 
-            Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
+            Retrofit retrofit = RetrofitHelper.getRetrofit();
             RetrofitService retrofitService = retrofit.create(RetrofitService.class);
             Call<String> call = retrofitService.checkUserId(layout.etId.getText().toString());
             call.enqueue(new Callback<String>() {
@@ -286,10 +286,10 @@ public class AccountActivity extends BaseActivity {
         try {
             showProgress();
 
-            userBaseVO = new UserBaseVO(userId, userName, userBirthDate, userGender, userAddress, userInterest, "./userProfileImg/IMG_20210302153242unnamed.jpg", "만나서 반갑습니다.", null);
-            Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
+            userInfo = new UserInfo(userId, userName, userBirthDate, userGender, userAddress, userInterest, "./userProfileImg/IMG_20210302153242unnamed.jpg", "만나서 반갑습니다.", null);
+            Retrofit retrofit = RetrofitHelper.getRetrofit();
             RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-            Call<String> call = retrofitService.saveUserBaseDataToAccountActivity(userBaseVO);
+            Call<String> call = retrofitService.saveUserBaseDataToAccountActivity(userInfo);
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -300,7 +300,7 @@ public class AccountActivity extends BaseActivity {
                         switch (code) {
                             case GlobalKey.NTWRK_RTN_TYPE.SUCCESS: {
                                 DMShrdPref.getInstance(getBaseContext()).setString(GlobalKey.SHRD_PREF_KEY.USER_ID, userId);
-                                GlobalInfo.myProfile = userBaseVO;
+                                GlobalInfo.myProfile = userInfo;
                                 Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                                 intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.LOGIN_ACTIVITY);
                                 startActivity(intent);

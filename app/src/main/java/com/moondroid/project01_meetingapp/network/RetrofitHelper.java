@@ -12,7 +12,7 @@ public class RetrofitHelper {
     public static Retrofit getRetrofitInstanceGson(){
         Retrofit.Builder builder = new Retrofit.Builder();
         builder.baseUrl(URLMngr.BASE_URL_DEFAULT);
-        builder.addConverterFactory(new NullOnEmptyConverterFactory());
+        builder.addConverterFactory(NullOnEmptyConverterFactory.getInstance());
         builder.addConverterFactory(GsonConverterFactory.create());
         Retrofit retrofit = builder.build();
         return retrofit;
@@ -22,16 +22,16 @@ public class RetrofitHelper {
         Gson gson = new GsonBuilder().setLenient().create();
         Retrofit.Builder builder = new Retrofit.Builder();
         builder.baseUrl(URLMngr.BASE_URL_DEFAULT);
-        builder.addConverterFactory(new NullOnEmptyConverterFactory());
+        builder.addConverterFactory(NullOnEmptyConverterFactory.getInstance());
         builder.addConverterFactory(GsonConverterFactory.create(gson));
         Retrofit retrofit = builder.build();
         return retrofit;
     }
 
-    public static Retrofit getRetrofitInstanceScalars(){
+    public static Retrofit getRetrofit(){
         Retrofit.Builder builder = new Retrofit.Builder();
         builder.baseUrl(URLMngr.BASE_URL_DEFAULT);
-        builder.addConverterFactory(new NullOnEmptyConverterFactory());
+        builder.addConverterFactory(NullOnEmptyConverterFactory.getInstance());
         builder.addConverterFactory(ScalarsConverterFactory.create());
         Retrofit retrofit = builder.build();
         return retrofit;

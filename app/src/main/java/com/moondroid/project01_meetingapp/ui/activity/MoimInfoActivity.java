@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.MoimVO;
-import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.data.model.UserInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.LinearLayoutManagerWrapper;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
@@ -33,7 +33,7 @@ import retrofit2.Response;
 public class MoimInfoActivity extends AppCompatActivity {
 
     private MoimVO moimItem;
-    private ArrayList<UserBaseVO> memberVOS;
+    private ArrayList<UserInfo> memberVOS;
     private InformationMemberAdapter memberAdapter;
     private RecyclerView recyclerViewMembers;
 
@@ -87,9 +87,9 @@ public class MoimInfoActivity extends AppCompatActivity {
     public void loadMembers() {
         memberVOS.clear();
         memberAdapter.notifyDataSetChanged();
-        RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadJoinMembers(moimItem.getJoinMembers()).enqueue(new Callback<ArrayList<UserBaseVO>>() {
+        RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).loadJoinMembers(moimItem.getJoinMembers()).enqueue(new Callback<ArrayList<UserInfo>>() {
             @Override
-            public void onResponse(Call<ArrayList<UserBaseVO>> call, Response<ArrayList<UserBaseVO>> response) {
+            public void onResponse(Call<ArrayList<UserInfo>> call, Response<ArrayList<UserInfo>> response) {
                 for (int i = 0; i < response.body().size(); i++) {
                     memberVOS.add(response.body().get(i));
                     memberAdapter.notifyItemInserted(memberVOS.size() - 1);
@@ -97,7 +97,7 @@ public class MoimInfoActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ArrayList<UserBaseVO>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<UserInfo>> call, Throwable t) {
                 loadMembers();
             }
         });
@@ -115,7 +115,7 @@ public class MoimInfoActivity extends AppCompatActivity {
         new AlertDialog.Builder(this).setMessage("모임 신청 하시겠습니까?").setNegativeButton("아니오", null).setPositiveButton("네", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).addJoinMember(moimItem.getMeetName(), moimItem.getDate(), GlobalInfo.myProfile.getUserId()).enqueue(new Callback<String>() {
+                RetrofitHelper.getRetrofit().create(RetrofitService.class).addJoinMember(moimItem.getMeetName(), moimItem.getDate(), GlobalInfo.myProfile.getUserId()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         memberVOS.add(GlobalInfo.myProfile);

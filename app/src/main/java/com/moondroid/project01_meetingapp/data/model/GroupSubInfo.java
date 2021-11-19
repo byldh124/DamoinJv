@@ -1,13 +1,13 @@
 package com.moondroid.project01_meetingapp.data.model;
 
-public class ItemDetailVO {
+public class GroupSubInfo {
     private String introImgUrl;
     private String message;
 
-    public ItemDetailVO() {
+    public GroupSubInfo() {
     }
 
-    public ItemDetailVO(String introImgUrl, String message) {
+    public GroupSubInfo(String introImgUrl, String message) {
         this.introImgUrl = introImgUrl;
         this.message = message;
     }

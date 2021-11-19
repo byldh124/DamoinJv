@@ -3,7 +3,6 @@ package com.moondroid.project01_meetingapp.ui.activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -35,6 +34,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.kakao.kakaolink.v2.KakaoLinkResponse;
 import com.kakao.kakaolink.v2.KakaoLinkService;
 import com.kakao.message.template.ButtonObject;
@@ -44,7 +45,8 @@ import com.kakao.network.ErrorResult;
 import com.kakao.network.callback.ResponseCallback;
 import com.kakao.message.template.FeedTemplate;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.data.model.ItemBaseVO;
+import com.moondroid.project01_meetingapp.data.model.GroupInfo;
+import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
@@ -54,6 +56,8 @@ import com.moondroid.project01_meetingapp.ui.fragment.ChargeFragment;
 import com.moondroid.project01_meetingapp.ui.fragment.LocationFragment;
 import com.moondroid.project01_meetingapp.ui.fragment.MeetFragment;
 import com.moondroid.project01_meetingapp.ui.fragment.MyPageFragment;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -265,25 +269,42 @@ public class MainActivity extends BaseActivity {
         if (getIntent().getStringExtra("meetName") != null) {
             final String meetName = getIntent().getStringExtra("meetName");
             if (!meetName.equals("data")) {
-                RetrofitHelper.getRetrofitInstanceGson().create(RetrofitService.class).getItemBaseDataOnMain().enqueue(new Callback<ArrayList<ItemBaseVO>>() {
+                RetrofitHelper.getRetrofit().create(RetrofitService.class).getGroupList().enqueue(new Callback<String>() {
                     @Override
-                    public void onResponse(Call<ArrayList<ItemBaseVO>> call, Response<ArrayList<ItemBaseVO>> response) {
-                        for (int j = 0; j < response.body().size(); j++) {
-                            if (response.body().get(j).getMeetName().equals(meetName)) {
-                                GlobalInfo.currentMoim = response.body().get(j);
-                                startActivity(new Intent(MainActivity.this, PageActivity.class));
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        try {
+                            JSONObject res = new JSONObject(response.body());
+                            int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                            switch (code) {
+                                case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                    Gson gson = new Gson();
+                                    ArrayList<GroupInfo> groupList = gson.fromJson(res.optString(GlobalKey.NTWRK_RTN_TYPE.RESULT), new TypeToken<ArrayList<GroupInfo>>(){}.getType());
+                                    for (int j = 0; j <groupList.size(); j++) {
+                                        if (groupList.get(j).getMeetName().equals(meetName)) {
+                                            GlobalInfo.currentGroup = groupList.get(j);
+                                            startActivity(new Intent(MainActivity.this, PageActivity.class));
+                                        }
+                                    }
+                                    break;
+                                case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                    showNtwrkFailToast("1");
+                                    break;
                             }
+                        } catch (Exception e) {
+                            logException(e);
+                            showNtwrkFailToast("2");
                         }
+
                     }
 
                     @Override
-                    public void onFailure(Call<ArrayList<ItemBaseVO>> call, Throwable t) {
+                    public void onFailure(Call<String> call, Throwable t) {
+                        DMFBCrash.logException(t);
+                        showNtwrkFailToast("3");
                     }
                 });
             }
         }
-
-
     }
 
     @Override
@@ -382,7 +403,7 @@ public class MainActivity extends BaseActivity {
             if (GlobalInfo.myProfile.getUserProfileImgUrl().contains("http")) {
                 Glide.with(MainActivity.this).load(GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivNavigationUserProfileImg);
             } else {
-                Glide.with(MainActivity.this).load(URLMngr.BASE_URL_DEFAULT + GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivNavigationUserProfileImg);
+                Glide.with(MainActivity.this).load(URLMngr.IMG_URL + GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivNavigationUserProfileImg);
             }
         }
         if (GlobalInfo.myProfile.getUserName() != null) {
@@ -395,7 +416,7 @@ public class MainActivity extends BaseActivity {
 
     //푸시 서비스를 위한 Token을 DB에 저장
     public void saveToken(String token) {
-        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).saveFCMToken(GlobalInfo.myProfile.getUserId(), token).enqueue(new Callback<String>() {
+        RetrofitHelper.getRetrofit().create(RetrofitService.class).saveFCMToken(GlobalInfo.myProfile.getUserId(), token).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
 

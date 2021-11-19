@@ -90,7 +90,7 @@ public class ChoicePictureActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                        DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/" + GlobalInfo.currentMoim.getMeetName());
+                        DatabaseReference databaseReference = firebaseDatabase.getReference("GalleryImgs/" + GlobalInfo.currentGroup.getMeetName());
                         databaseReference.child(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())).setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {

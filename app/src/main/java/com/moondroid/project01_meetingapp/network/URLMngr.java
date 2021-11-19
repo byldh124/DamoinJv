@@ -7,6 +7,8 @@ public class URLMngr {
     public final static String SERVER_BASE_URL_TEST = "http://moondroid.dothome.co.kr/damoim-test/";        //테스트 서버
     public final static String SERVER_BASE_ULR_PROD = "http://moondroid.dothome.co.kr/damoim/";             //운영 서버
 
+    public final static String IMG_URL = SERVER_BASE_ULR_PROD;
+
     public static String BASE_URL_DEFAULT;
 
     static {
@@ -23,12 +25,11 @@ public class URLMngr {
     public static final String SAVE_USER = "saveUserBaseDB.php";                    // 회원가입
     public static final String UPDATE_USER = "updateUserBaseDB.php";                // 유저 정보 수정
     public static final String CHECK_ID = "checkUserId.php";                        // 회원가입 - 아이디 중복 체크
-    public static final String CHECK_MEET_NAME = "checkMeetName.php";               // 모임 이름 중복 체크
+    public static final String CHECK_GROUP_NAME = "checkMeetName.php";               // 모임 이름 중복 체크
     public static final String UPDATE_INTEREST = "updateUserInterest.php";          // 관심사 업데이트
     public static final String USER_INFO = "loadUserBaseDBOnIntro.php";             // 유저 정보 로드
-    public static final String SAVE_USERS_MEET = "saveUserMeetItem.php";            // 모임 참여 내용 저장
-    public static final String SAVE_MEET = "saveItemBaseDB.php";                    // 모임 만들기 - 저장
-    public static final String GET_MEET = "getItemBaseData.php";                    // 모임 내용 로드
+    public static final String SAVE_GROUP = "saveItemBaseDB.php";                    // 모임 만들기 - 저장
+    public static final String GET_GROUP = "getItemBaseData.php";                    // 모임 내용 로드
     public static final String UPDATE_MEET = "updateItemBaseDB.php";                // 모임 설명 수정
     public static final String SAVE_USER_MEET_DT = "saveUserMeetData.php";          // 모임 참여 내용 저장
     public static final String CHECK_USER_MEET_DT = "checkUserMeetData.php";        // 모임 참여 목록 로드

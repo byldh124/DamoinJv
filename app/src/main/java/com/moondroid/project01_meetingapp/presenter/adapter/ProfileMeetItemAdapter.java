@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.data.model.ItemBaseVO;
+import com.moondroid.project01_meetingapp.data.model.GroupInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.network.URLMngr;
 import com.moondroid.project01_meetingapp.ui.activity.PageActivity;
@@ -29,14 +29,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileMeetItemAdapter extends RecyclerView.Adapter<ProfileMeetItemAdapter.VH> {
 
    private Context context;
-   private ArrayList<ItemBaseVO> itemList;
+   private ArrayList<GroupInfo> itemList;
    private String[] interestList;
    private String[] interestIconList;
    private Resources res;
    //기존 PageActivity 를 닫고 새로운 PageActivity 를 열기 위한 PageActivity Instance
    PageActivity pageActivity = (PageActivity) PageActivity.activity;
 
-    public ProfileMeetItemAdapter(Context context, ArrayList<ItemBaseVO> itemList) {
+    public ProfileMeetItemAdapter(Context context, ArrayList<GroupInfo> itemList) {
         this.context = context;
         this.itemList = itemList;
         res = context.getResources();
@@ -52,9 +52,9 @@ public class ProfileMeetItemAdapter extends RecyclerView.Adapter<ProfileMeetItem
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
-        ItemBaseVO item = itemList.get(position);
+        GroupInfo item = itemList.get(position);
 
-        Picasso.get().load(URLMngr.BASE_URL_DEFAULT + item.getTitleImgUrl()).into(holder.ivProfile);
+        Picasso.get().load(URLMngr.IMG_URL + item.getTitleImgUrl()).into(holder.ivProfile);
 
         int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.getMeetInterest());
         if (interestNum < 0) interestNum = 1;
@@ -99,7 +99,7 @@ public class ProfileMeetItemAdapter extends RecyclerView.Adapter<ProfileMeetItem
                     int pos = getAdapterPosition();
                     itemTitle = itemList.get(pos).getMeetName();
 
-                    GlobalInfo.currentMoim = itemList.get(pos);
+                    GlobalInfo.currentGroup = itemList.get(pos);
                     pageActivity.finish();
                     Intent intent = new Intent(context, PageActivity.class);
                     context.startActivity(intent);

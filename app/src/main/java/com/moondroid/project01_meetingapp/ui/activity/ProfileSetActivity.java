@@ -2,7 +2,6 @@ package com.moondroid.project01_meetingapp.ui.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.loader.content.CursorLoader;
 
@@ -25,15 +24,17 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
+import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
 import com.moondroid.project01_meetingapp.network.URLMngr;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ProfileSetActivity extends AppCompatActivity {
+public class ProfileSetActivity extends BaseActivity {
 
     private final int REQUEST_CODE_FOR_LOCATION_CHOICE = 0;
     private final int REQUEST_CODE_FOR_PROFILE_IMAGE_SELECT = 1;
@@ -116,7 +117,8 @@ public class ProfileSetActivity extends AppCompatActivity {
             }
         });
 
-        if (GlobalInfo.myProfile.getUserGender() != null) gender = GlobalInfo.myProfile.getUserGender();
+        if (GlobalInfo.myProfile.getUserGender() != null)
+            gender = GlobalInfo.myProfile.getUserGender();
         else gender = "남자";
         radioGroupGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -136,55 +138,71 @@ public class ProfileSetActivity extends AppCompatActivity {
     }
 
     public void clickSaveToRetrofit(View view) {
+        try {
 
-        progressDialog = new ProgressDialog(this);
+            showProgress();
 
-        progressDialog.setMessage("잠시만 기다려주십시오.");
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
-        progressDialog.show();
+            Retrofit retrofit = RetrofitHelper.getRetrofit();
+            RetrofitService retrofitService = retrofit.create(RetrofitService.class);
 
-        Retrofit retrofit = RetrofitHelper.getRetrofitInstanceScalars();
-        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+            dataPart = new HashMap<>();
+            dataPart.put("userId", GlobalInfo.myProfile.getUserId());
+            dataPart.put("userName", etName.getText().toString());
+            dataPart.put("userBirthDate", tvBirthDate.getText().toString());
+            dataPart.put("userGender", gender);
+            dataPart.put("userLocation", GlobalInfo.myProfile.getUserLocation());
+            dataPart.put("userProfileMessage", etMessage.getText().toString());
 
-        dataPart = new HashMap<>();
-        dataPart.put("userId", GlobalInfo.myProfile.getUserId());
-        dataPart.put("userName", etName.getText().toString());
-        dataPart.put("userBirthDate", tvBirthDate.getText().toString());
-        dataPart.put("userGender", gender);
-        dataPart.put("userLocation", GlobalInfo.myProfile.getUserLocation());
-        dataPart.put("userProfileMessage", etMessage.getText().toString());
+            MultipartBody.Part filePart = null;
 
-        MultipartBody.Part filePart = null;
+            if (imgIsChanged && imgPath != null) {
+                File file = new File(imgPath);
+                RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+                filePart = MultipartBody.Part.createFormData("img", file.getName(), requestBody);
+            }
 
-        if (imgIsChanged && imgPath != null) {
-            File file = new File(imgPath);
-            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-            filePart = MultipartBody.Part.createFormData("img", file.getName(), requestBody);
+            Call<String> call = retrofitService.updateUserProfileImg(dataPart, filePart);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    try {
+                        JSONObject res = new JSONObject(response.body());
+                        int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                        switch (code) {
+                            case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                JSONObject result = res.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT);
+                                if (imgIsChanged) GlobalInfo.myProfile.setUserProfileImgUrl(result.getString("profileImg"));
+                                GlobalInfo.myProfile.setUserName(dataPart.get("userName"));
+                                GlobalInfo.myProfile.setUserGender(dataPart.get("userGender"));
+                                GlobalInfo.myProfile.setUserLocation(dataPart.get("userLocation"));
+                                GlobalInfo.myProfile.setUserBirthDate(dataPart.get("userBirthDate"));
+                                GlobalInfo.myProfile.setUserProfileMessage(dataPart.get("userProfileMessage"));
+                                finish();
+                                break;
+
+                            case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                hideProgress();
+                                showNtwrkFailToast("1");
+                                break;
+                        }
+                    } catch (Exception e) {
+                        logException(e);
+                        showNtwrkFailToast("2");
+                    } finally {
+                        hideProgress();
+                    }
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    hideProgress();
+                    DMFBCrash.logException(t);
+                    showNtwrkFailToast("3");
+                }
+            });
+        } catch (Exception e) {
+            logException(e);
+            showNtwrkFailToast("4");
         }
-
-        Call<String> call = retrofitService.updateUserProfileImg(dataPart, filePart);
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-
-                if (imgIsChanged) GlobalInfo.myProfile.setUserProfileImgUrl(response.body());
-                GlobalInfo.myProfile.setUserName(dataPart.get("userName"));
-                GlobalInfo.myProfile.setUserGender(dataPart.get("userGender"));
-                GlobalInfo.myProfile.setUserLocation(dataPart.get("userLocation"));
-                GlobalInfo.myProfile.setUserBirthDate(dataPart.get("userBirthDate"));
-                GlobalInfo.myProfile.setUserProfileMessage(dataPart.get("userProfileMessage"));
-                progressDialog.dismiss();
-                finish();
-
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                progressDialog.dismiss();
-                Toast.makeText(ProfileSetActivity.this, "서버에 연결할 수 없습니다.", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void clickBirth(View view) {
@@ -239,7 +257,7 @@ public class ProfileSetActivity extends AppCompatActivity {
                     Bitmap bitMap = BitmapFactory.decodeFile(imgPath);
                     int h = bitMap.getHeight();
                     int w = bitMap.getWidth();
-                    if (h>=2400 || w>=2400){
+                    if (h >= 2400 || w >= 2400) {
                         new AlertDialog.Builder(this).setMessage("파일 용량이 너무 큽니다.").setPositiveButton("확인", null).create().show();
                     } else {
                         imgIsChanged = true;
@@ -254,12 +272,13 @@ public class ProfileSetActivity extends AppCompatActivity {
 
     public void loadBasicInfo() {
         if (GlobalInfo.myProfile == null) return;
-        if (GlobalInfo.myProfile.getUserName() != null) etName.setText(GlobalInfo.myProfile.getUserName());
+        if (GlobalInfo.myProfile.getUserName() != null)
+            etName.setText(GlobalInfo.myProfile.getUserName());
         if (GlobalInfo.myProfile.getUserProfileImgUrl() != null) {
             if (GlobalInfo.myProfile.getUserProfileImgUrl().contains("http")) {
                 Glide.with(this).load(GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivProfileImg);
             } else {
-                Glide.with(this).load(URLMngr.BASE_URL_DEFAULT + GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivProfileImg);
+                Glide.with(this).load(URLMngr.IMG_URL + GlobalInfo.myProfile.getUserProfileImgUrl()).into(ivProfileImg);
             }
         } else {
             Glide.with(this).load(R.mipmap.ic_launcher).into(ivProfileImg);

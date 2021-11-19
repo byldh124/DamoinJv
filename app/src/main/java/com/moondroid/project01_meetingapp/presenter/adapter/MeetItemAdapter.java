@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.data.model.ItemBaseVO;
+import com.moondroid.project01_meetingapp.data.model.GroupInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
@@ -35,12 +35,12 @@ import retrofit2.Response;
 public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
 
    private Context context;
-   private ArrayList<ItemBaseVO> itemList;
+   private ArrayList<GroupInfo> itemList;
    private String[] interestList;
    private String[] interestIconList;
    private Resources res;
 
-    public MeetItemAdapter(Context context, ArrayList<ItemBaseVO> itemList) {
+    public MeetItemAdapter(Context context, ArrayList<GroupInfo> itemList) {
         this.context = context;
         this.itemList = itemList;
         res = context.getResources();
@@ -56,9 +56,9 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
-        ItemBaseVO item = itemList.get(position);
+        GroupInfo item = itemList.get(position);
 
-        Picasso.get().load(URLMngr.BASE_URL_DEFAULT + item.getTitleImgUrl()).into(holder.ivProfile);
+        Picasso.get().load(URLMngr.IMG_URL + item.getTitleImgUrl()).into(holder.ivProfile);
 
         int interestNum = new ArrayList<>(Arrays.asList(interestList)).indexOf(item.getMeetInterest());
         if (interestNum < 0) interestNum = 1;
@@ -102,8 +102,8 @@ public class MeetItemAdapter extends RecyclerView.Adapter<MeetItemAdapter.VH> {
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     itemTitle = itemList.get(pos).getMeetName();
-                    GlobalInfo.currentMoim = itemList.get(pos);
-                    RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).uploadRecentMoim(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentMoim.getMeetName(), new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())).enqueue(new Callback<String>() {
+                    GlobalInfo.currentGroup = itemList.get(pos);
+                    RetrofitHelper.getRetrofit().create(RetrofitService.class).uploadRecentMoim(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentGroup.getMeetName(), new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())).enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
                             Intent intent = new Intent(context, PageActivity.class);

@@ -1,7 +1,6 @@
 package com.moondroid.project01_meetingapp.ui.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -71,7 +70,7 @@ public class PageActivity extends BaseActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         //title
-        tvTitle.setText(GlobalInfo.currentMoim.getMeetName());
+        tvTitle.setText(GlobalInfo.currentGroup.getMeetName());
     }
 
     @Override
@@ -81,7 +80,7 @@ public class PageActivity extends BaseActivity {
                 onBackPressed();
                 break;
             case R.id.modify_page_activity:
-                if (!GlobalInfo.currentMoim.getMasterId().equals(GlobalInfo.myProfile.getUserId())) {
+                if (!GlobalInfo.currentGroup.getMasterId().equals(GlobalInfo.myProfile.getUserId())) {
                     Toast.makeText(this, "모임장만 할수 있습니다.", Toast.LENGTH_SHORT).show();
                     return true;
                 } else {
@@ -90,7 +89,7 @@ public class PageActivity extends BaseActivity {
                 }
                 break;
             case R.id.add_moim_info:
-                if (!GlobalInfo.currentMoim.getMasterId().equals(GlobalInfo.myProfile.getUserId())) {
+                if (!GlobalInfo.currentGroup.getMasterId().equals(GlobalInfo.myProfile.getUserId())) {
                     Toast.makeText(this, "모임장만 할수 있습니다.", Toast.LENGTH_SHORT).show();
                     return true;
                 } else {
@@ -116,7 +115,7 @@ public class PageActivity extends BaseActivity {
     }
 
     public void checkFavorite(){
-        RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkFavorite(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentMoim.getMeetName()).enqueue(new Callback<String>() {
+        RetrofitHelper.getRetrofit().create(RetrofitService.class).checkFavorite(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 try {
@@ -145,7 +144,7 @@ public class PageActivity extends BaseActivity {
         new AlertDialog.Builder(PageActivity.this).setMessage("관심목록에서 삭제하시겠습니까?").setPositiveButton("예", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).deleteFavor(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentMoim.getMeetName()).enqueue(new Callback<String>() {
+                RetrofitHelper.getRetrofit().create(RetrofitService.class).deleteFavor(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         favoriteDone.setVisibility(View.INVISIBLE);
@@ -166,7 +165,7 @@ public class PageActivity extends BaseActivity {
         new AlertDialog.Builder(PageActivity.this).setMessage("관심목록에 추가하시겠습니까?").setPositiveButton("예", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).insertFavor(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentMoim.getMeetName()).enqueue(new Callback<String>() {
+                RetrofitHelper.getRetrofit().create(RetrofitService.class).insertFavor(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         Toast.makeText(PageActivity.this, "관심목록에 추가되었습니다.", Toast.LENGTH_SHORT).show();

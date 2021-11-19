@@ -1,6 +1,6 @@
 package com.moondroid.project01_meetingapp.data.model;
 
-public class UserBaseVO {
+public class UserInfo {
     private String userId;
     private String userName;
     private String userBirthDate;
@@ -11,11 +11,11 @@ public class UserBaseVO {
     private String userProfileMessage;
     private String FCMToken;
 
-    public UserBaseVO() {
+    public UserInfo() {
     }
 
 
-    public UserBaseVO(String userId, String userName, String userBirthDate, String userGender, String userLocation, String userInterest, String userProfileImgUrl, String userProfileMessage, String FCMToken) {
+    public UserInfo(String userId, String userName, String userBirthDate, String userGender, String userLocation, String userInterest, String userProfileImgUrl, String userProfileMessage, String FCMToken) {
         this.userId = userId;
         this.userName = userName;
         this.userBirthDate = userBirthDate;

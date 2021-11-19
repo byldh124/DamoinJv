@@ -3,20 +3,16 @@ package com.moondroid.project01_meetingapp.ui.activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.loader.content.CursorLoader;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.util.ExceptionPassthroughInputStream;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.databinding.ActivityCreateBinding;
 import com.moondroid.project01_meetingapp.helpers.utils.DMUtil;
@@ -145,7 +141,7 @@ public class CreateActivity extends BaseActivity {
                 return;
             }
 
-            RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkMeetName(meetName).enqueue(new Callback<String>() {
+            RetrofitHelper.getRetrofit().create(RetrofitService.class).checkGroupName(meetName).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     try {
@@ -203,23 +199,23 @@ public class CreateActivity extends BaseActivity {
             dataPart.put("meetInterest", meetInterest);
             dataPart.put("purposeMessage", purposeMessage);
             dataPart.put("masterId", GlobalInfo.myProfile.getUserId());
-            RetrofitService retrofitService = RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class);
-            retrofitService.saveItemBaseDataToCreateActivity(dataPart, filePart).enqueue(new Callback<String>() {
+            RetrofitService retrofitService = RetrofitHelper.getRetrofit().create(RetrofitService.class);
+            retrofitService.createGroup(dataPart, filePart).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     try {
-                        JSONObject jsonRes = new JSONObject(response.body());
-                        int code = jsonRes.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                        JSONObject res = new JSONObject(response.body());
+                        int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
                         switch (code) {
                             case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
 
                                 // 그룹 정보 저장 후 그룹 화면으로 이동
-                                GlobalInfo.currentMoim.setMeetName(meetName);
-                                GlobalInfo.currentMoim.setMeetLocation(meetLocation);
-                                GlobalInfo.currentMoim.setPurposeMessage(purposeMessage);
-                                GlobalInfo.currentMoim.setMeetInterest(meetInterest);
-                                GlobalInfo.currentMoim.setTitleImgUrl(response.body());
-                                GlobalInfo.currentMoim.setMasterId(GlobalInfo.myProfile.getUserId());
+                                GlobalInfo.currentGroup.setMeetName(meetName);
+                                GlobalInfo.currentGroup.setMeetLocation(meetLocation);
+                                GlobalInfo.currentGroup.setPurposeMessage(purposeMessage);
+                                GlobalInfo.currentGroup.setMeetInterest(meetInterest);
+                                GlobalInfo.currentGroup.setTitleImgUrl(res.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT).getString("titleImgUrl"));
+                                GlobalInfo.currentGroup.setMasterId(GlobalInfo.myProfile.getUserId());
                                 hideProgress();
                                 Intent intent = new Intent(CreateActivity.this, MoimInfoActivity.class);
                                 intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, GlobalKey.ACTIVITY_CODE.CREATE_ACTIVITY);

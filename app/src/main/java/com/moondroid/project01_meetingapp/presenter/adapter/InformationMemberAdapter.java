@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.moondroid.project01_meetingapp.R;
-import com.moondroid.project01_meetingapp.data.model.UserBaseVO;
+import com.moondroid.project01_meetingapp.data.model.UserInfo;
 import com.moondroid.project01_meetingapp.network.URLMngr;
 import com.moondroid.project01_meetingapp.ui.activity.ProfileActivity;
 
@@ -24,9 +24,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class InformationMemberAdapter extends RecyclerView.Adapter<InformationMemberAdapter.VH> {
 
     private Context context;
-    private ArrayList<UserBaseVO> memberVOS;
+    private ArrayList<UserInfo> memberVOS;
 
-    public InformationMemberAdapter(Context context, ArrayList<UserBaseVO> memberVOS) {
+    public InformationMemberAdapter(Context context, ArrayList<UserInfo> memberVOS) {
         this.context = context;
         this.memberVOS = memberVOS;
     }
@@ -46,7 +46,7 @@ public class InformationMemberAdapter extends RecyclerView.Adapter<InformationMe
             if (memberVOS.get(position).getUserProfileImgUrl().contains("http")) {
                 Glide.with(context).load(memberVOS.get(position).getUserProfileImgUrl()).into(holder.ivProfile);
             } else {
-                Glide.with(context).load(URLMngr.BASE_URL_DEFAULT + memberVOS.get(position).getUserProfileImgUrl()).into(holder.ivProfile);
+                Glide.with(context).load(URLMngr.IMG_URL + memberVOS.get(position).getUserProfileImgUrl()).into(holder.ivProfile);
             }
         }
 
@@ -76,8 +76,8 @@ public class InformationMemberAdapter extends RecyclerView.Adapter<InformationMe
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
-                    UserBaseVO userBaseVO = memberVOS.get(pos);
-                    String memberInformation = new Gson().toJson(userBaseVO);
+                    UserInfo userInfo = memberVOS.get(pos);
+                    String memberInformation = new Gson().toJson(userInfo);
                     context.startActivity(new Intent(context, ProfileActivity.class).putExtra("memberInformation", memberInformation));
                 }
             });

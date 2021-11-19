@@ -2,7 +2,6 @@ package com.moondroid.project01_meetingapp.ui.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.loader.content.CursorLoader;
 
@@ -23,12 +22,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
+import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
 import com.moondroid.project01_meetingapp.network.RetrofitService;
 import com.moondroid.project01_meetingapp.network.URLMngr;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class OptionModifyActivity extends AppCompatActivity {
+public class OptionModifyActivity extends BaseActivity {
     private final int REQUEST_CODE_FOR_INTRO_IMG_SELECT = 0;
     private final int REQUEST_CODE_FOR_TITLE_IMG_SELECT = 2;
     private final int REQUEST_CODE_FOR_INTEREST_ICON = 1;
@@ -84,10 +86,10 @@ public class OptionModifyActivity extends AppCompatActivity {
         ivTitleImg = findViewById(R.id.iv_page_modify_title_img);
         tvPurpose = findViewById(R.id.tv_page_modify_purpose);
 
-        meetName = GlobalInfo.currentMoim.getMeetName();
-        meetInterest = GlobalInfo.currentMoim.getMeetInterest();
-        purposeMessage = GlobalInfo.currentMoim.getPurposeMessage();
-        message = GlobalInfo.currentMoim.getMessage();
+        meetName = GlobalInfo.currentGroup.getMeetName();
+        meetInterest = GlobalInfo.currentGroup.getMeetInterest();
+        purposeMessage = GlobalInfo.currentGroup.getPurposeMessage();
+        message = GlobalInfo.currentGroup.getMessage();
 
         //Action bar Setting
         setSupportActionBar(toolbar);
@@ -95,16 +97,16 @@ public class OptionModifyActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //기존 정보 load
-        if (GlobalInfo.currentMoim.getIntroImgUrl() != null)
-            Picasso.get().load(URLMngr.BASE_URL_DEFAULT + GlobalInfo.currentMoim.getIntroImgUrl()).into(ivIntro);
+        if (GlobalInfo.currentGroup.getIntroImgUrl() != null)
+            Picasso.get().load(URLMngr.IMG_URL + GlobalInfo.currentGroup.getIntroImgUrl()).into(ivIntro);
 
         ArrayList<String> interests = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.interest_list)));
         Glide.with(this).load(getResources().getStringArray(R.array.interest_icon_img_url)[interests.indexOf(meetInterest)]).into(ivIcon);
 
         tvTitle.setText(meetName);
 
-        if (GlobalInfo.currentMoim.getTitleImgUrl() != null)
-            Picasso.get().load(URLMngr.BASE_URL_DEFAULT + GlobalInfo.currentMoim.getTitleImgUrl()).into(ivTitleImg);
+        if (GlobalInfo.currentGroup.getTitleImgUrl() != null)
+            Picasso.get().load(URLMngr.IMG_URL + GlobalInfo.currentGroup.getTitleImgUrl()).into(ivTitleImg);
         if (purposeMessage != null) tvPurpose.setText(purposeMessage);
         if (message == null || message.equals("")) {
             tvMessage.setText("모임 설명을 작성해주세요");
@@ -142,7 +144,7 @@ public class OptionModifyActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 meetName = editText.getText().toString();
                 tvTitle.setText(meetName);
-                if (!meetName.equals(GlobalInfo.currentMoim.getMeetName())) {
+                if (!meetName.equals(GlobalInfo.currentGroup.getMeetName())) {
                     meetNameIsChanged = true;
                 } else {
                     meetNameIsChanged = false;
@@ -212,31 +214,46 @@ public class OptionModifyActivity extends AppCompatActivity {
     }
 
     public void clickSave(View view) {
-
-        if (meetNameIsChanged) {
-            RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class).checkMeetName(meetName).enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    try {
-                        int checkNum = Integer.parseInt(response.body());
-                        if (checkNum > 0) {
-                            Toast.makeText(OptionModifyActivity.this, "동일한 모임명이 존재합니다.\n다른 이름을 생성해주세요", Toast.LENGTH_SHORT).show();
-                        } else {
-                            saveData();
+        try {
+            if (meetNameIsChanged) {
+                RetrofitHelper.getRetrofit().create(RetrofitService.class).checkGroupName(meetName).enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        try {
+                            JSONObject jsonRes = new JSONObject(response.body());
+                            int code = jsonRes.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                            switch (code) {
+                                case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                    boolean isUsable = jsonRes.getBoolean(GlobalKey.NTWRK_RTN_TYPE.RESULT);
+                                    if (isUsable) {
+                                        saveData();
+                                    } else {
+                                        Toast.makeText(OptionModifyActivity.this, R.string.cmn_group_name_exist, Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                    showNtwrkFailToast("1");
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            showNtwrkFailToast("2");
+                            logException(e);
                         }
-                    } catch (Exception e) {
-
                     }
-                }
-
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-
-                }
-            });
-        } else {
-            saveData();
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        DMFBCrash.logException(t);
+                        showNtwrkFailToast("3");
+                    }
+                });
+            } else {
+                saveData();
+            }
+        } catch (Exception e) {
+            logException(e);
+            showNtwrkFailToast("4");
         }
+
     }
 
     public void saveData() {
@@ -249,7 +266,7 @@ public class OptionModifyActivity extends AppCompatActivity {
         progressDialog.show();
 
         dataPart = new HashMap<>();
-        dataPart.put("originMeetName", GlobalInfo.currentMoim.getMeetName());
+        dataPart.put("originMeetName", GlobalInfo.currentGroup.getMeetName());
         dataPart.put("meetName", meetName);
         dataPart.put("meetInterest", meetInterest);
         dataPart.put("purposeMessage", purposeMessage);
@@ -271,25 +288,25 @@ public class OptionModifyActivity extends AppCompatActivity {
         }
 
 
-        RetrofitService retrofitService = RetrofitHelper.getRetrofitInstanceScalars().create(RetrofitService.class);
+        RetrofitService retrofitService = RetrofitHelper.getRetrofit().create(RetrofitService.class);
         retrofitService.updateItemBaseDataToModifyActivity(dataPart, titlePart, introPart).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.body() != null) {
                     dstName = response.body().split("&&");
-                    GlobalInfo.currentMoim.setMeetName(meetName);
-                    GlobalInfo.currentMoim.setMeetInterest(meetInterest);
-                    GlobalInfo.currentMoim.setPurposeMessage(purposeMessage);
-                    GlobalInfo.currentMoim.setMessage(message);
+                    GlobalInfo.currentGroup.setMeetName(meetName);
+                    GlobalInfo.currentGroup.setMeetInterest(meetInterest);
+                    GlobalInfo.currentGroup.setPurposeMessage(purposeMessage);
+                    GlobalInfo.currentGroup.setMessage(message);
                     if (dstName[0] != null) {
-                        GlobalInfo.currentMoim.setTitleImgUrl(dstName[0]);
+                        GlobalInfo.currentGroup.setTitleImgUrl(dstName[0]);
                     }
                     try {
-                        GlobalInfo.currentMoim.setIntroImgUrl(dstName[1]);
+                        GlobalInfo.currentGroup.setIntroImgUrl(dstName[1]);
                         progressDialog.dismiss();
                         onBackPressed();
                     } catch (Exception e) {
-                        GlobalInfo.currentMoim.setIntroImgUrl(null);
+                        GlobalInfo.currentGroup.setIntroImgUrl(null);
                         progressDialog.dismiss();
                         onBackPressed();
                     }
