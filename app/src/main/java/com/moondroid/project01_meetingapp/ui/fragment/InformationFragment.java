@@ -22,6 +22,7 @@ import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.data.model.ChatItemVO;
 import com.moondroid.project01_meetingapp.data.model.MoimVO;
 import com.moondroid.project01_meetingapp.data.model.UserInfo;
+import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.helpers.utils.LinearLayoutManagerWrapper;
@@ -55,6 +56,7 @@ public class InformationFragment extends BaseFragment {
     private InformationMemberAdapter memberAdapter;
     private ArrayList<MoimVO> moimVOS;
     private InformationMoimAdapter moimAdapter;
+    private BaseActivity mActivity;
 
 
     @Nullable
@@ -62,6 +64,7 @@ public class InformationFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         memberVOS = new ArrayList<>();
         moimVOS = new ArrayList<>();
+        mActivity = (BaseActivity) getActivity();
         return inflater.inflate(R.layout.fragment_page_tab1_information, container, false);
     }
 
@@ -99,7 +102,7 @@ public class InformationFragment extends BaseFragment {
                             Toast.makeText(getContext(), "you're master", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        saveUserMeet();
+                        chckMeet();
                     }
                 }).setNegativeButton("아니요", null).create().show();
             }
@@ -189,39 +192,75 @@ public class InformationFragment extends BaseFragment {
         });
     }
 
-    public void saveUserMeet() {
-        RetrofitHelper.getRetrofit().create(RetrofitService.class).checkUserMeetData(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                try {
-                    int checkNum = 0;
-                    checkNum = Integer.parseInt(response.body());
-                    if (checkNum > 0) {
-                        Toast.makeText(getContext(), "이미 가입된 모임입니다.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        RetrofitHelper.getRetrofit().create(RetrofitService.class).saveUserMeetData(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<String>() {
-                            @Override
-                            public void onResponse(Call<String> call, Response<String> response) {
-                                Toast.makeText(getContext(), "" + response.body(), Toast.LENGTH_SHORT).show();
-                                loadMembers();
-                            }
-
-                            @Override
-                            public void onFailure(Call<String> call, Throwable t) {
-                                saveUserMeet();
-                            }
-                        });
+    public void chckMeet() {
+        try {
+            RetrofitHelper.getRetrofit().create(RetrofitService.class).checkUserMeetData(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    try {
+                        JSONObject res = new JSONObject(response.body());
+                        int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                        switch (code) {
+                            case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                boolean isUsable = res.getBoolean(GlobalKey.NTWRK_RTN_TYPE.RESULT);
+                                if (isUsable) {
+                                    saveMeet();
+                                } else {
+                                    Toast.makeText(getContext(), "이미 가입된 모임입니다.", Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                            case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                break;
+                        }
+                    } catch (Exception e) {
+                        mActivity.showNtwrkFailToast("1");
+                        logException(e);
                     }
-                } catch (Exception e) {
-                    Toast.makeText(getContext(), "다른문제", Toast.LENGTH_SHORT).show();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                saveUserMeet();
-            }
-        });
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    mActivity.showNtwrkFailToast("2");
+                    DMFBCrash.logException(t);
+                }
+            });
+        } catch (Exception e) {
+            logException(e);
+        }
+    }
+
+    public void saveMeet() {
+        try {
+            RetrofitHelper.getRetrofit().create(RetrofitService.class).saveUserMeetData(GlobalInfo.myProfile.getUserId(), GlobalInfo.currentGroup.getMeetName()).enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    try {
+                        JSONObject res = new JSONObject(response.body());
+                        int code = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                        switch (code) {
+                            case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                loadMembers();
+                                break;
+
+                            case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                mActivity.showNtwrkFailToast("1");
+                                break;
+                        }
+                    } catch (Exception e) {
+                        mActivity.showNtwrkFailToast("2");
+                        logException(e);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    mActivity.showNtwrkFailToast("3");
+                    DMFBCrash.logException(t);
+                }
+            });
+        } catch (Exception e) {
+            logException(e);
+        }
     }
 
     public void loadMoims() {

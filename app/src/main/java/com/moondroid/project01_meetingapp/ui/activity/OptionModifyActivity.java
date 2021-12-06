@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.moondroid.project01_meetingapp.R;
 import com.moondroid.project01_meetingapp.helpers.firebase.DMFBCrash;
+import com.moondroid.project01_meetingapp.helpers.utils.DMUtil;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalInfo;
 import com.moondroid.project01_meetingapp.helpers.utils.GlobalKey;
 import com.moondroid.project01_meetingapp.network.RetrofitHelper;
@@ -198,7 +199,7 @@ public class OptionModifyActivity extends BaseActivity {
             case REQUEST_CODE_FOR_INTRO_IMG_SELECT:
                 introImgUri = data.getData();
                 Glide.with(this).load(introImgUri).into(ivIntro);
-                introImgPath = getRealPathFromUri(introImgUri);
+                introImgPath = DMUtil.getRealPathFromUri(this, introImgUri);
                 break;
             case REQUEST_CODE_FOR_INTEREST_ICON:
                 meetInterest = data.getStringExtra(GlobalKey.INTENT_PARAM_TYPE.INTEREST);
@@ -208,7 +209,7 @@ public class OptionModifyActivity extends BaseActivity {
             case REQUEST_CODE_FOR_TITLE_IMG_SELECT:
                 titleImgUri = data.getData();
                 Glide.with(this).load(titleImgUri).into(ivTitleImg);
-                titleImgPath = getRealPathFromUri(titleImgUri);
+                titleImgPath = DMUtil.getRealPathFromUri(this, titleImgUri);
                 break;
         }
     }
@@ -257,81 +258,78 @@ public class OptionModifyActivity extends BaseActivity {
     }
 
     public void saveData() {
+        try{
+            showProgress();
+            dataPart = new HashMap<>();
+            dataPart.put("originMeetName", GlobalInfo.currentGroup.getMeetName());
+            dataPart.put("meetName", meetName);
+            dataPart.put("meetInterest", meetInterest);
+            dataPart.put("purposeMessage", purposeMessage);
+            dataPart.put("message", message);
 
-        progressDialog = new ProgressDialog(this);
+            MultipartBody.Part titlePart = null;
+            MultipartBody.Part introPart = null;
 
-        progressDialog.setMessage("잠시만 기다려주십시오.");
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
-        progressDialog.show();
+            if (titleImgPath != null) {
+                File file = new File(titleImgPath);
+                RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+                titlePart = MultipartBody.Part.createFormData("titleImg", file.getName(), requestBody);
+            }
 
-        dataPart = new HashMap<>();
-        dataPart.put("originMeetName", GlobalInfo.currentGroup.getMeetName());
-        dataPart.put("meetName", meetName);
-        dataPart.put("meetInterest", meetInterest);
-        dataPart.put("purposeMessage", purposeMessage);
-        dataPart.put("message", message);
-
-        MultipartBody.Part titlePart = null;
-        MultipartBody.Part introPart = null;
-
-        if (titleImgPath != null) {
-            File file = new File(titleImgPath);
-            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-            titlePart = MultipartBody.Part.createFormData("titleImg", file.getName(), requestBody);
-        }
-
-        if (introImgPath != null) {
-            File file = new File(introImgPath);
-            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-            introPart = MultipartBody.Part.createFormData("introImg", file.getName(), requestBody);
-        }
+            if (introImgPath != null) {
+                File file = new File(introImgPath);
+                RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+                introPart = MultipartBody.Part.createFormData("introImg", file.getName(), requestBody);
+            }
 
 
-        RetrofitService retrofitService = RetrofitHelper.getRetrofit().create(RetrofitService.class);
-        retrofitService.updateItemBaseDataToModifyActivity(dataPart, titlePart, introPart).enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.body() != null) {
-                    dstName = response.body().split("&&");
-                    GlobalInfo.currentGroup.setMeetName(meetName);
-                    GlobalInfo.currentGroup.setMeetInterest(meetInterest);
-                    GlobalInfo.currentGroup.setPurposeMessage(purposeMessage);
-                    GlobalInfo.currentGroup.setMessage(message);
-                    if (dstName[0] != null) {
-                        GlobalInfo.currentGroup.setTitleImgUrl(dstName[0]);
-                    }
+            RetrofitService retrofitService = RetrofitHelper.getRetrofit().create(RetrofitService.class);
+            retrofitService.updateItemBaseDataToModifyActivity(dataPart, titlePart, introPart).enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
                     try {
-                        GlobalInfo.currentGroup.setIntroImgUrl(dstName[1]);
-                        progressDialog.dismiss();
-                        onBackPressed();
-                    } catch (Exception e) {
-                        GlobalInfo.currentGroup.setIntroImgUrl(null);
-                        progressDialog.dismiss();
-                        onBackPressed();
+                        JSONObject res = new JSONObject(response.body());
+                        int code  = res.getInt(GlobalKey.NTWRK_RTN_TYPE.CODE);
+                        switch (code) {
+                            case GlobalKey.NTWRK_RTN_TYPE.SUCCESS:
+                                JSONObject result = res.getJSONObject(GlobalKey.NTWRK_RTN_TYPE.RESULT);
+                                GlobalInfo.currentGroup.setMeetName(meetName);
+                                GlobalInfo.currentGroup.setMeetInterest(meetInterest);
+                                GlobalInfo.currentGroup.setPurposeMessage(purposeMessage);
+                                GlobalInfo.currentGroup.setMessage(message);
+                                if (result.has("titleImgUrl")){
+                                    GlobalInfo.currentGroup.setTitleImgUrl(result.getString("titleImgUrl"));
+                                }
+                                if (result.has("introImgUrl")){
+                                    GlobalInfo.currentGroup.setIntroImgUrl(result.getString("introImgUrl"));
+                                }
+                                hideProgress();
+                                toPrev();
+                                break;
+                            case GlobalKey.NTWRK_RTN_TYPE.FAIL:
+                                showNtwrkFailToast("1");
+                                break;
+                            default:
+                                showNtwrkFailToast("2");
+                                break;
+                        }
+                    } catch (Exception e){
+                        showNtwrkFailToast("3");
+                        logException(e);
                     }
                 }
 
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-
-            }
-        });
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    showNtwrkFailToast("4");
+                    DMFBCrash.logException(t);
+                }
+            });
+        } catch (Exception e) {
+            showNtwrkFailToast("5");
+            logException(e);
+        }
     }
-
-    String getRealPathFromUri(Uri uri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        CursorLoader loader = new CursorLoader(this, uri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String result = cursor.getString(column_index);
-        cursor.close();
-        return result;
-    }
-
 }
 
 

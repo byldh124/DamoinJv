@@ -25,11 +25,11 @@ public class URLMngr {
     public static final String SAVE_USER = "saveUserBaseDB.php";                    // 회원가입
     public static final String UPDATE_USER = "updateUserBaseDB.php";                // 유저 정보 수정
     public static final String CHECK_ID = "checkUserId.php";                        // 회원가입 - 아이디 중복 체크
-    public static final String CHECK_GROUP_NAME = "checkMeetName.php";               // 모임 이름 중복 체크
+    public static final String CHECK_GROUP_NAME = "checkMeetName.php";              // 모임 이름 중복 체크
     public static final String UPDATE_INTEREST = "updateUserInterest.php";          // 관심사 업데이트
     public static final String USER_INFO = "loadUserBaseDBOnIntro.php";             // 유저 정보 로드
-    public static final String SAVE_GROUP = "saveItemBaseDB.php";                    // 모임 만들기 - 저장
-    public static final String GET_GROUP = "getItemBaseData.php";                    // 모임 내용 로드
+    public static final String SAVE_GROUP = "saveItemBaseDB.php";                   // 모임 만들기 - 저장
+    public static final String GET_GROUP = "getItemBaseData.php";                   // 모임 내용 로드
     public static final String UPDATE_MEET = "updateItemBaseDB.php";                // 모임 설명 수정
     public static final String SAVE_USER_MEET_DT = "saveUserMeetData.php";          // 모임 참여 내용 저장
     public static final String CHECK_USER_MEET_DT = "checkUserMeetData.php";        // 모임 참여 목록 로드
@@ -53,7 +53,4 @@ public class URLMngr {
     public static final String ADD_JOIN = "addJoinMember.php";                      // 정모 참여
     public static final String UPDATE_SETTING = "updateFCMSetting.php";             // 알림 설정
     public static final String LOAD_SETTING = "loadFCMSetting.php";                 // 알림 설정 로드
-
-
-
 }

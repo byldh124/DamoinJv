@@ -32,6 +32,10 @@ public class BaseActivity extends AppCompatActivity {
         DMFBCrash.logException(e);
     }
 
+    public void toPrev() {
+        onBackPressed();
+    }
+
     public void showProgress() {
         try {
             if (dmProgressDialog == null) {
@@ -54,7 +58,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void goToMain(int activityCode){
+    public void goToMain(int activityCode) {
         try {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, activityCode);
@@ -66,18 +70,18 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void goToInterest(int activityCode, int requestCode){
+    public void goToInterest(int activityCode, int requestCode) {
         try {
             Intent intent = new Intent(this, InterestActivity.class);
             intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, activityCode);
             startActivityForResult(intent, requestCode);
-            overridePendingTransition(0 , R.anim.fade_out);
-        } catch (Exception e){
+            overridePendingTransition(0, R.anim.fade_out);
+        } catch (Exception e) {
             logException(e);
         }
     }
 
-    public void goToLocation(int activityCode, int requestCode){
+    public void goToLocation(int activityCode, int requestCode) {
         try {
             Intent intent = new Intent(this, LocationChoiceActivity.class);
             intent.putExtra(GlobalKey.INTENT_PARAM_TYPE.SEND_ACTIVITY, activityCode);
@@ -88,7 +92,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void goToGallery(int requestCode){
+    public void goToGallery(int requestCode) {
         try {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
@@ -99,18 +103,22 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void showNtwrkFailToast(){
-        try{
-            Toast.makeText(getBaseContext(), getString(R.string.fail_connect_server), Toast.LENGTH_SHORT).show();
-        } catch (Exception e){
+    public void showNtwrkFailToast() {
+        try {
+            if (!this.isDestroyed()) {
+                Toast.makeText(getBaseContext(), getString(R.string.fail_connect_server), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
             logException(e);
         }
     }
 
-    public void showNtwrkFailToast(String eCode){
+    public void showNtwrkFailToast(String eCode) {
         try {
-            Toast.makeText(getBaseContext(), getString(R.string.network_error, eCode), Toast.LENGTH_SHORT).show();
-        } catch (Exception e){
+            if (!this.isDestroyed()) {
+                Toast.makeText(getBaseContext(), getString(R.string.network_error, eCode), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
             logException(e);
         }
     }

@@ -46,13 +46,13 @@ public interface RetrofitService {
     Call<String> getGroupList();
 
     @Multipart
-    @POST(URLMngr.UPDATE_MEET)
+    @POST(URLMngr.UPDATE_MEET)                                                          //**
     Call<String> updateItemBaseDataToModifyActivity(@PartMap Map<String, String> dataPart, @Part MultipartBody.Part titlePart, @Part MultipartBody.Part introPart);
 
-    @GET(URLMngr.SAVE_USER_MEET_DT)
+    @GET(URLMngr.SAVE_USER_MEET_DT)                                                     //**
     Call<String> saveUserMeetData(@Query("userId") String userId, @Query("meetName") String meetName);
 
-    @GET(URLMngr.CHECK_USER_MEET_DT)
+    @GET(URLMngr.CHECK_USER_MEET_DT)                                                    //**
     Call<String> checkUserMeetData(@Query("userId") String userId, @Query("meetName") String meetName);
 
     @GET(URLMngr.LOAD_MEMBERS)
